@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup</title>
+</head>
+<body>
+<!-- Example: signup.ejs -->
+<form action="/auth/signup" method="POST">
+    <label for="name">Full name:</label>
+    <input type="text" name="name" required>
+    <label for="email">Email:</label>
+    <input type="text" name="email" required>
+    <label for="password">Password:</label>
+    <input type="password" name="password" required>
+    <button type="submit">Sign Up</button>
+    <a href="/auth/login">Login?</a>
+
+</form>
+
+</body>
+</html>
