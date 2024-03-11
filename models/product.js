@@ -19,13 +19,8 @@ const productSchema = new mongoose.Schema({
         required: true,
     },
     imageUrl: String, // URL for the product image
-    stockQuantity: {
-        type: Number,
-        required: true,
-        min: 0,
-    }
 },{timestamps : true});
 
-const Product = mongoose.model('Product', productSchema);
+const Product = mongoose.model('Product', productSchema,'Product');
 
 export default Product;
