@@ -3,6 +3,7 @@ import authRoute from './routes/authRoutes.js';
 import homeRoute from './routes/homeRoutes.js';
 import path from 'path';
 import mongooseConnect from './connect.js';
+import productRoute from './routes/productRoute.js';
 
 
 const app = express();
@@ -21,7 +22,8 @@ app.use('/auth',authRoute);
 
 //router for homepage
 app.use('/',homeRoute);
-
+//router for products
+app.use('/product',productRoute)
 
 
 const PORT = process.env.PORT || 3000;

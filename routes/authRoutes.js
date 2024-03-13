@@ -1,5 +1,7 @@
 import express from 'express';
 import User from '../models/user.js'
+import authFunc from '../services/authService.js';
+import { v4 as uuidv4 } from 'uuid'; 
 
 const router = express.Router();
 router.use(express.json());
@@ -28,9 +30,23 @@ router.get("/signup",(req,res)=>{
 async function handleUserLogin(req,res){
     try {
         const {email, password } = req.body;
-        console.log(req.body);
-        console.log(await User.find({email:email,password:password}));
-        res.send("User Found Successfully");
+        console.log(email,password);
+        const value = await User.find({email:email,password:password});
+        // if(value!==[]){
+        //     con
+        // }
+        
+        if(value.length===0) 
+        return res.render("login",{
+            error: "Inavlid username or password",
+        }) 
+
+        const sessionId = uuidv4();
+        authFunc.setUser(sessionId,value);
+        res.cookie('uid',sessionId)
+
+        return res.redirect('/');
+
     } catch (error) {
         console.error('Error during user find:', error);
     }
