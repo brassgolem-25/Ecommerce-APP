@@ -4,6 +4,7 @@ import homeRoute from './routes/homeRoutes.js';
 import path from 'path';
 import mongooseConnect from './connect.js';
 import productRoute from './routes/productRoute.js';
+import cartRoute from './routes/cartRoute.js'
 
 
 const app = express();
@@ -25,6 +26,8 @@ app.use('/',homeRoute);
 //router for products
 app.use('/product',productRoute)
 
+//router for cart
+app.use('/cart',cartRoute)
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

@@ -26,7 +26,7 @@ router.get("/signup",(req,res)=>{
     res.render("signup")
 })
 
-//
+//check if the user is logged in , if yes then don't show signup button
 async function handleUserLogin(req,res){
     try {
         const {email, password } = req.body;

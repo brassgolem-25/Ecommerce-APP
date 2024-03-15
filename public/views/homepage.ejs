@@ -38,13 +38,26 @@
                 <li class="nav-item">
                   <a class="nav-link active" aria-current="page" href="/Account">Account</a>
                 </li>
+                <li class="nav-item">
+                  <a class="nav-link active" aria-current="page" href="/Cart">Cart</a>
+                </li>
               </ul>
           </div>
         </div>
       </nav>
-    <!-- <a href="/auth/signup">signup?</a>
-    <a href="/auth/account">Account?</a>
-    <a href="/">Home</a> -->
+      <ul class="list-group">
+        <% products.forEach(data => { %>
+            <li class="list-group-item" ><%= data.name %> - $<%= data.price %>
+              <button type="button" id='cart'class="btn btn-secondary" >Add To Cart ?</button>
+            </li>
+        <% }); %>
+    </ul>
 </body>
+<script>
+      const button = document.getElementById('cart');
+      button.addEventListener('click',(e)=>{
+        fetch('/')
+      })
+</script>
 
 </html>

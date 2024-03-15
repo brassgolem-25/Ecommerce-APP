@@ -3,21 +3,15 @@ import Product from '../models/product.js';
 
 const router = express.Router();
 router.use(express.json());
-
-
-async function getProducts(req,res){
-    try{
-        
-        res.send(await Product.find({}))
-
-    }catch(error){
-        console.log(error);
-    }
-}
 //
 
-router.get("/",(req,res)=>{
-    getProducts(req,res);
+router.get("/cart",(req,res)=>{
+   try{
+    //render cart page
+    res.send('Added to cart')
+   }catch(error){
+    console.log(error);
+   }
 })
 
 

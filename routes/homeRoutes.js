@@ -10,8 +10,15 @@ async function addToCart(req,res){
     //product quantity ,
 }
 
-router.get("/",(req,res)=>{
-    res.render("homepage")
+
+//home route
+router.get("/",async (req,res)=>{
+    try {
+        const products = await Product.find({});
+        res.render("homepage",{products:products})
+    }catch{
+
+    }
 })
 
 
