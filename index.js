@@ -5,7 +5,10 @@ import path from 'path';
 import mongooseConnect from './connect.js';
 import productRoute from './routes/productRoute.js';
 import cartRoute from './routes/cartRoute.js'
-
+import cookieParser from 'cookie-parser';
+import session from 'express-session';
+import authentication from './middlewares/authentication.js'
+import accountRoute from './routes/accountRoute.js'
 
 const app = express();
 
@@ -14,6 +17,12 @@ app.set("views", path.resolve("./public/views"))
 //middlewares
 app.use(express.urlencoded({ extended: true })); // to represent extra character
 app.use(express.json());
+app.use(cookieParser());
+app.use(session({
+    secret:'secret-key',
+    resave:false,
+    saveUninitialized:false,
+}));
 
 //db connect verification
 let connection = await mongooseConnect();
@@ -27,7 +36,11 @@ app.use('/',homeRoute);
 app.use('/product',productRoute)
 
 //router for cart
-app.use('/cart',cartRoute)
+app.use('/cart',authentication,cartRoute)
+
+//router for account
+app.use('/account',authentication,accountRoute)
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

@@ -45,7 +45,10 @@ async function handleUserLogin(req,res){
         authFunc.setUser(sessionId,value);
         res.cookie('uid',sessionId)
 
-        return res.redirect('/');
+        const returnTo = req.session.returnTo || '/';
+        delete req.session.returnTo; // Clear the stored URL
+        return res.redirect(returnTo);
+        // return res.redirect('/');
 
     } catch (error) {
         console.error('Error during user find:', error);

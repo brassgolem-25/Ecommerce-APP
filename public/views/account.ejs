@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        /* Custom styles here */
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Welcome to Your Account</h1>
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <h2>User Information</h2>
+                <ul class="list-group">
+                    <li class="list-group-item"><strong>Name:</strong> <%= user.name %></li>
+                    <li class="list-group-item"><strong>Email:</strong> <%= user.email %></li>
+                    <li class="list-group-item"><strong>Date of Birth:</strong> <%= user.dateofBirth ? user.dateofBirth.toDateString() : 'Not provided' %></li>
+                    <li class="list-group-item"><strong>Gender:</strong> <%= user.gender || 'Not provided' %></li>
+                    <li class="list-group-item"><strong>Contact Number:</strong> <%= user.number || 'Not provided' %></li>
+                    <li class="list-group-item"><strong>Address:</strong> <%= user.address || 'Not provided' %></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Your custom scripts here -->
+    <script>
+        // Custom scripts here
+    </script>
+</body>
+</html>

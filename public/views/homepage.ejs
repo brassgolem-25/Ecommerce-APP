@@ -47,17 +47,30 @@
       </nav>
       <ul class="list-group">
         <% products.forEach(data => { %>
-            <li class="list-group-item" ><%= data.name %> - $<%= data.price %>
-              <button type="button" id='cart'class="btn btn-secondary" >Add To Cart ?</button>
+            <li class="list-group-item" >
+              <a href="/product/<%=data._id %>"><%= data.name %> - $<%= data.price %> </a>
+              <button type="button" id='cart'class="btn btn-secondary cart-btn" data-products_id ="<%=data._id%>">Add To Cart ?</button>
             </li>
         <% }); %>
     </ul>
 </body>
 <script>
-      const button = document.getElementById('cart');
-      button.addEventListener('click',(e)=>{
-        fetch('/')
+      const buttonList = document.querySelectorAll('.cart-btn')
+      buttonList.forEach(button => {
+        button.addEventListener('click',(e)=>{
+        const pid = button.dataset.products_id;
+        fetch('/cart/addTocart',{
+          method:"POST",
+          headers: {
+                    'Content-Type': 'application/json'
+                },
+          body: JSON.stringify({
+            pid,
+          }),
+        }).then(reponse => reponse.JSON())
       })
+      })
+
 </script>
 
 </html>

@@ -1,6 +1,7 @@
 import express from 'express';
 import Product from '../models/product.js';
 
+
 const router = express.Router();
 router.use(express.json());
 

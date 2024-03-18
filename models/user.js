@@ -12,7 +12,20 @@ const userSchema = new mongoose.Schema({
     password :{
         type:String,
         required:true
+    },
+    dateofBirth:{
+        type:Date
+    },
+    gender:{
+        type:String
+    },
+    number:{
+        type:String
+    },
+    address:{
+        type:String
     }
+
 },{timestamps : true})
 
 const User = mongoose.model('User', userSchema,'User');
