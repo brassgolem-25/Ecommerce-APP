@@ -11,15 +11,23 @@ async function addToCart(req,res){
     //product quantity ,
 }
 
-
 //home route
 router.get("/",async (req,res)=>{
     try {
         const products = await Product.find({});
-        res.render("homepage",{products:products})
-    }catch{
-
+        const category = await Product.distinct("category");
+        res.render("homepage",{products:products,productCategory:category})
+    }catch(error){
+        console.log(error)
     }
+})
+
+//category route
+router.get("/category/:categoryID",async(req,res) => {
+    const categoryID = req.params.categoryID;
+
+    const products = await Product.find({"category":categoryID})
+    res.render('category',{products:products});
 })
 
 

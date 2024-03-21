@@ -46,15 +46,25 @@
         </div>
       </nav>
       <ul class="list-group">
+        <% productCategory.forEach(data => { %>
+            <li class="list-group-item" >
+              <% const encodedCategory = encodeURIComponent(data); %>
+              <% const url = `/category/${encodedCategory}`; %>
+               <a  href="<%=url%>"><button type="button"class="btn btn-secondary"><%= data %></button></a>
+            </li>
+        <% }); %>
+    </ul>
+      <ul class="list-group">
         <% products.forEach(data => { %>
             <li class="list-group-item" >
               <a href="/product/<%=data._id %>"><%= data.name %> - $<%= data.price %> </a>
-              <button type="button" id='cart'class="btn btn-secondary cart-btn" data-products_id ="<%=data._id%>">Add To Cart ?</button>
+              <button type="button" class="btn btn-secondary cart-btn" data-products_id ="<%=data._id%>">Add To Cart ?</button>
             </li>
         <% }); %>
     </ul>
 </body>
 <script>
+  // for adding to cart
       const buttonList = document.querySelectorAll('.cart-btn')
       buttonList.forEach(button => {
         button.addEventListener('click',(e)=>{
@@ -64,13 +74,12 @@
           headers: {
                     'Content-Type': 'application/json'
                 },
-          body: JSON.stringify({
-            pid,
-          }),
+      body: JSON.stringify({
+        productId: pid // Send the product ID as an object
+      }),
         }).then(reponse => reponse.JSON())
       })
       })
-
 </script>
 
 </html>

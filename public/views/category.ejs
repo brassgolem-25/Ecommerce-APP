@@ -13,13 +13,14 @@
 </head>
 
 <body>
-    <div>
-     <%=product.name%>
-     <%=product.price%>
-     <button type="button" class="btn btn-outline-success">Add to cart?</button>
-    </div>
+      <ul class="list-group">
+        <% products.forEach(data => { %>
+            <li class="list-group-item" >
+              <a href="/product/<%=data._id %>"><%= data.name %> - $<%= data.price %> </a>
+              <button type="button" id='cart'class="btn btn-secondary cart-btn" data-products_id ="<%=data._id%>">Add To Cart ?</button>
+            </li>
+        <% }); %>
+    </ul>
 </body>
-<script>
-</script>
 
 </html>
