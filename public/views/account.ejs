@@ -1,40 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Account</title>
+    <title>User Information</title>
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Custom CSS -->
-    <style>
-        /* Custom styles here */
-    </style>
 </head>
+
 <body>
     <div class="container mt-5">
-        <h1>Welcome to Your Account</h1>
-        <div class="row mt-4">
-            <div class="col-md-6">
-                <h2>User Information</h2>
-                <ul class="list-group">
-                    <li class="list-group-item"><strong>Name:</strong> <%= user.name %></li>
-                    <li class="list-group-item"><strong>Email:</strong> <%= user.email %></li>
-                    <li class="list-group-item"><strong>Date of Birth:</strong> <%= user.dateofBirth ? user.dateofBirth.toDateString() : 'Not provided' %></li>
-                    <li class="list-group-item"><strong>Gender:</strong> <%= user.gender || 'Not provided' %></li>
-                    <li class="list-group-item"><strong>Contact Number:</strong> <%= user.number || 'Not provided' %></li>
-                    <li class="list-group-item"><strong>Address:</strong> <%= user.address || 'Not provided' %></li>
-                </ul>
+        <h1>User Information Form</h1>
+        <form action="/Account/Profile" method="post">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input class="form-control" id="name" name="name" placeholder="<%=user.name%>" disabled>
             </div>
-        </div>
+            <div class="form-group">
+                <label for="email">Email address</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="<%=user.email%>" disabled>
+            </div>
+            <div class="form-group">
+                <label for="gender">Gender</label>
+                <%if(!user.gender){%>
+                    <select class="form-control" id="gender" name="gender">
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                    </select>
+                    <%}else{%>
+                        <input type="email" class="form-control" id="email" placeholder="<%=user.gender%>" disabled>
+                        <%}%>
+            </div>
+            <div class="form-group">
+                <label for="dob">Date of Birth</label>
+                <%if(!user.dateofBirth){%>
+                    <input type="date" class="form-control" id="dob" name="dateofBirth">
+                    <%}else{ %>
+                        <% const date=new Date(user.dateofBirth) ; const corrdateOfBirth=date.toISOString().substring(0,
+                            10);%>
+                            <input type="number" class="form-control" placeholder="<%=corrdateOfBirth%>" disabled>
+                            <%}%>
+            </div>
+            <div class="form-group">
+                <label for="dob">Mobile Number</label>
+                <%if(!user.number){%>
+                    <input type="text" class="form-control" id="dob" name="number">
+                    <%}else{%>
+                        <input type="number" class="form-control" id="email" placeholder="<%=user.number%>" disabled>
+                        <%}%>
+            </div>
+            <div class="form-group">
+                <label for="address">Address</label>
+                <%if(!user.address){%>
+                    <textarea class="form-control" id="address" rows="3" placeholder="Enter your address"
+                        name="address"></textarea>
+                    <%}else{%>
+                        <input type="text" class="form-control" placeholder="<%=user.address%>" disabled>
+                        <%}%>
+            </div>
+            <button type="submit" class="btn btn-primary">Edit Profile</button>
+        </form>
+        <a href="/"><button type="button" class="btn btn-danger">Cancel</button></a>
+
     </div>
     <!-- Bootstrap JS and dependencies -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <!-- Your custom scripts here -->
-    <script>
-        // Custom scripts here
-    </script>
 </body>
+
 </html>

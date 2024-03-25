@@ -13,17 +13,26 @@
 </head>
 
 <body>
+    <form  id="btnSearch"  action="/cart/delete" method="post" >
       <ul class="list-group">
         <% products.forEach(data => { %>
             <li class="list-group-item" >
               <!-- <a href="/product/<%=data._id %>"><%= data %> </a> -->
               name <%= data.name %> <br>
               price <%= data.price %>  <br>
-              quantity <%= quantity %> <br>
-              <!-- <button type="button" id='cart'class="btn btn-secondary cart-btn" data-products_id ="<%=data._id%>">Add To Cart ?</button> -->
+              <!-- quantity  <button name="quantity"> <%= data.quantity %> </button> -->
+              <!-- <button class="quantity-btn" data-action="decrease">-</button> -->
+              <input type="number" class="quantity-input" value="<%= data.quantity %>" min="1">
+              <!-- <button class="quantity-btn" data-action="increase">+</button> -->
+            <button type="submit" id='cart'class="btn btn-danger cart-btn" name="delete" value = "<%=data.cartId%>">Remove</button>
             </li>
         <% }); %>
+        subtotal : <%= subTotal%> <br>
+        shipping : free <br>
+        Total : <%= subTotal %>
+        <a href="/checkout"<button type="button" id='cart'class="btn btn-secondary cart-btn">Go to Checkout ?</button></a>
     </ul>
+</form>
 </body>
 
 </html>

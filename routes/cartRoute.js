@@ -2,56 +2,93 @@ import express from 'express';
 import Cart from '../models/cart.js';
 import authService from '../services/authService.js';
 import { isValidObjectId } from 'mongoose';
+import {ObjectId} from 'mongodb';
 
 const router = express.Router();
 router.use(express.json());
 
+//remove item from cart
+router.post("/delete",async (req,res)=>{
+    try {
+        // do better naming conventio
+        const product_Id = req.body.delete;
+        // console.log(product_Id);
+        await Cart.deleteOne({_id:product_Id})
+        findCartItem(req,res);
+             
+    }catch(error){
+        console.log(error);
+    }
+})
 
+
+// add to cart route
 router.post('/addToCart',async(req,res)=>{
     try{
         const user = authService.getUser(req.cookies.uid);
         const pId = req.body.productId;
-        console.log(user);
-        console.log(isValidObjectId(pId))
-        // console.log(req);
-        await Cart.create({
-            userId : user[0]._id,
-            quantity:2,
-            productId : pId
-        })
+        const productFound = await Cart.find({
+          productId : pId,
+          userId : new ObjectId(user[0]._id)
+    });
+        // console.log(productFound);
+        if(productFound.length>0){
+            console.log("Yes found");
+            console.log(productFound);
+            const cartId = productFound[0]._id;
+            const newQuantity = productFound[0].quantity + 1;
+            // const newQuantity  = await Cart.find({_id:pId});
+            // console.log(newQuantity);
+            await Cart.findOneAndUpdate({_id:cartId},{$set:{"quantity":newQuantity}});
+        }else{
+            await Cart.create({
+                userId : user[0]._id,
+                quantity:1,
+                productId : pId
+            })
+            console.log("Not found");
+        }
+
         // res.send('Item added to cart');
     }catch(error){
         console.log(error);
     }
 })
 
-//cart route
-router.get("/",async (req,res)=>{
+async function findCartItem(req,res){
     try {
-        // const products = await Cart.find({});
+        // do better naming convention
+        const user = authService.getUser(req.cookies.uid);
+        const userId =  user[0]._id;
+
        const value = await Cart.aggregate([
-            {
-                $lookup :{
-                    from : 'Product',
-                    localField : 'productId',
-                    foreignField : '_id',
-                    as:'item'
-                }
+        {$match : {userId : new ObjectId(userId)}},
+        {
+            $lookup :{
+                from : 'Product',
+                localField : 'productId',
+                foreignField : '_id',
+                as:'item'
             }
+        }
         ])
-        let products=[];
-        let quantity;
+        let products=[];let subTotal = 0;
        value.forEach((data)=>{
-        quantity=data.quantity;
-        products.push(data.item[0]);
-       })
+        const productData = data.item[0];
+        productData.cartId = data._id;
+        productData.quantity = data.quantity;
+        products.push(productData);
         // console.log(products);
-        res.render('cart',{products:products,quantity:quantity});    
+        subTotal += data.quantity*productData.price;
+       })
+        // console.log(products,subTotal);
+        return res.render('cart',{products:products,subTotal:subTotal});    
     }catch(error){
         console.log(error);
     }
-})
-
+}
+//cart route
+router.get("/",findCartItem);
 
 
 export default router;

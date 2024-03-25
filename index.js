@@ -9,11 +9,20 @@ import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import authentication from './middlewares/authentication.js'
 import accountRoute from './routes/accountRoute.js'
+import checkoutRoute from './routes/checkoutRoute.js'
+import { fileURLToPath } from 'url';
 
 const app = express();
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+console.log(__dirname);
 app.set("view engine","ejs");
 app.set("views", path.resolve("./public/views"))
+// console.log(__dirname)
+app.use(express.static(path.join(__dirname, 'public')));
+// app.use(express.static('public'))
 //middlewares
 app.use(express.urlencoded({ extended: true })); // to represent extra character
 app.use(express.json());
@@ -40,6 +49,9 @@ app.use('/cart',authentication,cartRoute)
 
 //router for account
 app.use('/account',authentication,accountRoute)
+
+//router for checkout
+app.use('/checkout',authentication,checkoutRoute)
 
 
 const PORT = process.env.PORT || 3000;
