@@ -61,6 +61,27 @@ router.get("/login",(req,res)=>{
     res.render("login")
 })
 
+//logout
+async function handleUserLogout(req,res){
+    try {
+        // console.log(req.session);
+        res.clearCookie('uid');
+        res.clearCookie('connect.sid');
+        req.session.destroy((err)=>{
+            if(!err){
+                // req.session = null;
+                res.send("You are logged out!!");
+            }else {
+                res.send(err);
+            }
+        })
+
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+router.get("/logout",handleUserLogout)
 
 
 export default router;

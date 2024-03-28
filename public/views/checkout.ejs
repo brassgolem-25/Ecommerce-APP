@@ -17,41 +17,54 @@
     <ul class="list-group">
         <button id="rzp-button1">Place Order</button>
         <!-- <button type="button" id='cart' class="btn btn-secondary cart-btn">Place Order</button> -->
-        
+
     </ul>
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-<script>
-    const responseString = `<%= response %>`;
-    const decodedString = responseString.replace(/&#34;/g, '"');
-    const response = JSON.parse(decodedString);
-    // console.log(response);
-var options = {
-    "key": response.key, // Enter the Key ID generated from the Dashboard
-    "amount": response.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
-    "currency": "INR",
-    "name": "Exclusive",
-    "description": "Test Transaction",
-    "image": "https://example.com/your_logo",
-    "order_id": response.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-    "callback_url": "https://eneqd3r9zrjok.x.pipedream.net/",
-    "prefill": {
-        "name": "Gaurav Kumar",
-        "email": "gaurav.kumar@example.com",
-        "contact": "9000090000"
-    },
-    "notes": {
-        "address": "Razorpay Corporate Office"
-    },
-    "theme": {
-        "color": "#3399cc"
-    }
-};
-var rzp1 = new Razorpay(options);
-document.getElementById('rzp-button1').onclick = function(e){
-    rzp1.open();
-    e.preventDefault();
-}
-</script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+        const responseString = `<%= response %>`;
+        const decodedString = responseString.replace(/&#34;/g, '"');
+        const orderGenerated = JSON.parse(decodedString);
+        // console.log(response);
+        var options = {
+            "key": orderGenerated.key, // Enter the Key ID generated from the Dashboard
+            "amount": orderGenerated.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+            "currency": "INR",
+            "name": "Exclusive",
+            "description": "Test Transaction",
+            "image": "https://example.com/your_logo",
+            "order_id": orderGenerated.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+            "handler": function (data) {
+
+                // send data for checking if the payment was done
+                fetch('/checkout/response', {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        data
+                    })
+                }).then(response => response.JSON()).then(alert(data.razorpay_payment_id))
+            },
+            "prefill": {
+                "name": "Gaurav Kumar",
+                "email": "gaurav.kumar@example.com",
+                "contact": "9000090000"
+            },
+            "notes": {
+                "address": "Razorpay Corporate Office"
+            },
+            "theme": {
+                "color": "#3399cc"
+            }
+        };
+        var rzp1 = new Razorpay(options);
+        document.getElementById('rzp-button1').onclick = function (e) {
+            rzp1.open();
+            e.preventDefault();
+        }
+
+    </script>
 </body>
 
 </html>

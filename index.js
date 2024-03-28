@@ -11,6 +11,7 @@ import authentication from './middlewares/authentication.js'
 import accountRoute from './routes/accountRoute.js'
 import checkoutRoute from './routes/checkoutRoute.js'
 import searchRoute from './routes/searchRoute.js'
+import wishListRoute from './routes/wishListRoute.js'
 import { fileURLToPath } from 'url';
 
 const app = express();
@@ -56,6 +57,9 @@ app.use('/checkout',authentication,checkoutRoute)
 
 //router for searching
 app.use('/search',searchRoute);
+
+//router for wishList
+app.use('/wishList',authentication,wishListRoute);
 
 
 const PORT = process.env.PORT || 3000;

@@ -2,93 +2,96 @@ import express from 'express';
 import Cart from '../models/cart.js';
 import authService from '../services/authService.js';
 import { isValidObjectId } from 'mongoose';
-import {ObjectId} from 'mongodb';
+import { ObjectId } from 'mongodb';
 
 const router = express.Router();
 router.use(express.json());
 
 //remove item from cart
-router.post("/delete",async (req,res)=>{
+router.post("/delete", async (req, res) => {
     try {
         // do better naming conventio
         const product_Id = req.body.delete;
         // console.log(product_Id);
-        await Cart.deleteOne({_id:product_Id})
-        findCartItem(req,res);
-             
-    }catch(error){
+        await Cart.deleteOne({ _id: product_Id })
+        findCartItem(req, res);
+
+    } catch (error) {
         console.log(error);
     }
 })
 
 
 // add to cart route
-router.post('/addToCart',async(req,res)=>{
-    try{
+router.post('/addToCart', async (req, res) => {
+    try {
         const user = authService.getUser(req.cookies.uid);
         const pId = req.body.productId;
         const productFound = await Cart.find({
-          productId : pId,
-          userId : new ObjectId(user[0]._id)
-    });
+            productId: pId,
+            userId: new ObjectId(user[0]._id)
+        });
         // console.log(productFound);
-        if(productFound.length>0){
+        if (productFound.length > 0) {
             console.log("Yes found");
             console.log(productFound);
             const cartId = productFound[0]._id;
             const newQuantity = productFound[0].quantity + 1;
             // const newQuantity  = await Cart.find({_id:pId});
             // console.log(newQuantity);
-            await Cart.findOneAndUpdate({_id:cartId},{$set:{"quantity":newQuantity}});
-        }else{
+            await Cart.findOneAndUpdate({ _id: cartId }, { $set: { "quantity": newQuantity } });
+        } else {
             await Cart.create({
-                userId : user[0]._id,
-                quantity:1,
-                productId : pId
+                userId: user[0]._id,
+                quantity: 1,
+                productId: pId
             })
             console.log("Not found");
         }
 
         // res.send('Item added to cart');
-    }catch(error){
+    } catch (error) {
         console.log(error);
     }
 })
 
-async function findCartItem(req,res){
+async function findCartItem(req, res) {
     try {
         // do better naming convention
         const user = authService.getUser(req.cookies.uid);
-        const userId =  user[0]._id;
+        const userId = user[0]._id;
 
-       const value = await Cart.aggregate([
-        {$match : {userId : new ObjectId(userId)}},
-        {
-            $lookup :{
-                from : 'Product',
-                localField : 'productId',
-                foreignField : '_id',
-                as:'item'
+        const cartProduct = await Cart.aggregate([
+            { $match: { userId: new ObjectId(userId) } },
+            {
+                $lookup: {
+                    from: 'Product',
+                    localField: 'productId',
+                    foreignField: '_id',
+                    as: 'item'
+                }
             }
-        }
         ])
-        let products=[];let subTotal = 0;
-       value.forEach((data)=>{
-        const productData = data.item[0];
-        productData.cartId = data._id;
-        productData.quantity = data.quantity;
-        products.push(productData);
-        // console.log(products);
-        subTotal += data.quantity*productData.price;
-       })
+        let products = []; let subTotal = 0;
+        if (cartProduct !== undefined)
+            cartProduct.forEach((data) => {
+                if (data.item.length > 0) {
+                    const productData = data.item[0];
+                    productData.cartId = data._id;
+                    productData.quantity = data.quantity;
+                    products.push(productData);
+                    // console.log(products);
+                    subTotal += data.quantity * productData.price;
+                }
+            })
         // console.log(products,subTotal);
-        return res.render('cart',{products:products,subTotal:subTotal});    
-    }catch(error){
+        return res.render('cart', { products: products, subTotal: subTotal });
+    } catch (error) {
         console.log(error);
     }
 }
 //cart route
-router.get("/",findCartItem);
+router.get("/", findCartItem);
 
 
 export default router;
