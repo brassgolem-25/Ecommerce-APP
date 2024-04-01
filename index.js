@@ -12,6 +12,7 @@ import accountRoute from './routes/accountRoute.js'
 import checkoutRoute from './routes/checkoutRoute.js'
 import searchRoute from './routes/searchRoute.js'
 import wishListRoute from './routes/wishListRoute.js'
+import orderRoute from './routes/orderRoute.js'
 import { fileURLToPath } from 'url';
 
 const app = express();
@@ -60,6 +61,10 @@ app.use('/search',searchRoute);
 
 //router for wishList
 app.use('/wishList',authentication,wishListRoute);
+
+//route for orders
+app.use('/orders',authentication,orderRoute);
+
 
 
 const PORT = process.env.PORT || 3000;
