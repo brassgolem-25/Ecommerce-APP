@@ -1,0 +1,39 @@
+.container{
+    background-color: rgba(195, 193, 235, 0.737);
+    font-size: 21px;
+    /* padding-top: 70px; */
+    padding-bottom: 4% !important;
+    border: 30px;
+    border-color: black;
+}
+
+form{
+    padding-top: 110px;
+}
+
+.loginimg{
+    padding-top: 20%;
+    width: 80%;
+}
+.forgotpw{
+    font-size: 17px ;
+    padding-left: 55px;
+    color: rgba(0, 0, 0, 0.699);
+    text-decoration: none;
+}
+
+
+
+.getmid{
+    padding-top: 18%;
+}
+
+.inputpadding{
+    padding-top: 10px;
+}
+
+.signup{
+    padding-left: 30px;
+    color: rgba(0, 0, 0, 0.699);
+    text-decoration: none;
+}
