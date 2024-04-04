@@ -1,12 +1,13 @@
-const button = document.querySelectorAll('.product-btn');
-button.addEve
-const pid = button[0].dataset.product_id;
-fetch('/checkout/orderNow',{
-  method:"POST",
-  headers: {
-            'Content-Type': 'application/json'
-        },
-body: JSON.stringify({
-productId: pid // Send the product ID as an object
-}),
-}).then(reponse => reponse.JSON()).then(alert('buy'));
+function triggerOrder(e) {
+  // console.log('Hi')
+  const pid = e.dataset.product_id;
+  fetch('/checkout/order', {
+    method: "POST",
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      productId: pid // Send the product ID as an object
+    }),
+  }).then(response => response.json());
+}

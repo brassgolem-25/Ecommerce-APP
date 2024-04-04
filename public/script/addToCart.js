@@ -12,7 +12,7 @@
   body: JSON.stringify({
     productId: pid // Send the product ID as an object
   }),
-    }).then(reponse => reponse.JSON()).then(alert('Product Added!'));
+    }).then(response => response.JSON()).then(alert('Product Added!'));
   })
   })
 
@@ -30,6 +30,6 @@
   body: JSON.stringify({
     productId: pid // Send the product ID as an object
   }),
-    }).then(reponse => reponse.JSON()).then(alert('Product Added to WishList!'));
+    }).then(response => response.JSON()).then(alert('Product Added to WishList!'));
   })
   })

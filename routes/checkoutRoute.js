@@ -4,14 +4,15 @@ import Razorpay from 'razorpay';
 import authService from '../services/authService.js';
 import { ObjectId } from 'mongodb';
 import Order from '../models/order.js'
+import Product from '../models/product.js'
 
 const keyID = process.env.RAZORPAY_KEYID;
 const keySecret = process.env.RAZORPAY_KEYSECRET;
 const router = express.Router();
 router.use(express.json());
 
-// user Id
 
+//find all the cart item
 async function findCartItem(req, res) {
     try {
         // do better naming convention
@@ -49,8 +50,10 @@ async function findCartItem(req, res) {
     }
 }
 
+// create new instance of razorpay
 var instance = new Razorpay({ key_id: keyID, key_secret: keySecret })
 
+//checkout route
 router.get("/", async (req, res) => {
     try {
         const productDetails = await findCartItem(req, res);
@@ -68,6 +71,7 @@ router.get("/", async (req, res) => {
         const response = await instance.orders.create(options);
         response.key = keyID;
         // console.log(response);
+        response.isCart=true;
         res.render('checkout', { response: JSON.stringify(response) })
         // console.log(productDetails.product);
         console.log(req.body);
@@ -76,30 +80,45 @@ router.get("/", async (req, res) => {
     }
 })
 
-router.post("/orderNow", async (req, res) => {
+//route for buy now
+router.get("/product/:productId", async (req, res) => {
     try {
-        const user = authService.getUser(req.cookies.uid);
+        const pid = req.params.productId;
+        const product = await Product.find({_id:pid});
+        console.log(product);
+        const totalAmount = parseFloat(product[0].price)*100 ;
+        const response = await instance.orders.create({
+            amount:totalAmount,
+            currency: 'INR',
+        })
 
-        console.log(req.body.productId);
+        response.key = keyID;
+        response.isCart=false;
+        console.log(response)
+        res.render('checkout', { response: JSON.stringify(response) })
     } catch (error) {
         console.log(error);
     }
 })
 
-router.post("/response", async (req, res) => {
+router.post("/order", async (req, res) => {
     try {
-        console.log(req.body.data);
+        // console.log(req.body.data); --> razorpay data 
         const paymentData = req.body.data;
         const user = authService.getUser(req.cookies.uid);
 
-        // const orderData = await instance.orders.fetch(paymentData.razorpay_order_id)
-        // console.log(orderData);
         const paymentRes = await instance.payments.fetch(paymentData.razorpay_payment_id)
+        // console.log(paymentData);
         if (paymentRes) {
+            
             const productDetails = await findCartItem(req, res);
+
             const products = productDetails.product;
             products.forEach(async (data) => {
-                await Cart.findOneAndDelete({ _id: new ObjectId(data.cartId) })
+                if(paymentData.isCart){ // this is to only delte card data if the user is buying through cart
+                 await Cart.findOneAndDelete({ _id: new ObjectId(data.cartId) })
+                    console.log("from cart item deleted")
+                }
                 await Order.create({
                     userId: user[0]._id,
                     productId: data._id,
@@ -112,8 +131,8 @@ router.post("/response", async (req, res) => {
                 })
             })
 
-            res.send('Order Successfull')
         }
+        
 
     } catch (err) {
         console.log(err);

@@ -34,15 +34,15 @@
             "image": "https://example.com/your_logo",
             "order_id": orderGenerated.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
             "handler": function (data) {
-
+                data.isCart = orderGenerated.isCart;
                 // send data for checking if the payment was done
-                fetch('/checkout/response', {
+                fetch('/checkout/order', {
                     method: "POST",
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        data
+                        data: data
                     })
                 }).then(response => response.JSON()).then(alert(data.razorpay_payment_id))
             },
@@ -63,7 +63,6 @@
             rzp1.open();
             e.preventDefault();
         }
-
     </script>
 </body>
 
