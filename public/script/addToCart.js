@@ -3,7 +3,7 @@
   // console.log(buttonList);
   buttonList.forEach(button => {
     button.addEventListener('click',(e)=>{
-    const pid = button.dataset.products_id;
+    const pid = button.dataset.product_id;
     fetch('/cart/addTocart',{
       method:"POST",
       headers: {

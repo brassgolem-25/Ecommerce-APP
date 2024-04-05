@@ -16,13 +16,14 @@
     <div>
         <%=product.name%>
             <%=product.price%>
-                <button type="button" class="btn btn-outline-success">Add to cart?</button>
+                <button type="button" class="btn btn-outline-success cart-btn" data-product_id="<%=product._id%>">Add to cart?</button>
 
                 <a href="/checkout/product/<%=product._id%>"><button type="button" id='cart'
-                    class="btn btn-secondary product-btn" data-product_id="<%=product._id%>">Buy Now
+                    class="btn btn-secondary product-btn " data-product_id="<%=product._id%>">Buy Now
                 </button></a>
     </div>
 </body>
 <!-- <script src="../script/buyNow.js"></script> -->
+<script src="../script/addToCart.js"></script>
 
 </html>

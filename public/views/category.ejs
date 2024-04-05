@@ -17,8 +17,8 @@
         <% products.forEach(data => { %>
             <li class="list-group-item" >
               <a href="/product/<%=data._id %>"><%= data.name %> - $<%= data.price %> </a>
-              <button type="button" id='cart'class="btn btn-secondary cart-btn" data-products_id ="<%=data._id%>">Add To Cart ?</button>
-              <a href="/checkout/product/<%=data._id %>"><button type="button" id='cart'class="btn btn-secondary" data-products_id ="<%=data._id%>">Buy Now </button></a>
+              <button type="button" id='cart'class="btn btn-secondary cart-btn" data-product_id ="<%=data._id%>">Add To Cart ?</button>
+              <!-- <a href="/checkout/product/<%=data._id %>"><button type="button" id='cart'class="btn btn-secondary" data-products_id ="<%=data._id%>">Buy Now </button></a> -->
             </li>
         <% }); %>
     </ul>
