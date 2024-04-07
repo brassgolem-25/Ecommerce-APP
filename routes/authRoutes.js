@@ -112,7 +112,7 @@ router.get("/logout", handleUserLogout)
 router.post('/forgotPassword', async (req, res) => {
     try {
         const userEmail = req.body.email;
-        const secret = 'Tushar';
+        const secret = process.env.JWTSecret;
         const user = await User.findOne({ email: userEmail });
         if (!user) {
             res.send("User doesn't exist");
@@ -120,21 +120,24 @@ router.post('/forgotPassword', async (req, res) => {
         else {
             const token = jwt.sign({ data: userEmail }, secret, { expiresIn: 60 * 60 });
             const reqUrl = "http://localhost:3000/auth/reset-password?token=" + token;
+            const ecomEmail = process.env.exclusiveEmail;
+            const password = process.env.exclusivePass;
             const transporter = nodemailer.createTransport({
                 service: 'gmail',
                 auth: {
-                    user: 'exclusiveproducts2003@gmail.com',
-                    pass: 'apebymyltzzjxkom'
+                    user: ecomEmail,
+                    pass: password
                 }
             });
 
             const mailOptions = {
-                from: 'exclusiveproducts2003@gmail.com',
+                from: ecomEmail,
                 to: userEmail,
                 subject: 'Password Reset',
                 html: `
                 <p>Click the following link to reset your password :</p>
-                <a href="${reqUrl}">Reset Password</a>`
+                <a href="${reqUrl}">Reset Password</a>
+                <br><p>This is for Test Purpose Only.</p>`
             };
             transporter.sendMail(mailOptions, (error, info) => {
                 if (error) {
