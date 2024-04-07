@@ -65,8 +65,6 @@ app.use('/wishList',authentication,wishListRoute);
 //route for orders
 app.use('/orders',authentication,orderRoute);
 
-
-
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
