@@ -1,0 +1,79 @@
+.grid-container {
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-gap: 50px;
+    padding: 10px 10px 10px 350px;
+  }
+
+  .grid-container > div {
+     padding: 20px 0;
+  }
+
+  .custom-input {
+    border: none; /* Remove default border */
+    border-bottom: 1px solid black; 
+    outline: none;
+    padding-top: 20px;
+    width: 300px;
+  }
+  .auth-img{
+    width: 400px;
+    height: 500px;
+  }
+
+  .signup-form{
+    padding-top: 60px !important;
+    text-align: start !important;
+    font-size: 15px !important;
+  }
+
+  .btn-custom{
+    margin-top: 20px;
+    width: 300px;
+    border: none;
+    padding: 5px;
+    /* text-decoration-color: white; */
+    color: white;
+    background-color: rgb(244, 77, 11);
+    border-radius: 4px;
+  }
+
+  .login-custom{
+    margin-top: 40px;
+    font-size: 15px;
+    text-align: center;
+  }
+  .signup-a{
+    text-decoration: none;
+    color : black;
+  }
+  .signup-a:hover{
+    text-decoration: underline;
+  }
+
+  .btn-custom-login{
+    margin-top: 20px;
+    width: 130px;
+    border: none;
+    padding: 5px;
+    border-radius: 4px;
+    /* text-decoration-color: white; */
+    color: white;
+    background-color: rgb(244, 77, 11);
+  }
+
+  .forgot-a{
+    text-decoration: none;
+    color : rgb(244, 77, 11);
+    margin-left: 50px;
+  }
+
+  .forgot-a:hover{
+    text-decoration: underline;
+  }
+
+  .login-form{
+    padding-top: 60px !important;
+    text-align: start !important;
+    font-size: 15px !important;
+  }

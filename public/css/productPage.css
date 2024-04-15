@@ -1,0 +1,77 @@
+.product-img {
+    height: 80%;
+    width: 70%;
+}
+
+.product-sm-img {
+    height: 20%;
+    width: 30%;
+}
+
+.product {
+    padding: 50px;
+    text-align: center;
+}
+
+.product-container {
+    display: flex;
+}
+
+.product-container> div {
+    /* background-color: #f1f1f1; */
+    width: 500px;
+    margin: 20px;
+    text-align: center;
+    font-size: 15px;
+    padding-top: 50px;
+}
+
+
+.product-details{
+    text-align: start !important;
+}
+
+.product-size{
+    display: flex;
+}
+
+.size-cls{
+    margin-top: 8px;
+    margin-right: 15px;
+
+}
+
+.size-button {
+    padding: 5px 10px;
+    border-radius: 10px;
+    border: 2px solid #ccc;
+    background-color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+ 
+  .size-button:active {
+    background-color:  rgb(244, 77, 11);/* Change color when clicked */
+  }
+  /* Delivery Component Box */
+  .delivery-comp{
+    /* margin-left: px; */
+    border: 1px solid black;
+    margin-right: 50px;
+    border-radius: 5px;
+    font-size: 15px;
+    font-weight: 500;
+    margin-top:10px;
+    text-align: center;
+  }
+  .btn-style{
+    margin-top: 20px;
+    width: 150px;
+    border: none;
+    padding: 5px;
+    /* text-decoration-color: white; */
+    color: white;
+    background-color: rgb(244, 77, 11);
+    border-radius: 4px;
+  }

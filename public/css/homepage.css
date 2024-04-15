@@ -1,0 +1,16 @@
+.grid-container-home {
+    display: grid;
+    grid-template-columns: auto auto auto auto auto auto ;
+    grid-gap: 50px;
+    padding: 10px 10px 10px 50px;
+  }
+
+  .grid-container-home > div {
+     padding: 20px 0;
+  }
+
+  .category-img{
+    height: 60px;
+    width: 60px;
+    text-align: center;
+  }

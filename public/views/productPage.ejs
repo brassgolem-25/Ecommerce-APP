@@ -1,29 +1,47 @@
-<!DOCTYPE html>
-<html lang="en">
+<%- include('header'); -%>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous"></script>
-</head>
-
-<body>
-    <div>
-        <%=product.name%>
-            <%=product.price%>
-                <button type="button" class="btn btn-outline-success cart-btn" data-product_id="<%=product._id%>">Add to cart?</button>
-
-                <a href="/checkout/product/<%=product._id%>"><button type="button" id='cart'
-                    class="btn btn-secondary product-btn " data-product_id="<%=product._id%>">Buy Now
-                </button></a>
+    <div class="product-container">
+        <div class="product-sm-img">
+            product small images
+        </div>
+        <div>
+            <img class="product-img" src="<%=product.imageUrl%>">
+        </div>
+        <div class="product-details">
+            <h5><%=product.name%></h5>
+            <p><%=product.rating.rate%> (<%=product.rating.count%> Reviews) | In Stock</p>
+            <h6>$ <%=product.price%></h6>
+            <%const desc =product.description%>
+            <p><%=desc%></p>
+            <h6>Colors: </h6>
+            <div class="product-size">
+              <h6 class="size-cls">Size: </h6>
+             <div class="cust-btn-p">
+                <button class="size-button"><bold>XS</bold></button>
+                <button class="size-button">S</button>
+                <button class="size-button">M</button>
+                <button class="size-button">L</button>
+                <button class="size-button">XL</button>
+             </div>
+            </div>  
+            <div>
+                <button type="button" class="btn-style" data-product_id="<%=product._id%>">Add to cart?</button>
+                <a href="/checkout/product/<%=product._id%>"><button type="button" id='cart' class="btn-style"
+                    data-product_id="<%=product._id%>">Buy Now </button></a>
+                <a href="/"><button class="size-button"><i class="fa-regular fa-heart fa-lg"></i></button></a>
+            </div>
+            <div class="delivery-comp">
+                <p style="margin-top: 10px;"><i class="fa-solid fa-truck-fast fa-xl"></i>Free Delivery</p>
+                <a>Enter your postal code for Delivery Availability</a>
+                <br>
+                <br>
+                <p><i class="fa-solid fa-arrows-rotate fa-xl"></i> Return Delivery </p>
+                <a>Free 30 Days Delivery Returns. Details</a>
+            </div>
+        </div>
     </div>
-</body>
-<!-- <script src="../script/buyNow.js"></script> -->
-<script src="../script/addToCart.js"></script>
 
-</html>
+
+
+    </body>
+    <%- include('footer'); -%>
