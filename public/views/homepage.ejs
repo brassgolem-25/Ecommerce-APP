@@ -41,9 +41,65 @@
     </div>
   </div>
   <!-- all the products in list  -->
+  <div>
+    <h6>Today's</h6>
+    <div class="flash-sale">
+      <h6>Flash Sales</h6>
+    </div>
+    <div>
+      <!-- render 3-4 product -->
+    </div>
+  </div>
 
+  <!-- best selling product container -->
+  <div>
+    <h6>This Month</h6>
+    <div>
+      <h6>Best Selling Products</h6>
+    </div>
+    <div>
+      <!-- render any 4 products -->
+    </div>
+  </div>
+
+  <!-- main product container -->
+  <div class="main-product">
+    <h6>Our Products</h6>
+    <div>
+      <h5>Explore Our Products</h5>
+    </div>
+    <div class="main-product-grid">
+      <% products.forEach(data=> { %>
+        <%const cateG=data.category.replace(/ /g,'-'); const pName=data.name.replace(/ /g,'-');console.log(pName)
+          ;console.log(data.imageUrl)%>
+          <div class="main-product">
+            <div class="img-container">
+              <i class="fa-regular fa-heart fa-border"></i>
+              <img src="../images/61mtL65D4cL._AC_SX679__1_-removebg-preview.png">
+            </div>
+            <p>
+              <%= data.name %>
+            </p>
+            <div>
+              $<%= data.price %>
+            </div>
+          </div>
+          <% }); %>
+    </div>
+  </div>
+
+
+  <%- include('footer'); -%>
+    <!-- 
+    <% products.forEach(data=> { %>
+      <%const cateG = data.category.replace(/ /g,'-'); const pName = data.name.replace(/ /g,'-');console.log(pName)%>
+      <% }); %>
+   -->
+
+    <!-- 
   <ul class="list-group">
     <% products.forEach(data=> { %>
+      <%const cateG = data.category.replace(/ /g,'-'); const pName = data.name.replace(/ /g,'-');console.log(pName)%>
       <li class="list-group-item">
         <a href="/product/<%=data._id %>">
           <%= data.name %> - $<%= data.price %>
@@ -52,14 +108,4 @@
         <button type="button" class="btn btn-secondary wishList-btn" data-product_id="<%=data._id%>">Love Icon</button>
       </li>
       <% }); %>
-  </ul>
-  </body>
-
-  <script src="../script/addToCart.js"></script>
-  <script src="../script/search.js"></script>
-  <script>
-    const isUserLogIn = `<%= isUserLoggedIn %>`
-  </script>
-  <script src="../script/showDropdown.js"></script>
-
-  </html>
+  </ul> -->

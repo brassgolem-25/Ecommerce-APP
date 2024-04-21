@@ -27,6 +27,7 @@ router.post('/addToCart', async (req, res) => {
     try {
         const user = authService.getUser(req.cookies.uid);
         const pId = req.body.productId;
+        const pSize = req.body.productSize;
         const productFound = await Cart.find({
             productId: pId,
             userId: new ObjectId(user[0]._id)
@@ -44,7 +45,8 @@ router.post('/addToCart', async (req, res) => {
             await Cart.create({
                 userId: user[0]._id,
                 quantity: 1,
-                productId: pId
+                productId: pId,
+                productSize: pSize
             })
             console.log("Not found");
         }
@@ -80,12 +82,25 @@ async function findCartItem(req, res) {
                     productData.cartId = data._id;
                     productData.quantity = data.quantity;
                     products.push(productData);
-                    // console.log(products);
-                    subTotal += data.quantity * productData.price;
+                    const pSize =data.productSize;
+                    const productPrice =  parseFloat(productData.price);
+                    const priceMap = {
+                        'XS': productPrice-2,
+                        'S': productPrice-1,
+                        'M': productPrice,
+                        'L': productPrice+1,
+                        'XL': productPrice+2
+                      };
+                    subTotal += data.quantity * priceMap[pSize];
                 }
             })
         // console.log(products,subTotal);
-        return res.render('cart', { products: products, subTotal: subTotal });
+        // console.log(user);
+        let isUserLoggedIn=true;
+        if(user===undefined){
+            isUserLoggedIn=false;
+        }
+        return res.render('cart', { products: products, subTotal: subTotal,isUserLoggedIn:isUserLoggedIn });
     } catch (error) {
         console.log(error);
     }

@@ -33,7 +33,18 @@ async function handleUserSignup(req, res) {
 
 router.post("/signup", handleUserSignup);
 router.get("/signup", (req, res) => {
-    res.render("signup")
+    try {
+        const user = authFunc.getUser(req.cookies.uid);
+
+        let isUserLoggedIn = true;
+        if (user === undefined) {
+            isUserLoggedIn = false;
+        }
+        res.render("signup",{isUserLoggedIn: isUserLoggedIn})
+    }catch(error){
+        console.log(error);
+    }
+    
 })
 
 //check if the user is logged in , if yes then don't show signup button
@@ -83,7 +94,17 @@ async function handleUserLogin(req, res) {
 //login
 router.post("/login", handleUserLogin);
 router.get("/login", (req, res) => {
-    res.render("login")
+    try {
+        const user = authFunc.getUser(req.cookies.uid);
+
+        let isUserLoggedIn = true;
+        if (user === undefined) {
+            isUserLoggedIn = false;
+        }
+        res.render("login", { isUserLoggedIn: isUserLoggedIn })
+    } catch (error) {
+        console.log(error);
+    }
 })
 
 //logout

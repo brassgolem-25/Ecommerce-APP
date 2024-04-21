@@ -1,11 +1,27 @@
 .product-img {
     height: 80%;
-    width: 70%;
+    width: 80%;
+}
+
+.product-smallImg-container{
+display: flex;
+flex-direction: column;
+align-items: center;
 }
 
 .product-sm-img {
-    height: 20%;
-    width: 30%;
+    height: 18%;
+    width: 20%;
+    rotate: 360deg;
+    margin: 10px;
+    cursor: pointer;
+    border: 1px solid black;
+    padding: 4px;
+}
+
+.product-sm-img:hover {
+  padding: 2px;
+
 }
 
 .product {
@@ -18,10 +34,8 @@
 }
 
 .product-container> div {
-    /* background-color: #f1f1f1; */
     width: 500px;
     margin: 20px;
-    text-align: center;
     font-size: 15px;
     padding-top: 50px;
 }
@@ -38,23 +52,24 @@
 .size-cls{
     margin-top: 8px;
     margin-right: 15px;
-
 }
 
 .size-button {
     padding: 5px 10px;
-    border-radius: 10px;
+    border-radius: 8px;
     border: 2px solid #ccc;
     background-color: #fff;
     font-size: 16px;
+    font-weight: 550;
     cursor: pointer;
   }
 
  
-  .size-button:active {
+  .size-button:hover {
     background-color:  rgb(244, 77, 11);/* Change color when clicked */
   }
   /* Delivery Component Box */
+
   .delivery-comp{
     /* margin-left: px; */
     border: 1px solid black;
@@ -70,8 +85,54 @@
     width: 150px;
     border: none;
     padding: 5px;
-    /* text-decoration-color: white; */
     color: white;
     background-color: rgb(244, 77, 11);
     border-radius: 4px;
+    margin-right: 8px;
+    height: 38px;
   }
+
+  .wishList-Button{
+    padding: 5px 10px;
+    border-radius: 8px;
+    border: 2px solid #ccc;
+    background-color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  .product-rating{
+    width: 15px;
+    margin-bottom: 4px;
+    margin-right: 5px;
+}
+
+.color-icon {
+  cursor: pointer;
+  transition: border 0.3s; /* Add transition for smoother effect */
+  margin-left: 5px;
+}
+
+.active-icon {
+  padding: 3px;
+  border: 1px solid black;
+  border-radius: 50%;
+}
+
+
+.product-loc{
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.removeHyperLink{
+  text-decoration: none;
+  color: black;
+}
+
+.active-size{
+  background-color:  rgb(244, 77, 11);
+}
+ 
+/* Related Item CSS */
+

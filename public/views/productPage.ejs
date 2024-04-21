@@ -1,47 +1,124 @@
 <%- include('header'); -%>
 
     <div class="product-container">
-        <div class="product-sm-img">
-            product small images
+        <div class="product-smallImg-container">
+            <img class="product-sm-img" src="<%=product.imageUrl%>" onmouseover="showThisImage(this)">
+            <img class="product-sm-img" src="<%=product.imageUrl%>" onmouseover="showThisImage(this)">
+            <img class="product-sm-img" src="<%=product.imageUrl%>" onmouseover="showThisImage(this)">
+            <img class="product-sm-img" src="<%=product.imageUrl%>" onmouseover="showThisImage(this)">
+
         </div>
-        <div>
-            <img class="product-img" src="<%=product.imageUrl%>">
+        <div class="main-Img">
+            <img class="product-img" id="main-Img" src="<%=product.imageUrl%>">
         </div>
         <div class="product-details">
-            <h5><%=product.name%></h5>
-            <p><%=product.rating.rate%> (<%=product.rating.count%> Reviews) | In Stock</p>
-            <h6>$ <%=product.price%></h6>
-            <%const desc =product.description%>
-            <p><%=desc%></p>
-            <h6>Colors: </h6>
-            <div class="product-size">
-              <h6 class="size-cls">Size: </h6>
-             <div class="cust-btn-p">
-                <button class="size-button"><bold>XS</bold></button>
-                <button class="size-button">S</button>
-                <button class="size-button">M</button>
-                <button class="size-button">L</button>
-                <button class="size-button">XL</button>
-             </div>
-            </div>  
-            <div>
-                <button type="button" class="btn-style" data-product_id="<%=product._id%>">Add to cart?</button>
-                <a href="/checkout/product/<%=product._id%>"><button type="button" id='cart' class="btn-style"
-                    data-product_id="<%=product._id%>">Buy Now </button></a>
-                <a href="/"><button class="size-button"><i class="fa-regular fa-heart fa-lg"></i></button></a>
-            </div>
-            <div class="delivery-comp">
-                <p style="margin-top: 10px;"><i class="fa-solid fa-truck-fast fa-xl"></i>Free Delivery</p>
-                <a>Enter your postal code for Delivery Availability</a>
-                <br>
-                <br>
-                <p><i class="fa-solid fa-arrows-rotate fa-xl"></i> Return Delivery </p>
-                <a>Free 30 Days Delivery Returns. Details</a>
-            </div>
+            <p class="product-loc"><a href="/" class="removeHyperLink">Home</a> / <a
+                    href="/category/<%=product.category %>" class="removeHyperLink">
+                    <%=product.category%>
+                </a> / <%=product.name%>
+            </p>
+            <h5>
+                <%=product.name%>
+            </h5>
+            <p class="product-review"> (<%=product.rating.count%> Reviews) |<a style="color: green;"> In Stock</a></p>
+            <h6 id="product-price">$ <%=product.price%></h6>
+            <%const desc=product.description%>
+                <p>
+                    <%=desc%>
+                </p>
+                <div class="product-color">
+                    <h6>Colors: <i class="fa-solid fa-circle color-icon active-icon" style="color: #74C0FC;"
+                            onclick="renderColor(this)"></i> <i class="fa-solid fa-circle color-icon "
+                            style="color: #B197FC;" onclick="renderColor(this)"></i></h6>
+                </div>
+                <div class="product-size">
+                    <h6 class="size-cls">Size: </h6>
+                    <div class="cust-btn-p">
+                        <button class="size-button" data-product-size="XS"onClick="sizeChosen(this)">XS</button>
+                        <button class="size-button" data-product-size="S" onClick="sizeChosen(this)">S</button>
+                        <button class="size-button active-size" data-product-size="M" onClick="sizeChosen(this)">M</button>
+                        <button class="size-button" data-product-size="L" onClick="sizeChosen(this)">L</button>
+                        <button class="size-button" data-product-size="XL" onClick="sizeChosen(this)">XL</button>
+                    </div>
+                </div>
+                <div>
+                    <button type="button" class="btn-style cart-btn" data-product_id="<%=product._id%>">Add to
+                        cart</button>
+                    <a href="/checkout/product/<%=product._id%>"><button type="button" id='cart' class="btn-style"
+                            data-product_id="<%=product._id%>">Buy Now </button></a>
+                    <button class="wishList-Button wishList-btn" onClick="changeColor()"
+                        data-products_id="<%=product._id%>"><i class="fa-regular fa-heart fa-lg wish-Icon"></i></button>
+                </div>
+                <div class="delivery-comp">
+                    <p style="margin-top: 10px;"><i class="fa-solid fa-truck-fast fa-xl"></i>Free Delivery</p>
+                    <a>Enter your postal code for Delivery Availability</a>
+                    <br>
+                    <br>
+                    <p><i class="fa-solid fa-arrows-rotate fa-xl"></i> Return Delivery </p>
+                    <a>Free 30 Days Delivery Returns. Details</a>
+                </div>
         </div>
     </div>
+    <!-- <div class="related-item-container">
+        <h6>Related Item</h6>
+        <div class="related-item">
+            <div class="img-container">
+                <img class="related-item-img" src="<%=product.imageUrl%>">
+                <i class="fa-regular fa-heart"></i>
 
+            </div>
 
+        </div>
+    </div> -->
+    <script>let productRating = `<%=product.rating.rate%>`; let productReview = `<%=product.rating.count%>`;
+        const productName = `<%=product.name%>`; const productCategory = `<%=product.category%>`;
+    </script>
+    <script src="../script/renderReviewIcon.js"></script>
+    <script>
+        function showThisImage(e) {
+            const smallImageSrc = e.src;
+            const mainContainerImage = document.getElementById("main-Img");
+            mainContainerImage.src = smallImageSrc;
+            console.log(mainContainerImage.src)
 
-    </body>
+        }
+
+        function renderColor(element) {
+            const colorIcon = document.querySelectorAll(".color-icon")
+            colorIcon.forEach(icon => {
+                if (icon !== element) {
+                    icon.classList.remove('active-icon');
+                }
+            });
+            element.classList.toggle('active-icon');
+        }
+        function sizeChosen(element) {
+            // console.log(element);
+            const colorIcon = document.querySelectorAll(".size-button")
+            colorIcon.forEach(icon => {
+                if (icon !== element) {
+                    icon.classList.remove('active-size');
+                }
+            });
+            element.classList.add('active-size');
+            const priceElement = document.getElementById('product-price');
+
+            console.log(priceElement);
+            // Get the current price value
+            const currentPrice = parseFloat(`<%=product.price%>`);
+
+            const sizeSelected = element.textContent;
+            const priceMap = {
+                        'XS': currentPrice-2,
+                        'S': currentPrice-1,
+                        'M': currentPrice,
+                        'L': (currentPrice + 1).toFixed(2),
+                        'XL': (currentPrice+2).toFixed(2)
+                };
+            const pSize = element.textContent;
+            console.log(pSize)
+            // Update the price element with the new price
+            priceElement.textContent = `$ ${priceMap[pSize]}`;
+        }
+    </script>
     <%- include('footer'); -%>

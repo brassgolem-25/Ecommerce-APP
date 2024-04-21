@@ -6,11 +6,6 @@ const router = express.Router();
 router.use(express.json());
 
 
-async function addToCart(req,res){
-    // check if the user is logged in
-    //product quantity ,
-}
-
 //home route
 router.get("/",async (req,res)=>{
     try {
@@ -40,10 +35,16 @@ router.get("/category/:categoryID",async(req,res) => {
     }else{
     categoryStr=categoryName.toLowerCase();
     }
+    const user = authService.getUser(req.cookies.uid);
+    // console.log(user);
+    let isUserLoggedIn=true;
+    if(user===undefined){
+        isUserLoggedIn=false;
+    }
     const searchInput = new RegExp(categoryStr);
     const products = await Product.find({"category":searchInput})
     if(products.length>0){
-    res.render('category',{products:products});
+    res.render('category',{products:products,isUserLoggedIn:isUserLoggedIn});
     }else {
         res.render('error404')
     }
