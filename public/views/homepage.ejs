@@ -70,42 +70,37 @@
     </div>
     <div class="main-product-grid">
       <% products.forEach(data=> { %>
-        <%const cateG=data.category.replace(/ /g,'-'); const pName=data.name.replace(/ /g,'-');console.log(pName)
-          ;console.log(data.imageUrl)%>
+        <%const cateG=data.category.replace(/ /g,'-'); const pName=data.name.replace(/ /g,'-');const imageUrl = data.imageUrl;const pRating=data.rating.rate; const pReview=data.rating.count;
+        %>
           <div class="main-product">
             <div class="img-container">
-              <i class="fa-regular fa-heart fa-border"></i>
-              <img src="../images/61mtL65D4cL._AC_SX679__1_-removebg-preview.png">
+              <span class="fa-stack wish-Button">
+                            <!-- below button function is in footer -->
+                <button class="wishList-btn" data-product_id="<%=data._id%>">
+                  <%if(whistListItem!==undefined && whistListItem.includes(data._id)){ %>
+                    <i class="fa-solid fa-heart wishList-Button" style="color:#dd132e"></i></button>
+                  <%}else {%>
+                    <i class="fa-regular fa-heart wishList-Button"></i></button>
+                  <%}%>
+              </span>
+              <a href="/product/<%=data._id %>"><img src="<%=imageUrl%>"></a>
             </div>
-            <p>
-              <%= data.name %>
-            </p>
-            <div>
-              $<%= data.price %>
+            <div class="product-description">
+              <div class="product-name">
+                <%= data.name %>
+              </div> 
+              <div class="product-review">
+                $<%= data.price %>
+                <div class="product-Rating">
+               <%=data.rating.rate %> <i class="fa-solid fa-star" style="color: #FFD43B;"></i>
+              </div>
+                (<%=data.rating.count%>)
+              </div>
             </div>
           </div>
           <% }); %>
     </div>
   </div>
-
-
+  <!-- <script>console.log((`<%= whistListItem %>`).split(','));const wishListedItems =(`<%= whistListItem %>`).split(',');</script> -->
+  <script src="../script/whisListScript.js"></script>
   <%- include('footer'); -%>
-    <!-- 
-    <% products.forEach(data=> { %>
-      <%const cateG = data.category.replace(/ /g,'-'); const pName = data.name.replace(/ /g,'-');console.log(pName)%>
-      <% }); %>
-   -->
-
-    <!-- 
-  <ul class="list-group">
-    <% products.forEach(data=> { %>
-      <%const cateG = data.category.replace(/ /g,'-'); const pName = data.name.replace(/ /g,'-');console.log(pName)%>
-      <li class="list-group-item">
-        <a href="/product/<%=data._id %>">
-          <%= data.name %> - $<%= data.price %>
-        </a>
-        <button type="button" class="btn btn-secondary cart-btn" data-product_id="<%=data._id%>">Add To Cart ?</button>
-        <button type="button" class="btn btn-secondary wishList-btn" data-product_id="<%=data._id%>">Love Icon</button>
-      </li>
-      <% }); %>
-  </ul> -->

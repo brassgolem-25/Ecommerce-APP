@@ -1,4 +1,4 @@
-console.log(productRating,productReview);
+console.log(productRating);
 
 
 let review = productRating;

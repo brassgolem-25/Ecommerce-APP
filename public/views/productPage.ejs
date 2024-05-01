@@ -46,8 +46,9 @@
                         cart</button>
                     <a href="/checkout/product/<%=product._id%>"><button type="button" id='cart' class="btn-style"
                             data-product_id="<%=product._id%>">Buy Now </button></a>
-                    <button class="wishList-Button wishList-btn" onClick="changeColor()"
-                        data-products_id="<%=product._id%>"><i class="fa-regular fa-heart fa-lg wish-Icon"></i></button>
+                            <!-- below button function is in footer -->
+                    <button class="wishList-Button" onClick="addToWhisList(this)"
+                        data-products_id=""><i class="fa-regular fa-heart fa-lg"></i></button>
                 </div>
                 <div class="delivery-comp">
                     <p style="margin-top: 10px;"><i class="fa-solid fa-truck-fast fa-xl"></i>Free Delivery</p>
@@ -121,4 +122,5 @@
             priceElement.textContent = `$ ${priceMap[pSize]}`;
         }
     </script>
+    <script src="../script/addToCart.js"></script>
     <%- include('footer'); -%>

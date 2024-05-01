@@ -21,14 +21,14 @@
   grid-template-columns: auto auto auto auto;
   grid-gap: 10px;
   padding: 5px;
-  text-align: center;
+  margin-left: 40px;
 }
 
 .main-product img {
   height: 200px;
   width: 200px;
-  background-color: #ccc  ;
-  padding: 35px;
+  background-color: white;
+  padding: 30px;
   display: block;
 }
 
@@ -37,9 +37,41 @@
   position: relative;
 }
 
-.img-container .fa-heart {
+.img-container .fa-stack {
   position: absolute;
-  top: 10px;
+  top: 5px;
   left: 170px;
-  text-shadow: 0 0 2px wheat ;
+}
+
+.product-description{
+  font-size: small;
+  font-weight: 600;
+  display: grid;
+  grid-template-columns: auto;
+  text-align: start;
+  grid-gap:2px;
+
+}
+
+.product-price{
+  color: orange;
+}
+
+.product-Rating {
+  border: 1px solid #ccc; /* Example border style */
+  padding: 3px; /* Example padding */
+  display: inline-block; /* Ensures the div only takes up as much width as necessary */
+}
+
+.product-name{
+  max-width: 200px; 
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wish-Button button{
+  padding: 0;
+  border: none;
+  background: none;
 }
