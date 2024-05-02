@@ -8,17 +8,16 @@ const router = express.Router();
 router.use(express.json());
 
 //remove item from whisList and remove button style
-router.post('/deleteFromWish',async (req,res)=>{
+router.post('/remove',async (req,res)=>{
     try{
         const user = authService.getUser(req.cookies.uid);
         const pId = req.body.productId;
-        const productFound = await WhisList.find({
+        const productFound = await WhisList.findOneAndDelete({
             productId: pId,
             userId: new ObjectId(user[0]._id)
         });
-
-        // console.l
-
+        console.log(productFound)
+        res.send("removed");
     }catch(error){
         console.log(error)
     }
@@ -50,6 +49,7 @@ router.post('/add', async (req, res) => {
             console.log("Not found");
             // return "Added to wishLi"
         }
+        res.send("added")
 
         // res.send('Item added to cart');
     } catch (error) {

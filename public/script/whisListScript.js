@@ -4,10 +4,9 @@
   wishListButton.forEach(button => {
     button.addEventListener('click',async (e)=>{
     const pid = button.dataset.product_id;
-    console.log(pid);
+    const heartIcon = e.target;
+    const isWishlisted = heartIcon.classList.contains('fa-solid');
 
-    const isWishlisted = button.classList.contains('wishlisted');
-    console.log("Yes it is whishisted "+isWishlisted);
     try{
         const response = await fetch(`/wishlist/${isWishlisted ? 'remove' : 'add'}`, {
             method: 'POST',
@@ -16,9 +15,18 @@
                 'Content-Type': 'application/json'
             }
         });
-        console.log("response from wishList "+response)
         if (response.ok && !response.url.includes('/auth/login')) {
             // button.classList.toggle('wishlisted');
+            if(!isWishlisted){
+                heartIcon.classList.toggle('fa-solid');
+                heartIcon.style.color = "#ec4109"
+                alert("Product added to wishlist")
+            }else {
+                heartIcon.style.color = ""
+                heartIcon.classList.toggle('fa-solid');
+                alert("Product removed from wishlist")
+            }
+
         } else if (response.url.includes('/auth/login')) {
             // Redirect to login page
             // window.location.href = '/auth/login';
