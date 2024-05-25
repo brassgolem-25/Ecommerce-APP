@@ -1,5 +1,4 @@
     const logincheck=isUserLogIn;
-    console.log(logincheck);
   function showDropDown(){
       if(logincheck==="false"){
           const element = document.querySelectorAll('.logIn');

@@ -54,7 +54,7 @@ app.use('/cart',authentication,cartRoute)
 app.use('/account',authentication,accountRoute)
 
 //router for checkout
-app.use('/checkout',authentication,checkoutRoute)
+// app.use('/checkout',authentication,checkoutRoute)
 
 //router for searching
 app.use('/search',searchRoute);

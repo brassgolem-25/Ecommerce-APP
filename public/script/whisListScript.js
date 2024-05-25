@@ -1,12 +1,10 @@
   // for adding to cart
   const wishListButton = document.querySelectorAll('.wishList-btn')
-  // console.log(buttonList);
   wishListButton.forEach(button => {
     button.addEventListener('click',async (e)=>{
     const pid = button.dataset.product_id;
-    const heartIcon = e.target;
+    const heartIcon = button.querySelector('i');
     const isWishlisted = heartIcon.classList.contains('fa-solid');
-
     try{
         const response = await fetch(`/wishlist/${isWishlisted ? 'remove' : 'add'}`, {
             method: 'POST',
@@ -18,19 +16,23 @@
         if (response.ok && !response.url.includes('/auth/login')) {
             // button.classList.toggle('wishlisted');
             if(!isWishlisted){
-                heartIcon.classList.toggle('fa-solid');
+                heartIcon.classList.add('fa-solid');
+                heartIcon.classList.remove('fa-regular');
                 heartIcon.style.color = "#ec4109"
-                alert("Product added to wishlist")
+                displayToast('toast-notification');
             }else {
                 heartIcon.style.color = ""
-                heartIcon.classList.toggle('fa-solid');
-                alert("Product removed from wishlist")
+                heartIcon.classList.remove('fa-solid');
+                heartIcon.classList.add('fa-regular');
+                console.log(heartIcon);
+                // alert("Product removed from wishlist")
+                displayToast('toast-notification');
             }
 
         } else if (response.url.includes('/auth/login')) {
             // Redirect to login page
             // window.location.href = '/auth/login';
-            alert('Please login')
+            displayToast('toast-notification');
         } else {
             // Handle other errors
             console.error('Failed to update wishlist');
@@ -38,16 +40,6 @@
     }catch(error){
         console.log(error);
     }
-//     fetch('/cart/addTocart',{
-//       method:"POST",
-//       headers: {
-//                 'Content-Type': 'application/json'
-//             },
-//   body: JSON.stringify({
-//     productId: pid ,// Send the product ID as an object,
-//     productSize: pSize
-//   }),
-//     }).then(response => response.JSON()).then(alert('Product Added!'));
   })
   })
 

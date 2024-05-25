@@ -1,75 +1,197 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Information</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-</head>
-
-<body>
-    <div class="container mt-5">
-        <h1>User Information Form</h1>
-        <form action="/Account/Profile" method="post">
-            <div class="form-group">
-                <label for="name">Name</label>
-                <input class="form-control" id="name" name="name" placeholder="<%=user.name%>" disabled>
+<%- include('header'); -%>
+<div class="position-absolute show-notification">
+    <div class="toast hide" id="toast-notification" role="alert" aria-live="assertive" aria-atomic="true"
+        data-bs-delay="1000">
+        <div class="d-flex">
+            <div class="toast-body">
+                No changes in the cart.
             </div>
-            <div class="form-group">
-                <label for="email">Email address</label>
-                <input type="email" class="form-control" id="email" name="email" placeholder="<%=user.email%>" disabled>
-            </div>
-            <div class="form-group">
-                <label for="gender">Gender</label>
-                <%if(!user.gender){%>
-                    <select class="form-control" id="gender" name="gender">
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                        <option value="other">Other</option>
-                    </select>
-                    <%}else{%>
-                        <input type="email" class="form-control" id="email" placeholder="<%=user.gender%>" disabled>
-                        <%}%>
-            </div>
-            <div class="form-group">
-                <label for="dob">Date of Birth</label>
-                <%if(!user.dateofBirth){%>
-                    <input type="date" class="form-control" id="dob" name="dateofBirth">
-                    <%}else{ %>
-                        <% const date=new Date(user.dateofBirth) ; const corrdateOfBirth=date.toISOString().substring(0,
-                            10);%>
-                            <input type="number" class="form-control" placeholder="<%=corrdateOfBirth%>" disabled>
-                            <%}%>
-            </div>
-            <div class="form-group">
-                <label for="dob">Mobile Number</label>
-                <%if(!user.number){%>
-                    <input type="text" class="form-control" id="dob" name="number">
-                    <%}else{%>
-                        <input type="number" class="form-control" id="email" placeholder="<%=user.number%>" disabled>
-                        <%}%>
-            </div>
-            <div class="form-group">
-                <label for="address">Address</label>
-                <%if(!user.address){%>
-                    <textarea class="form-control" id="address" rows="3" placeholder="Enter your address"
-                        name="address"></textarea>
-                    <%}else{%>
-                        <input type="text" class="form-control" placeholder="<%=user.address%>" disabled>
-                        <%}%>
-            </div>
-            <button type="submit" class="btn btn-primary">Save Changes</button>
-            <a href="/"><button type="button" class="btn btn-danger">Cancel</button></a>
-            <a href="/auth/logout"><button type="button" class="btn btn-danger">Logout</button></a>
-        </form>
-
+            <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
     </div>
-    <!-- Bootstrap JS and dependencies -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
+</div>
+    <div class="profile-page">
+        <!-- Left Sidebar -->
+        <div class="sidebar">
+            <div class="greeting">
+                Hello,
+                <p><strong>
+                        <%=user.name%>
+                    </strong></p>
+            </div>
+            <hr>
+            <h3>Manage My Account</h3>
+            <div class="nav-links">
+                <ul id="nav-links">
+                    <li><a href="/Account/Page" class="selected">My Profile</a></li>
+                    <li><a href="/Account/Page">My Reviews and Rating</a></li>
+                    <li><a href="/Account/Page">My Payment Options</a></li>
+                </ul>
+            </div>
+            <hr>
+            <h3>My Orders</h3>
+            <div class="nav-links">
+                <ul id="nav-links">
+                    <li><a href="/Account/Page">My Returns</a></li>
+                    <li><a href="/Account/Page">My Cancellations</a></li>
+                </ul>
+            </div>
+            <hr>
+            <h3>My Wishlist</h3>
+            <hr>
+            <h3><i class="fa-solid fa-power-off fa-lg"></i> Logout</h3>
+        </div>
 
-</html>
+        <!-- Right Section -->
+        <div class="main-content">
+            <h3>Edit Your Profile</h3>
+            <%const fullName=(user.name); const index=fullName.indexOf(" ");const fName = fullName.substr(0,index);const lName = fullName.substr(index)%>
+            <%const gender = user.gender;let maleCheck=false;let femaleCheck=false;if(gender==="male"){maleCheck=true;}else{femaleCheck=true;}%>
+            <form id="profile-form">
+                <div class="info-item">
+                    <label for="firstName">First Name:</label>
+                    <input type="text" id="firstName" value="<%=fName%>" disabled required />
+                    <label for="lastName">Last Name:</label>
+                    <input type="text" id="lastName" value="<%=lName%>" disabled />
+                </div>
+                <div class="info-item">
+                    <label>Gender:</label>
+                    <div class="radio-group">
+                        <input type="radio" id="male" name="gender" value="Male" <%= maleCheck ? 'checked' : '' %> disabled />
+                        <label for="male">Male</label>
+                        <input type="radio" id="female" name="gender" value="Female" <%= femaleCheck ? 'checked' : '' %>
+                            disabled />
+                        <label for="female">Female</label>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <label for="email">Email ID:</label>
+                    <input type="email" id="email" value="<%=user.email%>" disabled required="true" />
+                </div>
+                <div id="email-error" class="error"></div>
+                <div class="info-item">
+                    <label for="mobile">Mobile Number:</label>
+                    <input type="tel" id="mobile" value="<%=user.number%>" disabled />
+                </div>
+                <div id="mobile-error" class="error"></div>
+                <div class="info-item">
+                    <label for="address">Address:</label>
+                    <input type="text" id="address" value="<%user.address%>" disabled />
+                </div>
+                <div id="address-error" class="error"></div>
+                <div class="account-buttons">
+                    <button id="edit-button" type="button">Edit</button>
+                    <button id="save-button" type="submit">Save Changes</button>
+                    <button id="cancel-button" type="button">Cancel</button>
+                </div>
+            </form>
+                <div class="faq-section">
+                    <h3>FAQs</h3>
+                    <div class="faq">
+                        <strong>What happens when I update my email address (or mobile number)?</strong>
+                        <p>Your login email id (or mobile number) changes, likewise. You'll receive all your account
+                            related
+                            communication on your updated email address (or mobile number).</p>
+                    </div>
+                    <div class="faq">
+                        <strong>When will my Flipkart account be updated with the new email address (or mobile
+                            number)?</strong>
+                        <p>It happens as soon as you confirm the verification code sent to your email (or mobile) and
+                            save
+                            the changes.</p>
+                    </div>
+                    <div class="faq">
+                        <strong>What happens to my existing Flipkart account when I update my email address (or mobile
+                            number)?</strong>
+                        <p>Updating your email address (or mobile number) doesn't invalidate your account. Your account
+                            remains fully functional. You'll continue seeing your Order history, saved information and
+                            personal details.</p>
+                    </div>
+                    <div class="faq">
+                        <strong>Does my Seller account get affected when I update my email address?</strong>
+                        <p>Flipkart has a 'single sign-on' policy. Any changes will reflect in your Seller account also.
+                        </p>
+                    </div>
+                </div>
+        </div>
+    </div>
+
+    <script>
+
+        //input validation form
+        document.getElementById('profile-form').addEventListener('submit', function(event) {
+            const inputFields = document.querySelectorAll(".main-content input")
+            
+            let allFilled = true;
+            const mobileError = document.getElementById('mobile-error');
+
+
+            inputFields.forEach((input)=>{
+                if(input.id==='mobile'){
+                    if(input.value.length<10){
+                        input.value="";
+                    }
+                }
+                if(input.value===""){
+                    allFilled=false;
+                }else {
+                           
+                }
+            })
+            if(!allFilled){
+                event.preventDefault();
+                alert("Please fill all the fields");
+            }
+        });
+        
+        
+        document.getElementById('nav-links').addEventListener('click', (e) => {
+            var target = event.target;
+            if (target.tagName === 'A') {
+                var links = document.querySelectorAll('.selected');
+                links.forEach((ele) => {
+                    ele.classList.remove('selected');
+                })
+                target.classList.add("selected");
+            }
+        })
+
+        document.getElementById('edit-button').addEventListener('click', function () {
+            var inputs = document.querySelectorAll('.main-content input');
+            inputs.forEach(input => {
+                input.disabled = false;
+                input.required = true;
+            });
+            document.getElementById('save-button').style.display = 'inline-block';
+            document.getElementById('cancel-button').style.display = 'inline-block';
+            this.style.display = 'none';
+        });
+
+        const originalValues = {};
+        document.querySelectorAll('.main-content input').forEach(input => {
+            originalValues[input.id] = input.value;
+        });
+
+        document.getElementById('cancel-button').addEventListener('click', function () {
+            var inputs = document.querySelectorAll('.main-content input');
+            inputs.forEach(input => {
+                input.value=originalValues[input.id]
+                input.disabled = true;
+            });
+            document.getElementById('edit-button').style.display = 'inline-block';
+            document.getElementById('save-button').style.display = 'none';
+            this.style.display = 'none';
+        });
+
+        document.getElementById('save-button').addEventListener('click', function () {
+            var inputs = document.querySelectorAll('.main-content input');
+            inputs.forEach(input => {
+                input.disabled = true;
+            });
+            document.getElementById('edit-button').style.display = 'inline-block';
+            document.getElementById('cancel-button').style.display = 'none';
+            this.style.display = 'none';
+            // Here you would typically save the new values to the server
+        });
+    </script>
+    <%- include('footer'); -%>

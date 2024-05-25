@@ -1,8 +1,10 @@
 import express from 'express';
 import Cart from '../models/cart.js';
+import Order from '../models/order.js'
 import authService from '../services/authService.js';
 import { isValidObjectId } from 'mongoose';
 import { ObjectId } from 'mongodb';
+import Razorpay from 'razorpay';
 
 const router = express.Router();
 router.use(express.json());
@@ -21,6 +23,23 @@ router.post("/delete", async (req, res) => {
     }
 })
 
+//update cart from cart Page
+router.post('/updateCart', async (req, res) => {
+    try {
+        const pId = req.body.product_Id;
+        const quantity = req.body.product_Quantity;
+        const user_Id = authService.getUser(req.cookies.uid);
+        console.log("Product Data " + quantity)
+        if (quantity === '0') {
+            console.log(await Cart.findOneAndDelete({ productId: new ObjectId(pId), userId: user_Id }));
+        } else {
+            console.log(await Cart.findOneAndUpdate({ productId: new ObjectId(pId), userId: user_Id }, { $set: { "quantity": quantity } }));
+        }
+
+    } catch (error) {
+        console.log(error);
+    }
+})
 
 // add to cart route
 router.post('/addToCart', async (req, res) => {
@@ -41,6 +60,7 @@ router.post('/addToCart', async (req, res) => {
             // const newQuantity  = await Cart.find({_id:pId});
             // console.log(newQuantity);
             await Cart.findOneAndUpdate({ _id: cartId }, { $set: { "quantity": newQuantity } });
+
         } else {
             await Cart.create({
                 userId: user[0]._id,
@@ -82,25 +102,25 @@ async function findCartItem(req, res) {
                     productData.cartId = data._id;
                     productData.quantity = data.quantity;
                     products.push(productData);
-                    const pSize =data.productSize;
-                    const productPrice =  parseFloat(productData.price);
+                    const pSize = data.productSize;
+                    const productPrice = parseFloat(productData.price);
                     const priceMap = {
-                        'XS': productPrice-2,
-                        'S': productPrice-1,
+                        'XS': productPrice - 2,
+                        'S': productPrice - 1,
                         'M': productPrice,
-                        'L': productPrice+1,
-                        'XL': productPrice+2
-                      };
+                        'L': productPrice + 1,
+                        'XL': productPrice + 2
+                    };
                     subTotal += data.quantity * priceMap[pSize];
                 }
             })
         // console.log(products,subTotal);
         // console.log(user);
-        let isUserLoggedIn=true;
-        if(user===undefined){
-            isUserLoggedIn=false;
+        let isUserLoggedIn = true;
+        if (user === undefined) {
+            isUserLoggedIn = false;
         }
-        return res.render('cart', { products: products, subTotal: subTotal,isUserLoggedIn:isUserLoggedIn });
+        return res.render('cart', { products: products, subTotal: subTotal, isUserLoggedIn: isUserLoggedIn });
     } catch (error) {
         console.log(error);
     }
@@ -108,5 +128,88 @@ async function findCartItem(req, res) {
 //cart route
 router.get("/", findCartItem);
 
+//checkout route
+// create new instance of razorpay
+const keyID = process.env.RAZORPAY_KEYID;
+const keySecret = process.env.RAZORPAY_KEYSECRET;
+
+var instance = new Razorpay({ key_id: keyID, key_secret: keySecret })
+
+router.post("/checkout", async (req, res) => {
+    try {
+        // const productDetails = await findCartItem(req, res);
+        // consol
+        const subTotal = req.body.subTotal;
+        // console.log(subTotal);
+        // res.send('Checkout Page '+subTotal);
+        const amount = (parseFloat(subTotal) * 100);
+        console.log(amount);
+        const user = authService.getUser(req.cookies.uid);
+        // const address = user[0].address;
+        const address = "Home";
+        if (address === '') {
+            console.log("adress not provided,render account page");
+            res.send("Address not provided")
+            // res.redirect('/Account');
+        } else {
+            console.log("adress given,render checkout page");
+
+            var options = {
+                amount: amount,  // amount in the smallest currency unit
+                currency: "INR"
+            };
+
+            const response = await instance.orders.create(options);
+            response.key = keyID;
+            // console.log(response);
+            response.isCart = true;
+            res.send( response );
+            // console.log(productDetails.product);
+            // console.log(re);
+        }
+    } catch (error) {
+        console.log(error);
+    }
+})
+
+router.post("/order", async (req, res) => {
+    try {
+        console.log(req.body.data); 
+        const paymentData = req.body.data;
+        const user = authService.getUser(req.cookies.uid);
+
+        const paymentRes = await instance.payments.fetch(paymentData.razorpay_payment_id)
+        console.log(paymentRes);
+        if (paymentRes) {
+
+            const productDetails = req.body.productsArrId;
+            console.log(productDetails[0])    
+
+            productDetails.forEach(async (product_Id) => {
+                const user_Product_Data = await Cart.find({userId:new ObjectId(user[0]._id),productId: new ObjectId(product_Id)});
+                console.log(user_Product_Data);
+                if (paymentData.isCart) { // this is to only delte card data if the user is buying through cart
+                    await Cart.findOneAndDelete({ userId:new ObjectId(user[0]._id),productId: new ObjectId(product_Id) })
+                    console.log("from cart item deleted")
+                }
+                await Order.create({
+                    userId: user[0]._id,
+                    productId: product_Id,
+                    quantity: user_Product_Data[0].quantity,
+                    paymentType: 'Online',
+                    paymentId: paymentRes.id,
+                    seller: 'Exlcusive',
+                    orderStatus: 'Ordered',
+                    totalAmount: '2',
+                })
+            })
+
+        }
+
+
+    } catch (err) {
+        console.log(err);
+    }
+})
 
 export default router;

@@ -1,0 +1,116 @@
+.profile-page {
+    display: flex;
+    max-width: 1200px;
+    margin: 20px auto;
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.sidebar {
+    width: 25%;
+    padding: 20px;
+    border-right: 1px solid #e0e0e0;
+    box-sizing: border-box;
+}
+
+.sidebar h3 {
+    margin-top: 0;
+    font-size: 1.3rem !important;
+}
+
+.nav-links ul {
+    list-style: none;
+    padding: 0;
+}
+
+.nav-links ul li {
+    margin: 15px 0 0 15px;
+}
+
+.nav-links ul li a {
+    text-decoration: none;
+    color: grey;
+}
+
+.selected {
+    color: rgb(244, 77, 11) !important;
+}
+
+.main-content {
+    width: 75%;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.main-content h3 {
+    font-size: 24px ;
+    margin-bottom: 20px;
+    color: rgb(244, 77, 11);
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.info-item label {
+    width: 150px;
+    margin-right: 10px;
+    font-size: 15px;
+}
+
+.info-item input {
+    flex: 1;
+    font-size: 15px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-right: 10px;
+}
+
+input[type=text]{
+    text-transform: capitalize;
+}
+
+.radio-group {
+    display: flex;
+    align-items: center;
+}
+
+.radio-group input[type="radio"] {
+    margin: 0 10px 0 0;
+}
+
+#edit-button,
+#save-button,
+#cancel-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+    background-color: rgb(244, 77, 11);
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+#cancel-button {
+    background-color: white;
+    color: black;
+}
+
+/* #edit-button:hover, #save-button:hover, #cancel-button:hover {
+    background-color: #0056b3;
+} */
+#save-button,
+#cancel-button {
+    display: none;
+    margin-left: 10px;
+}
+
+.faq-section{
+    margin-top: 15px;
+}

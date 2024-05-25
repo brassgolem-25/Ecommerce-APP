@@ -4,6 +4,20 @@
     const isUserLogIn = `<%= isUserLoggedIn %>`
 </script>
 <script src="../script/showDropdown.js"></script>
+<script>
+    // also add custom notification message
+                function displayToast(eleId){
+                    console.log("in display toast")
+                const toast = document.getElementById(eleId);
+                // toast.innerHTML="Updated"
+                    toast.classList.remove('hide');
+                    toast.classList.add('show');
+                    setTimeout(function () {
+                        toast.classList.remove('show');
+                        toast.classList.add('hide');
+                    }, 1500)
+            }
+</script>
 </body>
 
 </html>

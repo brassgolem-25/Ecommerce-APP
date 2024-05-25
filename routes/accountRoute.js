@@ -15,13 +15,14 @@ function findUser(req,res){
   return userID[0];
 }
 
+
 router.post('/profile',async(req,res) => {
    try{
       const user = findUser(req,res);
       const _id = user._id;
       const { gender, dateofBirth,number, address } = req.body;
-      console.log(dateofBirth);
-      const updatedUser =  await User.findOneAndUpdate({_id:_id},{$set:{gender, dateofBirth,number, address}},{new:true});
+      console.log(req.body);
+      // const updatedUser =  await User.findOneAndUpdate({_id:_id},{$set:{gender, dateofBirth,number, address}},{new:true});
       // res.render('account',{user:user});
       res.redirect('/Account');
    }catch(error){
@@ -33,13 +34,25 @@ router.get("/", async(req,res) => {
    try{
     //render account page
     const user = findUser(req,res);
-    console.log(user);
-    res.render('account',{user:user});
+   //  console.log(user);
+   let isUserLoggedIn = true;
+   if (user === undefined) {
+       isUserLoggedIn = false;
+   }
+    res.render('account',{user:user,isUserLoggedIn:isUserLoggedIn});
    }catch(error){
     console.log(error);
    }
 })
 
+//for all other page
+router.get('/Page',async(req,res)=>{
+   try{
+      res.render('error404');
+   }catch(error){
+      console.log(error);
+   }
+})
 
 
 export default router;
