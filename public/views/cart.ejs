@@ -11,8 +11,7 @@
         <div class="toast hide" id="toast-notification" role="alert" aria-live="assertive" aria-atomic="true"
             data-bs-delay="1000">
             <div class="d-flex">
-                <div class="toast-body">
-                    No changes in the cart.
+                <div id="toast-message" class="toast-body">
                 </div>
                 <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
             </div>
@@ -109,7 +108,7 @@
         async function fetchCheckoutData() {
             const response = await fetch('/cart/checkout', {
                 method: 'POST',
-                body: JSON.stringify({ subTotal }),
+                body: JSON.stringify({ subTotal,fromCart:true }),
                 headers: {
                     'Content-Type': 'application/json'
                 }
@@ -160,15 +159,7 @@
         }
 
         fetchCheckoutData();
-
-
-
-        const proccedToCheckout = async (e) => {
-            rzp1.open();
-            e.preventDefault();
-            // const orderGenerated = JSON.stringify(responseData);
-            console.log(JSON.stringify(orderGenerated));
-        }
+        
         //razorpay
         let changeHasOccured = false;
         function decrementQuantity(productId) {
@@ -215,7 +206,7 @@
         //update cart
         function updateCart() {
             if (!changeHasOccured) {
-                displayToast('toast-notification');
+                displayToast('toast-notification',"No changes in the cart.");
             } else {
                 const loadingBtn = document.getElementById('loading-btn');
                 loadingBtn.classList.remove('hide-container');

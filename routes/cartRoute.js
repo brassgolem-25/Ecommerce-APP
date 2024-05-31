@@ -5,6 +5,7 @@ import authService from '../services/authService.js';
 import { isValidObjectId } from 'mongoose';
 import { ObjectId } from 'mongodb';
 import Razorpay from 'razorpay';
+import Product from '../models/product.js'
 
 const router = express.Router();
 router.use(express.json());
@@ -138,21 +139,19 @@ var instance = new Razorpay({ key_id: keyID, key_secret: keySecret })
 router.post("/checkout", async (req, res) => {
     try {
         // const productDetails = await findCartItem(req, res);
-        // consol
+
         const subTotal = req.body.subTotal;
-        // console.log(subTotal);
+        const fromCart = req.body.fromCart;
         // res.send('Checkout Page '+subTotal);
         const amount = (parseFloat(subTotal) * 100);
-        console.log(amount);
         const user = authService.getUser(req.cookies.uid);
-        // const address = user[0].address;
-        const address = "Home";
+        const address = user[0].address;
         if (address === '') {
-            console.log("adress not provided,render account page");
-            res.send("Address not provided")
-            // res.redirect('/Account');
+            // console.log("adress not provided,render account page");
+            // res.send("Address not provided")
+            res.redirect('/Account');
         } else {
-            console.log("adress given,render checkout page");
+            // console.log("adress given,render checkout page");
 
             var options = {
                 amount: amount,  // amount in the smallest currency unit
@@ -162,8 +161,9 @@ router.post("/checkout", async (req, res) => {
             const response = await instance.orders.create(options);
             response.key = keyID;
             // console.log(response);
-            response.isCart = true;
-            res.send( response );
+            response.isCart = (fromCart ? true : false);
+            console.log("response")
+            res.send(response);
             // console.log(productDetails.product);
             // console.log(re);
         }
@@ -174,38 +174,46 @@ router.post("/checkout", async (req, res) => {
 
 router.post("/order", async (req, res) => {
     try {
-        console.log(req.body.data); 
+        // console.log(req.body.data);
         const paymentData = req.body.data;
         const user = authService.getUser(req.cookies.uid);
-
+        const userAddress = user[0].address;
+        // console.log(userAddress)
         const paymentRes = await instance.payments.fetch(paymentData.razorpay_payment_id)
         console.log(paymentRes);
         if (paymentRes) {
 
             const productDetails = req.body.productsArrId;
-            console.log(productDetails[0])    
+            // console.log(productDetails[0])
 
             productDetails.forEach(async (product_Id) => {
-                const user_Product_Data = await Cart.find({userId:new ObjectId(user[0]._id),productId: new ObjectId(product_Id)});
-                console.log(user_Product_Data);
-                if (paymentData.isCart) { // this is to only delte card data if the user is buying through cart
-                    await Cart.findOneAndDelete({ userId:new ObjectId(user[0]._id),productId: new ObjectId(product_Id) })
+                let user_Product_Data = null;
+                let productQuantity = null;
+                if (paymentData.isCart) {
+                    user_Product_Data = await Cart.find({ userId: new ObjectId(user[0]._id), productId: new ObjectId(product_Id) });
+                    // this is to only delte card data if the user is buying through cart
+                    await Cart.findOneAndDelete({ userId: new ObjectId(user[0]._id), productId: new ObjectId(product_Id) })
                     console.log("from cart item deleted")
+                }else {
+                    user_Product_Data = await Product.find({_id:new ObjectId(product_Id)});
+                    productQuantity = 1;
                 }
+                console.log(user_Product_Data);
+
                 await Order.create({
                     userId: user[0]._id,
                     productId: product_Id,
-                    quantity: user_Product_Data[0].quantity,
-                    paymentType: 'Online',
+                    quantity: productQuantity,
+                    paymentType: paymentRes.method,
                     paymentId: paymentRes.id,
                     seller: 'Exlcusive',
                     orderStatus: 'Ordered',
-                    totalAmount: '2',
+                    totalAmount: paymentRes.amount,
+                    address: userAddress
                 })
             })
 
         }
-
 
     } catch (err) {
         console.log(err);

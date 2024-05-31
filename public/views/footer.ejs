@@ -6,10 +6,10 @@
 <script src="../script/showDropdown.js"></script>
 <script>
     // also add custom notification message
-                function displayToast(eleId){
-                    console.log("in display toast")
+                function displayToast(eleId,message){
                 const toast = document.getElementById(eleId);
-                // toast.innerHTML="Updated"
+                const toastMessage = document.getElementById('toast-message');
+                toastMessage.innerHTML=message;
                     toast.classList.remove('hide');
                     toast.classList.add('show');
                     setTimeout(function () {

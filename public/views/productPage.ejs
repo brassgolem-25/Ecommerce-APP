@@ -2,7 +2,7 @@
 <div class="position-absolute show-notification">
     <div class="toast hide" id="toast-notification" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="1000">
         <div class="d-flex">
-            <div class="toast-body">
+            <div class="toast-body" id="toast-message">
                No changes in the cart.
             </div>
             <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
@@ -40,7 +40,7 @@
                             onclick="renderColor(this)"></i> <i class="fa-solid fa-circle color-icon "
                             style="color: #B197FC;" onclick="renderColor(this)"></i></h6>
                 </div>
-                <div class="product-size">
+                <div id="size-div" class="product-size">
                     <h6 class="size-cls">Size: </h6>
                     <div class="cust-btn-p">
                         <button class="size-button" data-product-size="XS"onClick="sizeChosen(this)">XS</button>
@@ -53,8 +53,10 @@
                 <div>
                     <button type="button" class="btn-style cart-btn" data-product_id="<%=product._id%>">Add to
                         cart</button>
-                    <a href="/checkout/product/<%=product._id%>"><button type="button" id='cart' class="btn-style"
-                            data-product_id="<%=product._id%>">Buy Now </button></a>
+                    <!-- <a href="/checkout/product/<%=product._id%>"><button type="button" id='cart' class="btn-style"
+                            data-product_id="<%=product._id%>">Buy Now </button></a> -->
+
+                    <button id="rzp-button1" class="btn-style">Buy Now</button>
                             <!-- below button function is in footer -->
                     <button class="wishList-Button wishList-btn"data-product_id="<%=product._id%>">
                         <%if(isWishlisted){ %>
@@ -85,30 +87,72 @@
         </div>
     </div> -->
     <script>let productRating = `<%=product.rating.rate%>`; let productReview = `<%=product.rating.count%>`;
-        const productName = `<%=product.name%>`; const productCategory = `<%=product.category%>`;
+        const productName = `<%=product.name%>`; const productCategory = `<%=product.category%>`;  const userLoggedIn = `<%= isUserLoggedIn %>`
     </script>
+    <script src="../script/displayToast.js"></script>
     <script src="../script/renderReviewIcon.js"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script>
-
-      console.log(localStorage.getItem("lastname"));
-
-        function showThisImage(e) {
-            const smallImageSrc = e.src;
-            const mainContainerImage = document.getElementById("main-Img");
-            mainContainerImage.src = smallImageSrc;
-            console.log(mainContainerImage.src)
-
-        }
-
-        function renderColor(element) {
-            const colorIcon = document.querySelectorAll(".color-icon")
-            colorIcon.forEach(icon => {
-                if (icon !== element) {
-                    icon.classList.remove('active-icon');
+        //increase/decrease price depening upon size
+        let subTotal=parseInt(`<%=product.price%>`);
+        
+        const productsArrId = [`<%=product._id%>`];
+        let orderGenerated;
+        async function fetchCheckoutData() {
+            const response = await fetch('/cart/checkout', {
+                method: 'POST',
+                body: JSON.stringify({ subTotal,fromCart:false }),
+                headers: {
+                    'Content-Type': 'application/json'
                 }
             });
-            element.classList.toggle('active-icon');
+
+            orderGenerated = await response.json();
+            console.log(JSON.stringify(orderGenerated));
+            var options = {
+                "key": orderGenerated.key, // Enter the Key ID generated from the Dashboard
+                "amount": orderGenerated.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                "currency": "USD",
+                "name": "Exclusive",
+                "description": "Test Transaction",
+                "image": "https://example.com/your_logo",
+                "order_id": orderGenerated.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                "handler": function (data) {
+                    data.isCart = orderGenerated.isCart;
+                    // send data for checking if the payment was done
+                    fetch('/cart/order', {
+                        method: "POST",
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            data: data,
+                            productsArrId: productsArrId
+                        })
+                    }).then(response => response.JSON()).then(alert(data.razorpay_payment_id))
+                },
+                "prefill": {
+                    "name": "Gaurav Kumar",
+                    "email": "gaurav.kumar@example.com",
+                    "contact": "9000090000"
+                },
+                "notes": {
+                    "address": "Razorpay Corporate Office"
+                },
+                "theme": {
+                    "color": "#3399cc"
+                }
+            };
+            var rzp1 = new Razorpay(options);
+            document.getElementById('rzp-button1').onclick = function (e) {
+                rzp1.open();
+                e.preventDefault();
+            }
         }
+        if(userLoggedIn){
+        fetchCheckoutData();
+        }
+
         function sizeChosen(element) {
             // console.log(element);
             const colorIcon = document.querySelectorAll(".size-button")
@@ -120,7 +164,6 @@
             element.classList.add('active-size');
             const priceElement = document.getElementById('product-price');
 
-            console.log(priceElement);
             // Get the current price value
             const currentPrice = parseFloat(`<%=product.price%>`);
 
@@ -133,9 +176,32 @@
                         'XL': (currentPrice+2).toFixed(2)
                 };
             const pSize = element.textContent;
-            console.log(pSize)
             // Update the price element with the new price
+            subTotal = parseInt(priceMap[pSize]);
+            console.log(subTotal)
             priceElement.textContent = `$ ${priceMap[pSize]}`;
+            //calling fucntion for getting updated price
+            if(userLoggedIn){
+            fetchCheckoutData();
+            }
+        }
+        //razorpay end
+
+
+        function showThisImage(e) {
+            const smallImageSrc = e.src;
+            const mainContainerImage = document.getElementById("main-Img");
+            mainContainerImage.src = smallImageSrc;
+        }
+
+        function renderColor(element) {
+            const colorIcon = document.querySelectorAll(".color-icon")
+            colorIcon.forEach(icon => {
+                if (icon !== element) {
+                    icon.classList.remove('active-icon');
+                }
+            });
+            element.classList.toggle('active-icon');
         }
     </script>
     <script src="../script/addToCart.js"></script>

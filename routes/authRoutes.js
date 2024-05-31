@@ -39,8 +39,10 @@ router.get("/signup", (req, res) => {
         let isUserLoggedIn = true;
         if (user === undefined) {
             isUserLoggedIn = false;
+            res.render("signup",{isUserLoggedIn: isUserLoggedIn})
+        }else {
+            res.redirect('/Account')
         }
-        res.render("signup",{isUserLoggedIn: isUserLoggedIn})
     }catch(error){
         console.log(error);
     }
@@ -59,6 +61,7 @@ async function handleUserLogin(req, res) {
             console.log("Email not found")
             return res.render("login", {
                 error: "Inavlid email",
+                isUserLoggedIn:"False"  
             })
         }
 
@@ -81,6 +84,7 @@ async function handleUserLogin(req, res) {
 
             return res.render("login", {
                 error: "Inavlid password",
+                isUserLoggedIn:"False"
             })
 
         }
@@ -100,8 +104,11 @@ router.get("/login", (req, res) => {
         let isUserLoggedIn = true;
         if (user === undefined) {
             isUserLoggedIn = false;
+            res.render("login", { isUserLoggedIn: isUserLoggedIn })
+        }else {
+            res.redirect('/Account')
         }
-        res.render("login", { isUserLoggedIn: isUserLoggedIn })
+       
     } catch (error) {
         console.log(error);
     }

@@ -53,9 +53,6 @@ app.use('/cart',authentication,cartRoute)
 //router for account
 app.use('/account',authentication,accountRoute)
 
-//router for checkout
-// app.use('/checkout',authentication,checkoutRoute)
-
 //router for searching
 app.use('/search',searchRoute);
 
@@ -63,7 +60,6 @@ app.use('/search',searchRoute);
 app.use('/wishList',authentication,wishListRoute);
 
 //route for orders
-app.use('/orders',authentication,orderRoute);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

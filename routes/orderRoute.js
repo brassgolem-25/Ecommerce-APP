@@ -19,8 +19,8 @@ router.get("/", async(req,res) => {
     //render order page
     const user = findUser(req,res);
     // console.log(user);
-    const orders = await Order.aggregate([{$match :{userId : new ObjectId(user)}}]);
-    res.send(orders);
+   //  const orders = await Order.aggregate([{$match :{userId : new ObjectId(user)}}]);
+    res.render('order');
    }catch(error){
     console.log(error);
    }

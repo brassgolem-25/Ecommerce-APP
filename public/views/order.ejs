@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Page</title>
+</head>
+<style>
+    body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.filters {
+    width: 20%;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+.filters h3 {
+    margin-top: 0;
+}
+
+.filter-row {
+    margin-bottom: 10px;
+}
+
+.orders {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.order-box {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    margin-bottom: 10px;
+    padding: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.order-box img {
+    width: 100px;
+    height: 100px;
+    margin-right: 20px;
+}
+
+.order-details {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    justify-content: space-between;
+}
+
+.order-details span {
+    margin-right: 20px;
+}
+
+.product-name {
+    flex: 2;
+}
+
+.price, .status {
+    flex: 1;
+}
+
+@media (max-width: 768px) {
+    .filters {
+        width: 30%;
+    }
+}
+
+@media (max-width: 480px) {
+    .filters {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .orders {
+        padding: 10px;
+    }
+
+    .order-box {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .order-details {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .order-details span {
+        margin-right: 0;
+        margin-bottom: 5px;
+    }
+}
+
+</style>
+<body>
+    <div class="container">
+        <div class="filters">
+            <h3>Filters</h3>
+            <div class="filter-row">
+                <input type="checkbox" id="filter1">
+                <label for="filter1">Filter 1</label>
+            </div>
+            <div class="filter-row">
+                <input type="checkbox" id="filter2">
+                <label for="filter2">Filter 2</label>
+            </div>
+            <div class="filter-row">
+                <input type="checkbox" id="filter3">
+                <label for="filter3">Filter 3</label>
+            </div>
+            <div class="filter-row">
+                <input type="checkbox" id="filter4">
+                <label for="filter4">Filter 4</label>
+            </div>
+        </div>
+        <div class="orders">
+            <div class="order-box">
+                <img src="image1.jpg" alt="Product Image">
+                <div class="order-details">
+                    <h4>Product Name 1</h4>
+                    <p>Price: $100</p>
+                    <p>Status: Delivered</p>
+                </div>
+            </div>
+            <div class="order-box">
+                <img src="image2.jpg" alt="Product Image">
+                <div class="order-details">
+                    <h4>Product Name 2</h4>
+                    <p>Price: $200</p>
+                    <p>Status: In Transit</p>
+                </div>
+            </div>
+            <!-- Add more orders as needed -->
+        </div>
+    </div>
+</body>
+</html>

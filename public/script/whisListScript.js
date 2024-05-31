@@ -19,20 +19,19 @@
                 heartIcon.classList.add('fa-solid');
                 heartIcon.classList.remove('fa-regular');
                 heartIcon.style.color = "#ec4109"
-                displayToast('toast-notification');
+                displayToast('toast-notification','product added to wishList');
             }else {
                 heartIcon.style.color = ""
                 heartIcon.classList.remove('fa-solid');
                 heartIcon.classList.add('fa-regular');
-                console.log(heartIcon);
                 // alert("Product removed from wishlist")
-                displayToast('toast-notification');
+                displayToast('toast-notification','product removed from wishList');
             }
 
         } else if (response.url.includes('/auth/login')) {
             // Redirect to login page
             // window.location.href = '/auth/login';
-            displayToast('toast-notification');
+            displayToast('toast-notification','please login');
         } else {
             // Handle other errors
             console.error('Failed to update wishlist');

@@ -114,3 +114,13 @@ input[type=text]{
 .faq-section{
     margin-top: 15px;
 }
+
+.error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.error {
+    border-color: red;
+}
