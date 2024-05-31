@@ -18,9 +18,14 @@ router.get("/", async(req,res) => {
    try{
     //render order page
     const user = findUser(req,res);
-    // console.log(user);
+    console.log("User" +user);
    //  const orders = await Order.aggregate([{$match :{userId : new ObjectId(user)}}]);
-    res.render('order');
+   let isUserLoggedIn = true;
+   if(user === undefined){
+      isUserLoggedIn=false;
+   }
+   //  res.render('order',{isUserLoggedIn:isUserLoggedIn});
+   res.send(user);
    }catch(error){
     console.log(error);
    }

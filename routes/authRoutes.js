@@ -123,7 +123,7 @@ async function handleUserLogout(req, res) {
         req.session.destroy((err) => {
             if (!err) {
                 // req.session = null;
-                res.send("You are logged out!!");
+                res.redirect("/")
             } else {
                 res.send(err);
             }

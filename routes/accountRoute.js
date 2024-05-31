@@ -1,5 +1,7 @@
 import express from 'express';
 import User from '../models/user.js';
+import Order from '../models/order.js';
+import Product from '../models/product.js';
 import authFunc from '../services/authService.js'
 import { ObjectId } from 'mongodb';
 
@@ -62,7 +64,20 @@ router.get('/Page',async(req,res)=>{
 //for orders
 router.get('/order',async(req,res)=>{
    try{
-         res.render('order');
+      const user = await findUser(req,res);
+      let isUserLoggedIn = true;
+      if(user === undefined){
+         isUserLoggedIn=false;
+      }
+      
+      const userOrders = await Order.aggregate([{$match :{userId : new ObjectId(user)}}]);
+      let productDetails = [];
+      for(const orders of userOrders){
+         const product = await Product.find({_id:new ObjectId(orders.productId)});
+         productDetails.push(product[0]);
+      }
+            
+      res.render('order',{productDetails:productDetails,isUserLoggedIn:isUserLoggedIn});
    }catch(error){
       console.log(error);
    }
