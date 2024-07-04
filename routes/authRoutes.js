@@ -5,15 +5,102 @@ import { v4 as uuidv4 } from 'uuid';
 import bcrypt from 'bcrypt'; // for password hashing
 import jwt from 'jsonwebtoken'; // for password reset link
 import nodemailer from 'nodemailer';
+import { authenticator } from 'otplib'; // for otp generation
+import { MailerSend, EmailParams, Sender, Recipient } from "mailersend"; // for sending mail of otp or anything else
+import { OAuth2Client } from 'google-auth-library';// for oauth via google
+import { validateState } from '../middlewares/validateState.js';
+import { configDotenv } from 'dotenv';
+
+
+// console.log(process.env.mailersend_apikey)
+configDotenv();
+const secret = process.env.OTP_SECRET;
 
 const router = express.Router();
 router.use(express.json());
 
+//create user session and cookie
+async function createUserSession(res, userEmail) {
+    try {
+        const sessionId = uuidv4();
+        const user = await User.find({email:userEmail})
+        authFunc.setUser(sessionId, user);
+        res.cookie('uid', sessionId)
+        //pass req in paramter if want to check user is saved or not
+        // const user = authFunc.getUser(req.cookies.uid);
+        // return user;
+    } catch (error) {
+        console.log("Error creating user Session " + error);
+    }
+}
+
+//google oauth setup
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET, "http://localhost:3000/auth/google/callback");
+router.get('/google',validateState, (req, res) => {
+
+    const { state } = req.query;
+    const url = client.generateAuthUrl({
+        access_type: 'offline',
+        scope: ['profile', 'email'],
+        state: state,
+    });
+    res.redirect(url);
+});
+
+router.get('/google/callback', async (req, res) => {
+    try {
+        const { code, state } = req.query;
+        const { tokens } = await client.getToken(code);
+        client.setCredentials(tokens);
+
+        const ticket = await client.verifyIdToken({
+            idToken: tokens.id_token,
+            audience: process.env.GOOGLE_CLIENT_ID,
+        });
+
+        const payload = ticket.getPayload();
+        const googleId = payload['sub'];
+        const email = payload['email'];
+        const name = payload['name'];
+
+        let user = await User.findOne({ googleId });
+        if (state == "signup") {
+            if (!user) {
+                user = new User({
+                    googleId,
+                    name,
+                    email,
+                });
+                await user.save();
+                console.log("User created and saved in backend")
+                return res.redirect("/");
+            } else {
+                // user already exist
+                return res.redirect("/auth/login?error=user_already_exists")
+            }
+        }
+        if(state=="login"){
+            if(!user){
+                return res.redirect('/auth/signup?error=user_not_found');
+            }
+        }
+        await createUserSession(res,email);
+        return res.redirect('/');
+
+    } catch (error) {
+        console.error('Error during Google OAuth callback:', error);
+        res.redirect('/');
+    }
+});
+
 async function handleUserSignup(req, res) {
     try {
         const { name, email, password } = req.body;
-        console.log(req.body);
-        const hashedPassword = await bcrypt.hash(password, 10);
+        console.log(req.body['password']);
+        const salt = await bcrypt.genSalt(10);
+        console.log(salt)
+        const hashedPassword = await bcrypt.hash(password, salt);
+        console.log(hashedPassword)
         const emailAlreadyExist = await User.find({ email: email });
         // console.log(emailAlreadyExist);
         if (emailAlreadyExist.length === 0) {
@@ -22,9 +109,11 @@ async function handleUserSignup(req, res) {
                 email,
                 password: hashedPassword,
             });
-            res.send("User Created Successfully");
+            // res.send("User Created Successfully");
+            createUserSession(res, email);
+            res.redirect('/');
         } else {
-            res.send("User Already Exist");
+            res.json({ success: false, message: "The mail already exist.Please login" });
         }
     } catch (error) {
         console.error('Error during user registration:', error);
@@ -39,15 +128,49 @@ router.get("/signup", (req, res) => {
         let isUserLoggedIn = true;
         if (user === undefined) {
             isUserLoggedIn = false;
-            res.render("signup",{isUserLoggedIn: isUserLoggedIn})
-        }else {
+            res.render("signup", { isUserLoggedIn: isUserLoggedIn })
+        } else {
             res.redirect('/Account')
         }
-    }catch(error){
+    } catch (error) {
         console.log(error);
     }
-    
+
 })
+
+//generate OTP and sent to email
+const generateOTP = async (email) => {
+    const token = authenticator.generate(secret);
+    try {
+        // send email
+        const otpMessage = "Hello, " + token + " is your one-time passcode (OTP) for the Exclusive app"
+        const mailerSend = new MailerSend({
+            apiKey: process.env.MAILSENDAPI,
+        });
+
+
+        const sentFrom = new Sender(process.env.MAILSENDADR, "Exclusive");
+
+        const recipients = [
+            new Recipient(email, "Tushar Tiwari")
+        ];
+
+        const emailParams = new EmailParams()
+            .setFrom(sentFrom)
+            .setTo(recipients)
+            .setReplyTo(sentFrom)
+            .setSubject("Your One-Time Passcode from Exclusive")
+            .setText(otpMessage);
+
+        // await mailerSend.email.send(emailParams);
+        //   console.log("Mail Sent")
+
+        console.log("token " + token)
+        // return token;
+    } catch (err) {
+        console.log(err);
+    }
+}
 
 //check if the user is logged in , if yes then don't show signup button
 async function handleUserLogin(req, res) {
@@ -58,11 +181,8 @@ async function handleUserLogin(req, res) {
         const value = await User.find({ email: email });
 
         if (value.length === 0) {
-            console.log("Email not found")
-            return res.render("login", {
-                error: "Inavlid email",
-                isUserLoggedIn:"False"  
-            })
+            // console.log("Email not found")
+            return res.json({ success: false, message: "You are not registered with us.Please Login!" })
         }
 
         const userPassword = value[0].password;
@@ -71,30 +191,19 @@ async function handleUserLogin(req, res) {
 
         //check if password is matched if email is found
         if (isMatch) {
-            const sessionId = uuidv4();
-            authFunc.setUser(sessionId, value);
-            res.cookie('uid', sessionId)
-
-            const returnTo = req.session.returnTo || '/';
-            delete req.session.returnTo; // Clear the stored URL
-            return res.redirect(returnTo);
+            generateOTP(email);
+            return res.json({ success: true, message: "OTP has been sent to your email ID" });
         } else {
             //if password not matched then paswword is wrong
-            console.log("password is incorrect")
 
-            return res.render("login", {
-                error: "Inavlid password",
-                isUserLoggedIn:"False"
-            })
+            return res.json({ success: false, message: "wrong password" })
 
         }
-        // return res.redirect('/');
-
     } catch (error) {
-        console.error('Error during user find:', error);
+        console.log('Error during user find:', error);
+        return res.json({ success: false });
     }
 }
-
 //login
 router.post("/login", handleUserLogin);
 router.get("/login", (req, res) => {
@@ -105,10 +214,51 @@ router.get("/login", (req, res) => {
         if (user === undefined) {
             isUserLoggedIn = false;
             res.render("login", { isUserLoggedIn: isUserLoggedIn })
-        }else {
+        } else {
             res.redirect('/Account')
         }
-       
+
+    } catch (error) {
+        console.log(error);
+    }
+})
+
+//otp verify
+router.post("/otpVerify", async (req, res) => {
+    try {
+        const { otp, email } = req.body;
+        const isValid = authenticator.check(otp, secret);
+        console.log("is OTP valid " + isValid)
+        if (isValid) {
+            console.log("Yes it's valid")
+            const value = await User.find({ email: email });
+            const sessionId = uuidv4();
+            authFunc.setUser(sessionId, value);
+            res.cookie('uid', sessionId)
+            const user = authFunc.getUser(req.cookies.uid);
+            console.log("user details" + user)
+            //
+            // const secret = process.env.JWTSecret;
+            // const token = jwt.sign({ data: email }, secret, { expiresIn: '12h' });
+            // localStorage.setItem('token', token);
+            // localStorage.setItem('tokenExpiration', '12h')
+            // console.log(token);
+
+            return res.json({ success: true, message: "OTP is validated"})
+        } else {
+            return res.json({ success: false, message: 'Invalid OTP' });
+        }
+
+    } catch (error) {
+        console.log(error);
+    }
+})
+
+router.post("/resendOTP", async (req, res) => {
+    try {
+        const { email } = req.body;
+        generateOTP(email);
+        return res.json({ success: true, message: "OTP has been sent again" });
     } catch (error) {
         console.log(error);
     }

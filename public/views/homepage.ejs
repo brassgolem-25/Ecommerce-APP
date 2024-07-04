@@ -1,21 +1,19 @@
 <%- include('header'); -%>
   <div class="container">
-    <div class="">
+    <div class="category-container">
       <div class="grid-container-home">
-        <% productCategory.forEach(data=> { %>
-          <div class="item">
-            <% const encodedCategory=encodeURIComponent(data); %>
-              <% const url=`/category/${encodedCategory}`; %>
-                <div>
-                  <img class="category-img" src="../images/fashion.png">
-                </div>
-                <a href="<%=url%>" class="example_f">
-                  <span>
-                    <%= data %>
-                  </span>
-                </a>
+        <% productCategory.forEach(data => { %>
+          <div class="category-item">
+            <% const encodedCategory = encodeURIComponent(data); %>
+            <% const url = `/category/${encodedCategory}`; %>
+            <div class="category-content">
+              <img class="category-img" src="../images/fashion.png" alt="<%= data %>">
+              <a href="<%= url %>" class="category-link">
+                <span class="category-name"><%= data %></span>
+              </a>
+            </div>
           </div>
-          <% }); %>
+        <% }); %>
       </div>
     </div>
     <div id="carouselExample" class="carousel slide">
@@ -70,8 +68,7 @@
     </div>
     <div class="main-product-grid">
       <% products.forEach(data=> { %>
-        <%const cateG=data.category.replace(/ /g,'-'); const pName=data.name.replace(/ /g,'-');const imageUrl = data.imageUrl;const pRating=data.rating.rate; const pReview=data.rating.count;
-        %>
+        <%const cateG=data.category.replace(/ /g,'-'); const pName=data.name.replace(/ /g,'-');const imageUrl = data.imageUrl;const pRating=data.rating.rate; const pReview=data.rating.count;%>
           <div class="main-product">
             <div class="img-container">
               <span class="fa-stack wish-Button">
@@ -83,7 +80,7 @@
                     <i class="fa-regular fa-heart wishList-Button"></i></button>
                   <%}%>
               </span>
-              <a href="/product/<%=data._id %>"><img src="<%=imageUrl%>"></a>
+              <a target="_blank" href="/product/<%=data._id %>"><img src="<%=imageUrl%>"></a>
             </div>
             <div class="product-description">
               <div class="product-name">
@@ -101,9 +98,5 @@
           <% }); %>
     </div>
   </div>
-  <!-- <script>console.log((`<%= whistListItem %>`).split(','));const wishListedItems =(`<%= whistListItem %>`).split(',');</script> -->
-  <script>
-      sessionStorage.setItem("lastname", "Smith")
-  </script>
   <script src="../script/whisListScript.js"></script>
   <%- include('footer'); -%>

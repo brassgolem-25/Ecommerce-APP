@@ -1,0 +1,302 @@
+<%- include('header'); -%>
+    <div class="position-absolute show-notification">
+        <div class="toast hide" id="toast-notification" role="alert" aria-live="assertive" aria-atomic="true"
+            data-bs-delay="1000">
+            <div class="d-flex">
+                <div class="toast-body">
+                    No changes in the cart.
+                </div>
+                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+    <div class="profile-page">
+        <!-- Left Sidebar -->
+        <div class="sidebar">
+            <div class="greeting">
+                Hello,
+                <p><strong>
+                        <%=user.name%>
+                    </strong></p>
+            </div>
+            <hr>
+            <h3>Manage My Account</h3>
+            <div class="nav-links">
+                <ul id="nav-links">
+                    <li><a href="/Account" id="manageProfile" >My Profile</a></li>
+                    <li><a href="/Account/Addresses" id="manageAddress" class="selected">Manage Address</a></li>
+                    <li><a href="/Account/Page">My Payment Options</a></li>
+                </ul>
+            </div>
+            <hr>
+            <h3>My Orders</h3>
+            <div class="nav-links">
+                <ul id="nav-links">
+                    <li><a href="/Account/Page">My Returns</a></li>
+                    <li><a href="/Account/Page">My Cancellations</a></li>
+                </ul>
+            </div>
+            <hr>
+            <h3>My Wishlist</h3>
+            <hr>
+            <h3><i class="fa-solid fa-power-off fa-lg"></i><a href="/auth/logout">Logout</a></h3>
+        </div>
+
+        <!-- Right Section -->
+        <div class="main-content">
+            <h3>Edit Your Profile</h3>
+                <%const fullName=(user.name);const addType = user.address.addressType;let homeCheck=(addType==="Home") ? true:false;let workCheck=(addType==="Work") ? true:false;%>
+                <%const userNumber=user.number; const userPincode = user.address.pincode; const userLocality = user.address.locality;const userArea = user.address.area;const userCity = user.address.city%>
+                <%const userState = user.address.state; %>
+                    <form id="address-form" method="POST" action="/Account/userAddress">
+                        <div class="info-item">
+                            <label for="fullName">Name</label>
+                            <input type="text" id="fullName" name="fullName" value="<%=fullName%>" disabled />
+                            <label for="mobile">Mobile Number:</label>
+                            <input type="tel" id="mobile" name="mobile" pattern="^\+91[0-9]*$" onkeyup="prependIndiaCode(event)" value="<%=userNumber%>" disabled />
+                        </div>
+                        <div class="info-item">
+                            <label for="text">Pincode</label>
+                            <input type="text" id="pincode" name="pincode" value="<%=userPincode%>" onkeyup="checkUserPincode()" disabled />
+                            <label for="Locality">Locality</label>
+                            <input type="text" id="locality" name="locality" value="<%=userLocality%>" disabled />
+                        </div>
+                        <div class="info-item">
+                            <label for="address">Address:</label>
+                            <input type="text" id="address" name="address" value="<%=userArea%>" disabled />
+                        </div>
+                        <div class="info-item">
+                            <label for="City">City</label>
+                            <input type="text" id="city" name="city" value="<%=userCity%>" disabled required="true" />
+                            <label for="State">State</label>
+                            <div class="select-wrapper">
+                                <select id="states" name="states" class="custom-select">
+                                    <!-- Options will be populated by JavaScript -->
+                                </select>
+                                <span class="custom-select-arrow">&#9662;</span>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <label>Address Type</label>
+                            <div class="radio-group">
+                                <input type="radio" id="home" name="addType" value="Home" <%=homeCheck ? 'checked' : ''%> disabled />
+                                <label for="male">Home</label>
+                                <input type="radio" id="work" name="addType" value="Work" <%=workCheck ? 'checked' : '' %> disabled />
+                                <label for="female">Work</label>
+                            </div>
+                        </div>
+
+
+                        <div class="account-buttons">
+                            <button class="edit-button" type="button"
+                                onclick="showSaveCancelButton(event)">Edit</button>
+                            <button class="save-button" type="submit" onclick="checkFormData(event)">Save
+                                Changes</button>
+                            <button class="cancel-button" type="button" onclick="showEditButton(event)">Cancel</button>
+                        </div>
+                    </form>
+                    <div class="faq-section">
+                        <h3>FAQs</h3>
+                        <div class="faq">
+                            <strong>What happens when I update my email address (or mobile number)?</strong>
+                            <p>Your login email id (or mobile number) changes, likewise. You'll receive all your account
+                                related
+                                communication on your updated email address (or mobile number).</p>
+                        </div>
+                        <div class="faq">
+                            <strong>When will my Flipkart account be updated with the new email address (or mobile
+                                number)?</strong>
+                            <p>It happens as soon as you confirm the verification code sent to your email (or mobile)
+                                and
+                                save
+                                the changes.</p>
+                        </div>
+                        <div class="faq">
+                            <strong>What happens to my existing Flipkart account when I update my email address (or
+                                mobile
+                                number)?</strong>
+                            <p>Updating your email address (or mobile number) doesn't invalidate your account. Your
+                                account
+                                remains fully functional. You'll continue seeing your Order history, saved information
+                                and
+                                personal details.</p>
+                        </div>
+                        <div class="faq">
+                            <strong>Does my Seller account get affected when I update my email address?</strong>
+                            <p>Flipkart has a 'single sign-on' policy. Any changes will reflect in your Seller account
+                                also.
+                            </p>
+                        </div>
+                    </div>
+        </div>
+    </div>
+
+    <script>
+        //add +91 in starting of mobile number
+        function prependIndiaCode(event){
+            const mobileNumber = event.target.value;
+            if(!mobileNumber.startsWith("+91")){
+            event.target.value = "+91" + mobileNumber;
+            }
+        }
+
+        //input validation form
+
+        function checkFormData(event) {
+            if (!validateForm(event)) {
+                event.preventDefault(); // Prevent form submission
+                // alert('Please fill in all required fields correctly.');
+            } else {
+            }
+        }
+
+
+        function showSaveCancelButton(event) {
+            var inputs = document.querySelectorAll('.main-content input');
+            let mobileInput = document.getElementById('mobile');
+            // mobileInput.value = mobileInput.value.substring('4');
+            inputs.forEach(input => {
+                input.disabled = false;
+                input.required = true;
+            });
+            var clickedElement = event.target;
+            var parentElement = clickedElement.parentNode;
+            var childButtons = Array.from(parentElement.childNodes).filter(node => node.nodeName === 'BUTTON');
+
+            childButtons[1].style.display = 'inline-block'
+            childButtons[2].style.display = 'inline-block'
+            event.target.style.display = 'none';
+        }
+
+
+        const originalValues = {};
+        document.querySelectorAll('.main-content input').forEach(input => {
+            originalValues[input.id] = input.value;
+        });
+
+        function showEditButton(event) {
+            var inputs = document.querySelectorAll('.main-content input');
+            inputs.forEach(input => {
+                input.value = originalValues[input.id]
+                input.disabled = true;
+            });
+            var clickedElement = event.target;
+            var parentElement = clickedElement.parentNode;
+            var childButtons = Array.from(parentElement.childNodes).filter(node => node.nodeName === 'BUTTON');
+            childButtons[0].style.display = 'inline-block'
+            childButtons[1].style.display = 'none'
+            event.target.style.display = 'none';
+        }
+
+
+        function validateForm(event) {
+            const inputs = document.querySelectorAll('.main-content input');
+            let allValid = true;
+            // console.log(inputs)
+            inputs.forEach(input => {
+                if (input.value.trim() === '') {
+                    allValid = false;
+                    // console.log(input)
+                    input.classList.add('error');
+                    input.placeholder = 'Please Input this field'
+
+                } else if (input.type !== '') {
+                    const inputType = input.type;
+                    const inputValue = input.value;
+                    input.classList.remove('error');
+                    let errorMessage = ""
+                    switch (inputType) {
+                        case 'email':
+                            // console.log(validateEmail(inputValue));
+                            if (!validateEmail(inputValue)) {
+                                input.classList.add('error');
+                                allValid = false;
+                                errorMessage = "Please enter a valid email address.";
+                                showErrorMessage(input, errorMessage);
+                            }
+                            break;
+                        case 'tel':
+                            if (!validateNumber(inputValue)) {
+                                input.classList.add('error');
+                                allValid = false;
+                                // showErrorMessage(input, errorMessage);
+                            }
+                            break;
+                        default:
+                            input.classList.remove('error');
+                            removeErrorMessage(input);
+                    }
+                }
+            });
+
+            return allValid;
+        }
+
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(String(email).toLowerCase());
+        }
+
+        function validateNumber(number) {
+            number = number.replace(/^\+91|\D/g, '')
+            const re = /^\d{10}$/;
+            return re.test(String(number));
+        }
+
+        function removeErrorMessage(input) {
+            let error = input.nextElementSibling;
+            if (error && error.classList.contains('error-message')) {
+                input.parentNode.removeChild(error);
+            }
+        }
+
+        document.getElementById('nav-links').addEventListener('click', (e) => {
+            var target = event.target;
+            if (target.tagName === 'A') {
+                var links = document.querySelectorAll('.selected');
+                links.forEach((ele) => {
+                    ele.classList.remove('selected');
+                })
+                target.classList.add("selected");
+            }
+        })
+
+        //Address Scripts
+        const stateSelect = document.getElementById('states');
+        const indianStates = ["Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal"];
+        indianStates.forEach(state => {
+                        const option = document.createElement('option');
+                        option.value = state;
+                        option.textContent = state;
+                        if (state == `<%=userState%>`) {
+                            option.selected = true;
+                        }
+                        stateSelect.appendChild(option);
+        });
+
+        async function checkUserPincode() {
+            let userpincode = document.getElementById("pincode").value;
+            if (userpincode.length === 6) {
+                let userLoc = null;
+                const indianPostUrl = 'https://api.postalpincode.in/pincode/' + userpincode;
+                userLoc = await fetch(indianPostUrl).then(response => response.json()).then(data => JSON.parse(JSON.stringify(data[0].PostOffice[0])));
+                if (userLoc) {
+                    const userState = userLoc.State;
+                    const userCity = userLoc.District;
+                    const statesOptions = document.getElementById('states').options;
+                    for(let ind = 0;ind<statesOptions.length;ind++){
+                        console.log(statesOptions[ind]+"..."+userState)
+                        if(statesOptions[ind].value == userState){
+                            statesOptions[ind].selected = true;
+                        }
+                    }
+                    const city = document.getElementById('city');
+                    city.value = userCity
+                }
+
+
+            }
+        }
+
+    </script>
+    <%- include('footer'); -%>

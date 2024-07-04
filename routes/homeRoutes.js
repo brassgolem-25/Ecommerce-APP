@@ -7,6 +7,19 @@ import { ObjectId } from 'mongodb';
 const router = express.Router();
 router.use(express.json());
 
+router.get("/payment",async(req,res)=>{
+    const orderDetails = {
+       productName :'Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops',
+        totalCost: '109.95',
+        orderNumber : '3f1381e0922d6fbb5ac5',
+        timeRemaining : '120'
+    };
+    res.render('paymentPage',{orderDetails:orderDetails});
+})
+
+router.get('/expired',async(req,res)=>{
+    res.render('paymentPageExpired')
+})
 
 //home route
 router.get("/",async (req,res)=>{
@@ -29,8 +42,8 @@ router.get("/",async (req,res)=>{
         }
         // console.log(whistListItem)
         const category = ["Women's Fashion","Men's Fashion","Electronics","Home & Lifestyle","Medicine"]
-        res.render("homepage",{products:products,productCategory:category,isUserLoggedIn:isUserLoggedIn,
-            whistListItem:JSON.stringify(wishListItemMap)})
+        // res.render("homepage",{products:products,productCategory:category,isUserLoggedIn:isUserLoggedIn, whistListItem:JSON.stringify(wishListItemMap)})
+        res.render("tempProductPage",{products:products,productCategory:category,isUserLoggedIn:isUserLoggedIn, whistListItem:JSON.stringify(wishListItemMap)})
     }catch(error){
         console.log(error)
     }
@@ -38,27 +51,21 @@ router.get("/",async (req,res)=>{
 
 //category route
 router.get("/category/:categoryID",async(req,res) => {
-    const categoryName = req.params.categoryID;
-    //below is to check for 's in women and mens fastion and convert it to lowercase to search in DB.
-    const getSpaceIndex = categoryName.indexOf(' ');
-    let categoryStr;
-    if(getSpaceIndex>=0){
-        categoryStr=categoryName.substring(0, categoryName.indexOf(' ')).toLowerCase();
-    }else{
-    categoryStr=categoryName.toLowerCase();
-    }
+    let categoryName = req.params.categoryID;
+    categoryName += ' clothing'
     const user = authService.getUser(req.cookies.uid);
     // console.log(user);
     let isUserLoggedIn=true;
     if(user===undefined){
         isUserLoggedIn=false;
     }
-    const searchInput = new RegExp(categoryStr);
+    const searchInput = new RegExp(categoryName);
     const products = await Product.find({"category":searchInput})
     if(products.length>0){
-    res.render('category',{products:products,isUserLoggedIn:isUserLoggedIn});
+    res.render('newCategoryPage',{products:products,isUserLoggedIn:isUserLoggedIn});
     }else {
-        res.render('error404')
+        // res.render('error404')
+        console.log("Not Found")
     }
 
 })

@@ -109,61 +109,61 @@
         let subTotal=parseInt(`<%=product.price%>`);
         
         const productsArrId = [`<%=product._id%>`];
-        let orderGenerated;
-        async function fetchCheckoutData() {
-            const response = await fetch('/cart/checkout', {
-                method: 'POST',
-                body: JSON.stringify({ subTotal,fromCart:false }),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
+            let orderGenerated;
+            async function fetchCheckoutData() {
+                const response = await fetch('/cart/checkout', {
+                    method: 'POST',
+                    body: JSON.stringify({ subTotal,fromCart:false }),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
 
-            orderGenerated = await response.json();
-            console.log(JSON.stringify(orderGenerated));
-            var options = {
-                "key": orderGenerated.key, // Enter the Key ID generated from the Dashboard
-                "amount": orderGenerated.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
-                "currency": "USD",
-                "name": "Exclusive",
-                "description": "Test Transaction",
-                "image": "https://example.com/your_logo",
-                "order_id": orderGenerated.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-                "handler": function (data) {
-                    data.isCart = orderGenerated.isCart;
-                    // send data for checking if the payment was done
-                    fetch('/cart/order', {
-                        method: "POST",
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            data: data,
-                            productsArrId: productsArrId
-                        })
-                    }).then(response => response.JSON()).then(alert(data.razorpay_payment_id))
-                },
-                "prefill": {
-                    "name": "Gaurav Kumar",
-                    "email": "gaurav.kumar@example.com",
-                    "contact": "9000090000"
-                },
-                "notes": {
-                    "address": "Razorpay Corporate Office"
-                },
-                "theme": {
-                    "color": "#3399cc"
+                orderGenerated = await response.json();
+                console.log(JSON.stringify(orderGenerated));
+                var options = {
+                    "key": orderGenerated.key, // Enter the Key ID generated from the Dashboard
+                    "amount": orderGenerated.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                    "currency": "USD",
+                    "name": "Exclusive",
+                    "description": "Test Transaction",
+                    "image": "https://example.com/your_logo",
+                    "order_id": orderGenerated.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                    "handler": function (data) {
+                        data.isCart = orderGenerated.isCart;
+                        // send data for checking if the payment was done
+                        fetch('/cart/order', {
+                            method: "POST",
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                data: data,
+                                productsArrId: productsArrId
+                            })
+                        }).then(response => response.JSON()).then(alert(data.razorpay_payment_id))
+                    },
+                    "prefill": {
+                        "name": "Gaurav Kumar",
+                        "email": "gaurav.kumar@example.com",
+                        "contact": "9000090000"
+                    },
+                    "notes": {
+                        "address": "Razorpay Corporate Office"
+                    },
+                    "theme": {
+                        "color": "#3399cc"
+                    }
+                };
+                var rzp1 = new Razorpay(options);
+                document.getElementById('rzp-button1').onclick = function (e) {
+                    rzp1.open();
+                    e.preventDefault();
                 }
-            };
-            var rzp1 = new Razorpay(options);
-            document.getElementById('rzp-button1').onclick = function (e) {
-                rzp1.open();
-                e.preventDefault();
             }
-        }
-        if(userLoggedIn){
-        fetchCheckoutData();
-        }
+            if(userLoggedIn){
+            fetchCheckoutData();
+            }
 
         function sizeChosen(element) {
             // console.log(element);

@@ -7,7 +7,9 @@
           }
       }else {
           const element = document.querySelectorAll('.notLogIn');
+          if(element[0].classList.contains('notLogIn')){
           element[0].remove('.notLogIn');
+          }
   
       }
   }

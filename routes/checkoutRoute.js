@@ -54,60 +54,60 @@ async function findCartItem(req, res) {
 var instance = new Razorpay({ key_id: keyID, key_secret: keySecret })
 
 //checkout route
-router.get("/", async (req, res) => {
-    try {
-        const productDetails = await findCartItem(req, res);
-        const subTotal = productDetails.subTotal;
-        // console.log(subTotal);
-        // res.send('Checkout Page '+subTotal);
-        const amount = (parseFloat(subTotal) * 100);
-        console.log(amount);
-        const user = authService.getUser(req.cookies.uid);
-        const address = user[0].address;
-        if (address === '') {
-            console.log("adress not provided,render account page");
-            res.redirect('/Account');
-        } else {
-            console.log("adress given,render checkout page");
+// router.get("/", async (req, res) => {
+//     try {
+//         const productDetails = await findCartItem(req, res);
+//         const subTotal = productDetails.subTotal;
+//         // console.log(subTotal);
+//         // res.send('Checkout Page '+subTotal);
+//         const amount = (parseFloat(subTotal) * 100);
+//         console.log(amount);
+//         const user = authService.getUser(req.cookies.uid);
+//         const address = user[0].address;
+//         if (address === '') {
+//             console.log("adress not provided,render account page");
+//             res.redirect('/Account');
+//         } else {
+//             console.log("adress given,render checkout page");
 
-            var options = {
-                amount: amount,  // amount in the smallest currency unit
-                currency: "INR"
-            };
+//             var options = {
+//                 amount: amount,  // amount in the smallest currency unit
+//                 currency: "INR"
+//             };
 
-            const response = await instance.orders.create(options);
-            response.key = keyID;
-            // console.log(response);
-            response.isCart = true;
-            res.render('checkout', { response: JSON.stringify(response) })
-            // console.log(productDetails.product);
-            console.log(req.body);
-        }
-    } catch (error) {
-        console.log(error);
-    }
-})
+//             const response = await instance.orders.create(options);
+//             response.key = keyID;
+//             // console.log(response);
+//             response.isCart = true;
+//             res.render('checkout', { response: JSON.stringify(response) })
+//             // console.log(productDetails.product);
+//             console.log(req.body);
+//         }
+//     } catch (error) {
+//         console.log(error);
+//     }
+// })
 
-//route for buy now
-router.get("/product/:productId", async (req, res) => {
-    try {
-        const pid = req.params.productId;
-        const product = await Product.find({ _id: pid });
-        console.log(product);
-        const totalAmount = parseFloat(product[0].price) * 100;
-        const response = await instance.orders.create({
-            amount: totalAmount,
-            currency: 'INR',
-        })
+// //route for buy now
+// router.get("/product/:productId", async (req, res) => {
+//     try {
+//         const pid = req.params.productId;
+//         const product = await Product.find({ _id: pid });
+//         console.log(product);
+//         const totalAmount = parseFloat(product[0].price) * 100;
+//         const response = await instance.orders.create({
+//             amount: totalAmount,
+//             currency: 'INR',
+//         })
 
-        response.key = keyID;
-        response.isCart = false;
-        console.log(response)
-        res.render('checkout', { response: JSON.stringify(response) })
-    } catch (error) {
-        console.log(error);
-    }
-})
+//         response.key = keyID;
+//         response.isCart = false;
+//         console.log(response)
+//         res.render('checkout', { response: JSON.stringify(response) })
+//     } catch (error) {
+//         console.log(error);
+//     }
+// })
 
 router.post("/order", async (req, res) => {
     try {

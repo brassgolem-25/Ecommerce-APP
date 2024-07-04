@@ -104,6 +104,7 @@
         //razorpay
         const productsArrId = JSON.parse(`<%-JSON.stringify(products_id)%>`);
         const subTotal = `<%=subTotal%>`
+        const isUserLoggedIn= `<%=isUserLoggedIn%>`
         let orderGenerated;
         async function fetchCheckoutData() {
             const response = await fetch('/cart/checkout', {
@@ -115,7 +116,6 @@
             });
 
             orderGenerated = await response.json();
-            console.log(JSON.stringify(orderGenerated));
             var options = {
                 "key": orderGenerated.key, // Enter the Key ID generated from the Dashboard
                 "amount": orderGenerated.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
@@ -136,7 +136,7 @@
                             data: data,
                             productsArrId: productsArrId
                         })
-                    }).then(response => response.JSON()).then(alert(data.razorpay_payment_id))
+                    }).then(response => console.log(response.JSON()))
                 },
                 "prefill": {
                     "name": "Gaurav Kumar",
@@ -157,8 +157,9 @@
                 e.preventDefault();
             }
         }
-
-        fetchCheckoutData();
+        if(isUserLoggedIn){
+            if(JSON.parse(subTotal)>0){fetchCheckoutData();}
+        }
         
         //razorpay
         let changeHasOccured = false;

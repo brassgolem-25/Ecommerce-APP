@@ -1,0 +1,285 @@
+<%- include('newHeader'); -%>
+	<%const productName=product.name ; const description=product.description;const price=product.price;const oldPrice=price + 20; const imageUrl=product.imageUrl; %>
+		<div class="container product-container">
+			<div class="row">
+				<div class="col-md-6">
+					<div class="productPage item">
+						<img src="<%=imageUrl%>" />
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="product-dtl">
+						<div class="product-info">
+							<div class="product-name">
+								<%=productName%>
+							</div>
+							<div class="product-price-discount"><span>$<%=price%></span><span class="line-through">$
+									<%=oldPrice%></span></div>
+						</div>
+						<p>
+							<%=description%>.
+						</p>
+						<div class="row">
+							<div class="col-md-6">
+								<label for="size">Size</label>
+								<select id="size" name="size" class="form-select">
+									<option>S</option>
+									<option>M</option>
+									<option>L</option>
+									<option>XL</option>
+								</select>
+							</div>
+							<div class="col-md-6">
+								<label for="color">Color</label>
+								<select id="color" name="color" class="form-select">
+									<option>Blue</option>
+									<option>Green</option>
+									<option>Red</option>
+								</select>
+							</div>
+						</div>
+						<div class="product-count">
+							<label for="size">Quantity</label>
+							<form class="display-flex">
+								<div class="qtyminus">-</div>
+								<input type="text" name="quantity" value="1" class="qty">
+								<div class="qtyplus">+</div>
+							</form>
+							<a href="" id="addToCart" data-product-name="<%=productName%>" class="round-Cart-btn">Add to
+								Cart</a>
+							<a id="buyNowProduct" data-product-name="<%=productName%>"
+								data-product-cost="<%=price%>" class="round-black-btn">Buy Now</a>
+						</div>
+						<div class="delivery-check">
+							<label for="pincode">Deliver to <i class="fa-solid fa-location-dot"
+									style="color: #dd0808;"></i></label>
+							<div class="input-group">
+								<input type="text" id="pincode" name="pincode" class="form-control"
+									placeholder="Enter your pincode">
+								<div class="input-group-append">
+									<button id="checkDelivery" class="round-black-btn">Check</button>
+								</div>
+							</div>
+							<div id="deliveryResult" class="mt-2"></div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+			<div class="product-info-tabs">
+				<ul class="nav nav-tabs" id="myTab" role="tablist">
+					<li class="nav-item">
+						<a class="nav-link active" id="description-tab" data-bs-toggle="tab" href="#description"
+							role="tab" aria-controls="description" aria-selected="true">Description</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" id="review-tab" data-toggle="tab" href="#review" role="tab"
+							aria-controls="review" aria-selected="false">Reviews (0)</a>
+					</li>
+				</ul>
+				<div class="tab-content" id="myTabContent">
+					<div class="tab-pane fade show active" id="description" role="tabpanel"
+						aria-labelledby="description-tab">
+						<%=description%>.
+					</div>
+					<div class="tab-pane fade" id="review" role="tabpanel" aria-labelledby="review-tab">
+						<div class="review-heading">REVIEWS</div>
+						<p class="mb-20">There are no reviews yet.</p>
+						<form class="review-form">
+							<div class="form-group">
+								<label>Your rating</label>
+								<div class="reviews-counter">
+									<div class="rate">
+										<input type="radio" id="star5" name="rate" value="5" />
+										<label for="star5" title="text">5 stars</label>
+										<input type="radio" id="star4" name="rate" value="4" />
+										<label for="star4" title="text">4 stars</label>
+										<input type="radio" id="star3" name="rate" value="3" />
+										<label for="star3" title="text">3 stars</label>
+										<input type="radio" id="star2" name="rate" value="2" />
+										<label for="star2" title="text">2 stars</label>
+										<input type="radio" id="star1" name="rate" value="1" />
+										<label for="star1" title="text">1 star</label>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label>Your message</label>
+								<input type="text" name="" class="form-control" placeholder="Review">
+							</div>
+							<!-- <div class="row">
+				        		<div class="col-md-6">
+				        			<div class="form-group">
+					        			<input type="text" name="" class="form-control" placeholder="Name*">
+					        		</div>
+					        	</div>
+				        		<div class="col-md-6">
+				        			<div class="form-group">
+					        			<input type="text" name="" class="form-control" placeholder="Email Id*">
+					        		</div>
+					        	</div>
+					        </div> -->
+							<button class="round-black-btn">Submit Review</button>
+						</form>
+					</div>
+				</div>
+			</div>
+
+		</div>
+		</div>
+
+		<!-- Payment Page -->
+		<!-- Payment Modal -->
+		<div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content">
+					<!-- Progress Bar -->
+					<div class="progress-container">
+						<div class="progress" id="progress"></div>
+						<div class="text-wrap active">
+							<div class="circle">1</div>
+							<p class="text">Amount</p>
+						</div>
+						<div class="text-wrap">
+							<div class="circle">2</div>
+							<p class="text">Address</p>
+						</div>
+						<div class="text-wrap">
+							<div class="circle">3</div>
+							<p class="text">Payment</p>
+						</div>
+						<div class="text-wrap">
+							<div class="circle">4</div>
+							<p class="text">Review</p>
+						</div>
+					</div>
+
+					<!-- Steps Content -->
+					<div class="steps-content">
+						<!-- Step 1: Checkout -->
+						<div class="step-content active" id="checkoutStep">
+							<h5 class="modal-title">Checkout</h5>
+							<div class="mb-3">
+								<label for="totalAmount" class="form-label">Total Amount</label>
+								<input type="text" class="form-control" id="totalAmount" value="$<%=price%>" readonly>
+							</div>
+							<button class="btn btn-primary next-btn" data-next-step="addressStep">Next</button>
+						</div>
+
+						<!-- Step 2: Shipping Address -->
+						<div class="step-content" id="addressStep">
+							<h5 class="modal-title">Shipping Address</h5>
+							<div class="mb-3">
+								<label for="locality">Locality</label>
+								<input type="text" class="form-control" id="locality" placeholder="Enter your locality"
+									required>
+							</div>
+							<div class="mb-3">
+								<label for="state">State</label>
+								<input type="text" class="form-control" id="state" placeholder="Enter your state"
+									required>
+							</div>
+							<div class="mb-3">
+								<label for="pincode">Pincode</label>
+								<input type="text" class="form-control" id="userPincode"
+									placeholder="Enter your pincode" required>
+							</div>
+							<button class="btn btn-secondary prev-btn" data-prev-step="checkoutStep">Back</button>
+							<button class="btn btn-primary next-btn" data-next-step="paymentStep">Next</button>
+						</div>
+
+						<!-- Step 3: Payment -->
+						<div class="step-content" id="paymentStep">
+							<h5 class="modal-title">Payment</h5>
+							<div class="payment-loader">
+								<div class="pad">
+									<div class="chip"></div>
+									<div class="line line1"></div>
+									<div class="line line2"></div>
+								</div>
+								<div class="loader-text">
+									Please wait while payment is loading
+								</div>
+							</div>
+							<div class="complete-payment" style="display: none;">
+								<div class="spinner"></div>
+								<div class="loader-text">Please complete the payment in the next page</div>
+							</div>
+							<div class="payment-completed" style="display: none;">
+								<i class="fa fa-check-circle" style="color: #57e55c;font-size: 3em;"></i>
+								<h2>Payment Completed</h2>
+							</div>
+							<div class="payment-failed" style="display: none;">
+								<h2>Payment Failed</h2>
+								<i class="fa-solid fa-circle-exclamation" style="color: #f0430a;font-size: 3em; "></i>
+							</div>
+							<button class="btn btn-secondary prev-btn" data-prev-step="addressStep">Back</button>
+						</div>
+
+						<!-- Step 4: Track Order -->
+						<div class="step-content" id="trackingStep">
+							<h5 class="modal-title">Order Confirmed</h5>
+							<div class="container	 d-flex justify-content-center">
+								<div class="order-card p-4 mt-3">
+									<div class="first d-flex justify-content-between align-items-center mb-3">
+										<div class="info">
+											<span class="d-block name">Thank you </span>
+											<span id="orderNumber" class="order"></span>
+
+										</div>
+
+										<img src="https://i.imgur.com/NiAVkEw.png" width="40" />
+
+
+									</div>
+									<div class="detail">
+										<span class="d-block summery">Your order has been confirmed.</span>
+									</div>
+									<hr>
+									<div class="text">
+										<span id="userName" class="d-block new mb-1">Alex Dorlew</span>
+									</div>
+									<span id="userAddress" class="d-block address mb-3">672 Conaway Street Bryantiville
+										Massachusetts 02327</span>
+									<div class="  money d-flex flex-row mt-2 align-items-center">
+										<img id="paymentTypeImg" src="../images/mastercard.jpg" width="40" />
+
+										<span id="paymentMethod" class="ml-2"></span>
+
+									</div>
+								</div>
+							</div>
+							<!-- <button class="btn btn-secondary prev-btn" data-prev-step="paymentStep">Back</button> -->
+							<button class="btn btn-primary close-btn" data-bs-dismiss="modal">Close</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+			integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+			crossorigin="anonymous"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+			integrity="	sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+			crossorigin="anonymous"></script>
+		<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+			integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2r0p0jmaOAdWEuhC5xNHcO9uLvEf7A7Dn"
+			crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+			integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+			crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-modal/2.2.6/js/bootstrap-modalmanager.min.js"
+			integrity="sha512-/HL24m2nmyI2+ccX+dSHphAHqLw60Oj5sK8jf59VWtFWZi9vx7jzoxbZmcBeeTeCUc7z1mTs3LfyXGuBU32t+w=="
+			crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+		<script src="../script/search.js"></script>
+		<script src="../script/tempScript.js"></script>
+		<script src="../script/productPageScript.js"></script>
+		<script>
+
+		</script>
+		</body>
+
+		</html>

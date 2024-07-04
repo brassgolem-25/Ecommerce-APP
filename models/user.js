@@ -3,27 +3,27 @@ import mongoose from "mongoose";
 const userSchema = new mongoose.Schema({
     name :{
         type:String,
-        required:true
+    },
+    googleId : {
+        type:String
     },
     email :{
         type:String,
-        required:true
     },
     password :{
         type:String,
-        required:true
-    },
-    dateofBirth:{
-        type:Date
-    },
-    gender:{
-        type:String
     },
     number:{
         type:String
     },
-    address:{
-        type:String
+    address: {
+        area: {type:String},
+        street: { type: String },
+        city: { type: String },
+        state: { type: String },
+        pincode: { type: String },
+        locality: { type: String },
+        addressType: { type: String }
     }
 
 },{timestamps : true})

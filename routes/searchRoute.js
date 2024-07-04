@@ -1,19 +1,26 @@
 import express from 'express';
 import Product from "../models/product.js"
+
 const router = express.Router();
 router.use(express.json());
 
-//remove item from cart
 router.post("/",async (req,res)=>{
     try {
-        // do better naming conventio
-        const text = req.body.searchText;
-        if(text!==""){
-            const searchInput = new RegExp(req.body.searchText);
-            const product = await Product.find({"name":searchInput});
-            console.log(product);
+        const { searchText } = req.body;
+        const searchProduct = [];
+        if( searchText !==""){
+            const searchInput = new RegExp(searchText,'i');
+            const products = await Product.find({"name":searchInput});
+            products.forEach(item =>{
+                const objData = {};
+                objData.name = item.name;
+                objData.image = item.imageUrl;
+                objData.id = item._id;
+                searchProduct.push(objData);
+            })
+            return res.json(searchProduct);
         }
-        // console.log();
+        return res.json(searchProduct);
              
     }catch(error){
         console.log(error);

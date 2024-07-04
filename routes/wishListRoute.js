@@ -1,5 +1,6 @@
 import express from 'express';
 import WhisList from '../models/whistList.js';
+import Product from '../models/product.js';
 import authService from '../services/authService.js';
 import { ObjectId } from 'mongodb';
 
@@ -27,46 +28,54 @@ router.post('/remove',async (req,res)=>{
 router.post('/add', async (req, res) => {
     try {
         const user = authService.getUser(req.cookies.uid);
-        const pId = req.body.productId;
-        const productFound = await WhisList.find({
-            productId: pId,
-            userId: new ObjectId(user[0]._id)
-        });
+        const productName = req.body.productName;
+        const product = await Product.find({ name: productName })
+        const pId = product[0]._id;
         // console.log(productFound);
+        const productFound = await WhisList.find({productId: pId,userId:user[0]._id});
         if (productFound.length > 0) {
-            console.log("Already in whishlist "+productFound);
-            // console.log(productFound);
-            // const newQuantity  = await Cart.find({_id:pId});
-            // console.log(newQuantity);
-            // await WhisList.findOneAndUpdate({ _id: wishlistId }, { $set: { "quantity": newQuantity } });
-            // return "Already in WishList";
+            return res.json({success:true,message:"Product is already in wishlist"});
         } else {
             await WhisList.create({
                 userId: user[0]._id,
                 quantity: 1,
                 productId: pId
             })
-            console.log("Not found");
             // return "Added to wishLi"
         }
-        res.send("added")
+        res.json({success:true,message:"Product Added to wishlist"});
 
         // res.send('Item added to cart');
     } catch (error) {
         console.log(error);
+        return res.json({success:false,message:"Please try again later!!"});
     }
 })
 //get item from whislist
-// router.get("/",async (req,res)=>{
-//     try {
-//         // do better naming conventio
-//         const products = await WhisList.find({});
-//         res.send(products);
+router.get("/",async (req,res)=>{
+    try {
+        // do better naming conventio
+        const user = authService.getUser(req.cookies.uid);
+        const userId = user[0]._id;
+
+        const wishlistProduct = await WhisList.aggregate([
+            { $match: { userId: new ObjectId(userId) } },
+            {
+                $lookup: {
+                    from: 'Product',
+                    localField: 'productId',
+                    foreignField: '_id',
+                    as: 'item'
+                }
+            }
+        ])
+        res.render('wishList',{wishlistProducts:wishlistProduct})
+
              
-//     }catch(error){
-//         console.log(error);
-//     }
-// })
+    }catch(error){
+        console.log(error);
+    }
+})
 
 
 export default router;

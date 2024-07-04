@@ -84,9 +84,9 @@ input[type=text]{
     margin: 0 10px 0 0;
 }
 
-#edit-button,
-#save-button,
-#cancel-button {
+.edit-button,
+.save-button,
+.cancel-button {
     padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
@@ -97,7 +97,7 @@ input[type=text]{
     transition: background-color 0.3s ease;
 }
 
-#cancel-button {
+.cancel-button {
     background-color: white;
     color: black;
 }
@@ -105,10 +105,9 @@ input[type=text]{
 /* #edit-button:hover, #save-button:hover, #cancel-button:hover {
     background-color: #0056b3;
 } */
-#save-button,
-#cancel-button {
+.save-button,
+.cancel-button {
     display: none;
-    margin-left: 10px;
 }
 
 .faq-section{
@@ -122,5 +121,43 @@ input[type=text]{
 }
 
 .error {
-    border-color: red;
+    border-color: red !important;
+}
+
+.hide-form{
+    display: none;
+}
+
+.select-wrapper {
+    position: relative;
+    width: 30%;
+}
+
+.custom-select {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    font-size: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+.custom-select:focus {
+    outline: none;
+    border-color: rgb(244, 77, 11);
+}
+
+.custom-select-arrow {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+a{
+    text-decoration: none;
+    color: black;
 }

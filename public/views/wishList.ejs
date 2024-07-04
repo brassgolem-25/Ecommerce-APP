@@ -1,0 +1,67 @@
+<%- include('newHeader'); -%>
+
+<div class="container my-5">
+    <div class="row">
+        <% if (wishlistProducts.length === 0) { %>
+            <div class="col-12 text-center">
+                <img src="../images/empty-wishlist.webp" alt="Empty Wishlist" class="img-fluid emptyCartx">
+                <h3>Your wishlist is empty</h3>
+                <p>Browse our categories and add items to your wishlist!</p>
+            </div>
+        <% } else { %>
+            <% wishlistProducts.forEach(data => { %>
+                <% const pName = data.name; const price = data.price; const description = data.description; %>
+                <div class="col-md-7">
+                    <div class="wishlist-item">
+                        <img src="<%= data.imageUrl %>" class="wishlist-product-image img-fluid" alt="Product Image">
+                        <div class="wishlist-item-details">
+                            <h5><%= pName %></h5>
+                            <p><%= description %></p>
+                            <p><strong>$<%= price %></strong></p>
+                            <div class="wishlist-actions">
+                                <button type="button" class="move-to-cart round-black-btn">Move to Cart</button>
+                                <button type="button" class="remove-item btn btn-link"><i class="fas fa-times fa-lg"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% }); %>
+            <div class="col-md-5">
+                <div class="wishlist-summary">
+                    <h5>Wishlist Summary</h5>
+                    <p>Total Items: <strong><%= wishlistProducts.length %></strong></p>
+                    <hr>
+                    <button class="round-black-btn">Proceed to Checkout</button>
+                </div>
+            </div>
+        <% } %>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const removeButtons = document.querySelectorAll('.remove-item');
+        const moveToCartButtons = document.querySelectorAll('.move-to-cart');
+
+        removeButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const wishlistItem = this.closest('.wishlist-item');
+                wishlistItem.style.display = 'none';
+                // Here you would make an AJAX call to remove the item from the wishlist in the backend
+                alert('Item removed from wishlist.');
+            });
+        });
+
+        moveToCartButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const wishlistItem = this.closest('.wishlist-item');
+                wishlistItem.style.display = 'none';
+                // Here you would make an AJAX call to move the item to the cart in the backend
+                alert('Item moved to cart.');
+            });
+        });
+    });
+</script>
+</body>
+
+</html>

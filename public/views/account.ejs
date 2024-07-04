@@ -1,249 +1,55 @@
-<%- include('header'); -%>
-<div class="position-absolute show-notification">
-    <div class="toast hide" id="toast-notification" role="alert" aria-live="assertive" aria-atomic="true"
-        data-bs-delay="1000">
-        <div class="d-flex">
-            <div class="toast-body">
-                No changes in the cart.
+<%- include('newHeader'); -%>
+<%const userName = user.name; const userEmail = user.email;console.log(user);const userAddress = user.address.locality+" , "+user.address.state+" ," +user.address.pincode; %>
+<div class="container mt-5 userCard">
+    <div class="row">
+        <div class="col-md-12 d-flex align-items-center">
+            <img src="../images/User.jpg" class="rounded-circle mr-3" alt="User Image">
+            <h4 class="mb-0">Hello, <%=userName%></h4>
+        </div>
+        <div class="col-md-12 mt-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    Contact Information
+                </div>
+                <div class="card-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" value="" placeholder="<%=userEmail%>" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="mobile">Mobile</label>
+                            <input type="text" class="form-control" id="mobile" value="" placeholder="" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="address">Address</label>
+                            <input type="text" class="form-control" id="address" value="" placeholder="<%=userAddress%>" disabled>
+                        </div>
+                        <button type="submit" class="round-black-btn">Edit</button>
+                        <button type="submit" class="round-black-btn" style="display: none">Save</button>
+                        <button type="submit" class="round-black-btn" style="display: none">Cancel</button>
+                    </form>
+                </div>
             </div>
-            <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            <div class="card">
+                <div class="card-header">
+                    Payment Options
+                </div>
+                <div class="card-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="credit-card">Credit Card</label>
+                            <input type="text" class="form-control" id="credit-card" value="**** **** **** 1234" disabled> 
+                        </div>
+                        <div class="form-group">
+                            <label for="paypal">UPI</label>
+                            <input type="email" class="form-control" id="paypal" value="user@paypal.com" disabled>
+                        </div>
+                        <a href="#" class="round-black-btn">Add Payment Method</a>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </div>
-    <div class="profile-page">
-        <!-- Left Sidebar -->
-        <div class="sidebar">
-            <div class="greeting">
-                Hello,
-                <p><strong>
-                        <%=user.name%>
-                    </strong></p>
-            </div>
-            <hr>
-            <h3>Manage My Account</h3>
-            <div class="nav-links">
-                <ul id="nav-links">
-                    <li><a href="/Account/Page" class="selected">My Profile</a></li>
-                    <li><a href="/Account/Page">My Reviews and Rating</a></li>
-                    <li><a href="/Account/Page">My Payment Options</a></li>
-                </ul>
-            </div>
-            <hr>
-            <h3>My Orders</h3>
-            <div class="nav-links">
-                <ul id="nav-links">
-                    <li><a href="/Account/Page">My Returns</a></li>
-                    <li><a href="/Account/Page">My Cancellations</a></li>
-                </ul>
-            </div>
-            <hr>
-            <h3>My Wishlist</h3>
-            <hr>
-            <h3><i class="fa-solid fa-power-off fa-lg"></i> <a href="/auth/logout">Logout</a></h3>
-        </div>
-
-        <!-- Right Section -->
-        <div class="main-content">
-            <h3>Edit Your Profile</h3>
-            <%const fullName=(user.name); const index=fullName.indexOf(" ");const fName = fullName.substr(0,index);const lName = fullName.substr(index)%>
-            <%const gender = user.gender;let maleCheck=false;let femaleCheck=false;if(gender==="Male"){maleCheck=true;}else{femaleCheck=true;}%>
-            <%const userNumber = "+91 "+user.number%>
-            <form id="profile-form" method="POST" action="/Account/profile">
-                <div class="info-item">
-                    <label for="firstName">First Name:</label>
-                    <input type="text" id="firstName" name="firstName" value="<%=fName%>" disabled  />
-                    <label for="lastName">Last Name:</label>
-                    <input type="text" id="lastName" name="lastName" value="<%=lName%>" disabled />
-                </div>
-                <div class="info-item">
-                    <label>Gender:</label>
-                    <div class="radio-group">
-                        <input type="radio" id="male"  name="gender" value="Male" <%= maleCheck ? 'checked' : '' %> disabled />
-                        <label for="male">Male</label>
-                        <input type="radio" id="female" name="gender" value="Female" <%= femaleCheck ? 'checked' : '' %>
-                            disabled />
-                        <label for="female">Female</label>
-                    </div>
-                </div>
-                <div class="info-item">
-                    <label for="email">Email ID:</label>
-                    <input type="email" id="email" name="email" value="<%=user.email%>" disabled required="true" />
-                </div>
-                <div class="info-item">
-                    <label for="mobile">Mobile Number:</label>
-                    <input type="tel" id="mobile" name="mobile" value="<%=userNumber%>"disabled />
-                </div>
-                <div class="info-item">
-                    <label for="address">Address:</label>
-                    <input type="text" id="address" name="address" value="<%=user.address%>" disabled />
-                </div>
-                <div class="account-buttons">
-                    <button id="edit-button" type="button">Edit</button>
-                    <button id="save-button" type="submit">Save Changes</button>
-                    <button id="cancel-button" type="button">Cancel</button>
-                </div>
-            </form>
-                <div class="faq-section">
-                    <h3>FAQs</h3>
-                    <div class="faq">
-                        <strong>What happens when I update my email address (or mobile number)?</strong>
-                        <p>Your login email id (or mobile number) changes, likewise. You'll receive all your account
-                            related
-                            communication on your updated email address (or mobile number).</p>
-                    </div>
-                    <div class="faq">
-                        <strong>When will my Flipkart account be updated with the new email address (or mobile
-                            number)?</strong>
-                        <p>It happens as soon as you confirm the verification code sent to your email (or mobile) and
-                            save
-                            the changes.</p>
-                    </div>
-                    <div class="faq">
-                        <strong>What happens to my existing Flipkart account when I update my email address (or mobile
-                            number)?</strong>
-                        <p>Updating your email address (or mobile number) doesn't invalidate your account. Your account
-                            remains fully functional. You'll continue seeing your Order history, saved information and
-                            personal details.</p>
-                    </div>
-                    <div class="faq">
-                        <strong>Does my Seller account get affected when I update my email address?</strong>
-                        <p>Flipkart has a 'single sign-on' policy. Any changes will reflect in your Seller account also.
-                        </p>
-                    </div>
-                </div>
-        </div>
-    </div>
-
-    <script>
-
-        //input validation form
-        document.getElementById('save-button').addEventListener('click', function (event) {
-            if (!validateForm()) {
-                event.preventDefault(); // Prevent form submission
-                alert('Please fill in all required fields correctly.');
-            } else {
-                // Here you would typically send the data to the server
-                // For example, using fetch or XMLHttpRequest
-                // fetch('/save-profile', { method: 'POST', body: formData })
-            }
-        });
-
-        function validateForm() {
-            const inputs = document.querySelectorAll('.main-content input');
-            let allValid = true;
-
-            inputs.forEach(input => {
-                if (input.value.trim() === '') {
-                    allValid = false;
-                    input.classList.add('error');
-                    showErrorMessage(input, 'This field is required.');
-                } else if (input.type !=='') {
-                    const inputType = input.type;
-                    console.log("input 1"+inputType)
-                    const inputValue  = input.value;
-                    let errorMessage=""
-                    switch (inputType){
-                        case 'email':
-                            // console.log(validateEmail(inputValue));
-                            if(!validateEmail(inputValue)){
-                            input.classList.add('error');
-                            allValid = false;
-                            errorMessage="Please enter a valid email address.";
-                            showErrorMessage(input, errorMessage);
-                            }
-                            break;
-                        case 'tel':
-                            if(!validateNumber(inputValue)){   
-                            input.classList.add('error');
-                            allValid = false;
-                            errorMessage="Please enter a valid mobile number.";
-                            showErrorMessage(input, errorMessage);
-                            }
-                            break;  
-                        default:
-                        input.classList.remove('error');
-                        removeErrorMessage(input);    
-                    }                    
-                } 
-            });
-
-            return allValid;
-        }
-
-        function validateEmail(email) {
-            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return re.test(String(email).toLowerCase());
-        }
-
-        function validateNumber(number) {
-            const re = /^\d{10}$/;
-            return re.test(String(number));
-        }
-
-        function showErrorMessage(input, message) {
-            let error = input.nextElementSibling;
-            if (!error || !error.classList.contains('error-message')) {
-                error = document.createElement('div');
-                error.classList.add('error-message');
-                input.parentNode.appendChild(error);
-            }
-            error.textContent = message;
-        }
-
-        function removeErrorMessage(input) {
-            let error = input.nextElementSibling;
-            if (error && error.classList.contains('error-message')) {
-                input.parentNode.removeChild(error);
-            }
-        }
-        
-        document.getElementById('nav-links').addEventListener('click', (e) => {
-            var target = event.target;
-            if (target.tagName === 'A') {
-                var links = document.querySelectorAll('.selected');
-                links.forEach((ele) => {
-                    ele.classList.remove('selected');
-                })
-                target.classList.add("selected");
-            }
-        })
-
-        document.getElementById('edit-button').addEventListener('click', function () {
-            var inputs = document.querySelectorAll('.main-content input');
-            inputs.forEach(input => {
-                input.disabled = false;
-                input.required = true;
-            });
-            document.getElementById('save-button').style.display = 'inline-block';
-            document.getElementById('cancel-button').style.display = 'inline-block';
-            this.style.display = 'none';
-        });
-
-        const originalValues = {};
-        document.querySelectorAll('.main-content input').forEach(input => {
-            originalValues[input.id] = input.value;
-        });
-
-        document.getElementById('cancel-button').addEventListener('click', function () {
-            var inputs = document.querySelectorAll('.main-content input');
-            inputs.forEach(input => {
-                input.value=originalValues[input.id]
-                input.disabled = true;
-            });
-            document.getElementById('edit-button').style.display = 'inline-block';
-            document.getElementById('save-button').style.display = 'none';
-            this.style.display = 'none';
-        });
-
-        document.getElementById('save-button').addEventListener('click', function () {
-            // var inputs = document.querySelectorAll('.main-content input');
-            // inputs.forEach(input => {
-            //     input.disabled = true;
-            // });
-            // document.getElementById('edit-button').style.display = 'inline-block';
-            // document.getElementById('cancel-button').style.display = 'none';
-            // this.style.display = 'none';
-            // Here you would typically save the new values to the server
-        });
-    </script>
-    <%- include('footer'); -%>
+<%- include('newFooter'); -%>

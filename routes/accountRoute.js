@@ -4,6 +4,7 @@ import Order from '../models/order.js';
 import Product from '../models/product.js';
 import authFunc from '../services/authService.js'
 import { ObjectId } from 'mongodb';
+import Address from '../models/Address.js';
 
 
 const router = express.Router();
@@ -39,16 +40,48 @@ router.post('/profile',async(req,res) => {
 
 router.get("/", async(req,res) => {
    try{
-    //render account page
     const user = await findUser(req,res);
-   //  console.log(user);
-   let isUserLoggedIn = true;
-   if (user === undefined) {
-       isUserLoggedIn = false;
-   }
-    res.render('account',{user:user,isUserLoggedIn:isUserLoggedIn});
+    res.render('account',{user:user});
    }catch(error){
     console.log(error);
+   }
+})
+
+//user address
+   router.post("/userAddress",async(req,res)=>{
+      try{
+         const user = await findUser(req,res);
+         const userId = user._id;
+         console.log(req.body);
+         const { locality,state,userPincode } = req.body;
+         // console.log(req.body);
+         const update = {
+            $set: {
+                'address.state': state,
+                'address.pincode': userPincode,
+                'address.locality': locality
+            }
+        };
+         await User.findOneAndUpdate({_id:new ObjectId(userId)},update);
+         // res.redirect('/Account/Addresses');
+         return res.json({success:true, message: "address update successfully"});
+      }catch(error){
+         console.log(error);
+         return res.json({success:false, message: "some error occured"});
+      } 
+   })
+
+router.get("/Addresses",async(req,res)=>{
+   try{
+      const user = await findUser(req,res);
+      //  console.log(user);
+      let isUserLoggedIn = true;
+      if (user === undefined) {
+          isUserLoggedIn = false;
+      }
+       res.render('userAddress',{user:user,isUserLoggedIn:isUserLoggedIn});
+   }catch(error){
+      console.log(error);
    }
 })
 
@@ -70,17 +103,25 @@ router.get('/order',async(req,res)=>{
          isUserLoggedIn=false;
       }
       
-      const userOrders = await Order.aggregate([{$match :{userId : new ObjectId(user)}}]);
+      const userOrders = await Order.aggregate([{$match :{userId : new ObjectId(user)}},]);
       let productDetails = [];
       for(const orders of userOrders){
          const product = await Product.find({_id:new ObjectId(orders.productId)});
-         productDetails.push(product[0]);
+         let productArr = {};
+         productArr.name = product[0].name;
+         productArr.imageUrl = product[0].imageUrl;
+         productArr.price = orders.totalAmount;
+         productArr.seller = orders.seller;
+         productArr.orderStatus = orders.orderStatus;
+         productDetails.push(productArr);
       }
+      let orderFilters = null;
             
       res.render('order',{productDetails:productDetails,isUserLoggedIn:isUserLoggedIn});
    }catch(error){
       console.log(error);
    }
 })
+
 
 export default router;

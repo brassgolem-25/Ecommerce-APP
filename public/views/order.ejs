@@ -2,6 +2,8 @@
     <div class="order-container">
         <div class="filters">
             <h3>Filters</h3>
+            <hr>
+            <h6>Order Status</h6>
             <div class="filter-row">
                 <input type="checkbox" id="filter1">
                 <label for="filter1">Filter 1</label>
@@ -21,18 +23,20 @@
         </div>
         <div class="orders">
         <%const productArr = productDetails;productArr.forEach((product)=>{%>
+            <%const productName = (product.name); const status = product.orderStatus ;console.log(product); let orderDelivered=null; if(status==="Ordered"){orderClass=true;} %>
             <div class="order-box">
                 <img src="<%=product.imageUrl%>" alt="Product Image">
                 <div class="order-details">
-                    <h4><%=product.name%></h4>
-                    <p>Price: <%=product.price%></p>
-                    <p>Status: Delivered</p>
+                    <p><strong><%=product.name%></strong></p >
+                    <p>$ <%=product.price%></p>
+                    <p id="order-status">Status: <%=status%></p>
                 </div>
             </div>
         <%}) %>
         </div>
     </div>
 <script>
-
+    const order = document.getElementById("order-status");
+    // if(order.)
 </script>
 <%- include('footer'); -%>

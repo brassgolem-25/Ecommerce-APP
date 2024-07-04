@@ -1,28 +1,48 @@
-<%- include('header'); -%>
+<%- include('newHeader'); -%>
   <div class="grid-container">
     <div class="signup-img">
       <img src="../images/loginpic.jpg" class="auth-img">
     </div>
     <div class="login-form">
       <h3>Login to Exclusive</h3>
-      <h7>Enter your details below</h7>
-      <form action="/auth/login" method="POST">
+      <h7 id="login-header">Enter your details below</h7>
+      <form id="loginForm">
         <div class="">
           <input type="email" class="custom-input" id="exampleInputEmail" aria-describedby="emailHelp" name="email"
             placeholder="Email or phone number">
         </div>
-        <div class="">
-          <input type="password" class="custom-input" id="exampleInputPassword1" name="password" placeholder="Password"
-            required>
+        <div class="password-container">
+          <input type="password" class="custom-input" id="exampleInputPassword1" name="password" placeholder="Password" required>
+         <span><i class="fa-regular fa-eye-slash" id="togglePassword" style="cursor: pointer;"></i></span>
         </div>
         <button type="submit" class="btn-custom-login">Login</button>
         <a class="forgot-a" href="/auth/forgotPassword">Forgot Password ?</a></p>
+        <a href="/auth/google?state=login" class="btn-google">
+          <img src="../images/google.png" alt="Google logo">
+          Sign In with Google
+        </a>
         <div class="login-custom">
           <p>Don't have an account? <a class="signup-a" href="/auth/signup">Sign Up</a></p>
         </div>
       </form>
+      <form id="otpForm" class="hide-form">
+        <div id="otp-inputs" class="otp-inputs">
+          <!-- <input type="text" class="custom-input" id="otp" name="otp" placeholder="Enter OTP" required> -->
+          <input type="text" class="otp-input" maxlength="1" required>
+          <input type="text" class="otp-input" maxlength="1" required>
+          <input type="text" class="otp-input" maxlength="1" required>
+          <input type="text" class="otp-input" maxlength="1" required>
+          <input type="text" class="otp-input" maxlength="1" required>
+          <input type="text" class="otp-input" maxlength="1" required>
+          <input type="text" id="emailForOtp" name="email" hidden>
+        </div>
+        <button type="submit" class="btn-custom-login">Verify OTP</button>
+        <div class="resend-OTPCode">
+          <!-- <button id="otpBtn" class="btn-resendCode" style="display: none;">Resend Code</button> -->
+        </div>
+      </form>
     </div>
   </div>
-</body>
-
+  <script src="../script/loginScript.js"> </script>
+  <script src="https://apis.google.com/js/platform.js" async defer></script>
   <%- include('footer'); -%>

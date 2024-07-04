@@ -9,10 +9,9 @@ import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import authentication from './middlewares/authentication.js'
 import accountRoute from './routes/accountRoute.js'
-import checkoutRoute from './routes/checkoutRoute.js'
 import searchRoute from './routes/searchRoute.js'
 import wishListRoute from './routes/wishListRoute.js'
-import orderRoute from './routes/orderRoute.js'
+import paymentRoute from './routes/paymentRoute.js'
 import { fileURLToPath } from 'url';
 
 const app = express();
@@ -35,6 +34,18 @@ app.use(session({
     resave:false,
     saveUninitialized:false,
 }));
+
+let serverRestarted = true;
+
+app.use((req, res, next) => {
+    if (serverRestarted) {
+        for (let cookie in req.cookies) {
+            res.clearCookie(cookie);
+        }
+        serverRestarted = false; // Reset the flag after clearing cookies
+    }
+    next();
+});
 
 //db connect verification
 let connection = await mongooseConnect();
@@ -60,6 +71,7 @@ app.use('/search',searchRoute);
 app.use('/wishList',authentication,wishListRoute);
 
 //route for orders
+app.use('/payment',authentication,paymentRoute)
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

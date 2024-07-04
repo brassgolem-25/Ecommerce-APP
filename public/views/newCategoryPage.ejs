@@ -1,0 +1,40 @@
+<%- include('newHeader'); -%>
+<div class="row">
+    <% products.forEach(data=> { %>
+        <%const cateG=data.category.replace(/ /g,'-'); const pName=data.name;const imageUrl=data.imageUrl;const pRating=data.rating.rate; const pReview=data.rating.count;%>
+        <%const productUrl = "/product/"+ pName %>
+            <div
+                class="col-lg-3 col-sm-6 d-flex flex-column align-items-center justify-content-center product-item my-3">
+                <div class="product">
+                    <a href="<%=productUrl%>"><img src="<%=imageUrl%>" alt=""></a>
+                    <ul class="d-flex align-items-center justify-content-center list-unstyled icons">
+                        <li class="icon"><span class="fas fa-expand-arrows-alt"></span></li>
+                        <li class="icon mx-3"><span class="far fa-heart"></span></li>
+                        <li class="icon"><span class="fas fa-shopping-bag"></span></li>
+                    </ul>
+                </div>
+                <div class="tag bg-red">sale</div>
+                <div class="title pt-4 pb-1">
+                    <%=pName%>
+                </div>
+                <div class="d-flex align-content-center justify-content-center">
+                    <span class="fas fa-star"></span>
+                    <span class="fas fa-star"></span>
+                    <span class="fas fa-star"></span>
+                    <span class="fas fa-star"></span>
+                    <span class="fas fa-star"></span>
+                </div>
+                <div class="price">$ <%= data.price %>
+                </div>
+            </div>
+            <% }); %>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<script src="../script/search.js"></script>
+
+</body>
+
+</html>

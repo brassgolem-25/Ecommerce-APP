@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete the Payment</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link rel="stylesheet" href="../css/paymentPage.css">
+</head>
+
+<body>
+    <div class="container">
+        <%const productName=orderDetails.productName;const totalCost=orderDetails.totalCost;const orderNumber=orderDetails.orderNumber;const sTime=orderDetails.startTime;const eTime=orderDetails.endTime %>
+            <div class="payment-form">
+                <div class="form-header">
+                    <h2>Payment Information</h2>
+                    <button class="close-btn"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="timer" id="timer" data-startTime="<%=sTime%>" data-endTime="<%=eTime%>">
+                    <span id="timeSpan">00:00</span>
+                </div>
+                <form id="paymentForm">
+                    <div class="form-group">
+                        <label for="payment-method">Select Payment Method</label>
+                        <select id="payment-method" class="select-group">
+                            <option value="card">Credit/Debit Card</option>
+                            <option value="upi">UPI</option>
+                        </select>
+                    </div>
+                    <div id="card-form">
+                        <div class="form-group">
+                            <label for="card-number">Card Number</label>
+                            <div class="input-group">
+                                <i class="fas fa-credit-card"></i>
+                                <input type="text" id="card-number" placeholder="**** **** **** ****" maxlength="19"
+                                    required>
+                                <img id="card-type-image" src="../images/MasterCard.png" alt="Card Type">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="expiry-date">Expiry Date</label>
+                            <div class="input-group">
+                                <i class="fas fa-calendar-alt"></i>
+                                <input type="text" id="expiry-date" placeholder="MM/YY" maxlength="5" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="cvc">CVC</label>
+                            <div class="input-group">
+                                <i class="fas fa-lock"></i>
+                                <input type="password" id="cvc" placeholder="***" maxlength="3" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="cardholder-name">Cardholder Name</label>
+                            <div class="input-group">
+                                <i class="fas fa-user"></i>
+                                <input type="text" id="cardholder-name" placeholder="John Doe" required>
+                            </div>
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <input type="checkbox" id="save-card">
+                            <label for="save-card">Save card for future payments</label>
+                        </div>
+                    </div>
+                    <div id="upi-form" style="display: none;">
+                        <div class="form-group">
+                            <label for="upi-id">UPI ID</label>
+                            <div class="input-group">
+                                <i class="fas fa-mobile-alt"></i>
+                                <input type="text" id="upi-id" placeholder="example@hdfcbank">
+                                <img id="card-type-image" src="../images/upi.jpg" alt="Card Type">
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" id="pay-now-button" class="pay-btn">Pay Now</button>
+                </form>
+            </div>
+            <div class="summary">
+                <h3>Order Summary</h3>
+                <ul>
+                    <li><span id="productName" data-productName="<%=productName%>">Product:</span>
+                        <%=productName%>
+                    </li>
+                    <li><span>Company:</span>Exclsuive</li>
+                    <li><span id="orderNumber" data-orderNumber="<%=orderNumber%>">Order number:</span>
+                        <%=orderNumber%>
+                    </li>
+                    <li><span>Shipping:</span> Free</li>
+                    <li><span>Estimated Delivery:</span> 3-5 business days</li>
+                </ul>
+                <div class="total">
+                    <span id="totalCost" data-totalCost="<%=totalCost%>">Total:</span>
+                    <strong>$<%=totalCost%></strong>
+                </div>
+                <div class="secured">
+                    <i class="fa-solid fa-lock" style="color: #0bef39;"></i> Secured Payment
+                </div>
+            </div>
+    </div>
+    <div id="confirmation-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" id="close-modal">&times;</span>
+            <h2>Payment Confirmed</h2>
+            <p>Thank you for your purchase! Redirecting to homepage...</p>
+        </div>
+    </div>
+    <div id="confirmation-overlay"></div>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script>
+        //clear localStorage
+        localStorage.clear();
+        const timeLeft = localStorage.getItem('')
+        const displayToastify = (message) => {
+            Toastify({
+                text: message,
+                duration: 2000,
+                close: true,
+                gravity: "top", // `top` or `bottom`
+                position: "center", // `left`, `center` or `right`
+                stopOnFocus: true, // Prevents dismissing of toast on hover
+                style: {
+                    background: "#FF4500",
+                }
+            }).showToast();
+        }
+        document.addEventListener('DOMContentLoaded', async () => {
+            const paymentMethodSelect = document.getElementById('payment-method');
+            const cardForm = document.getElementById('card-form');
+            const upiForm = document.getElementById('upi-form');
+            const savedCards = document.querySelectorAll('.saved-card');
+            const payNowButton = document.getElementById('pay-now-button');
+            const confirmationModal = document.getElementById('confirmation-modal');
+            const confirmationOverlay = document.getElementById('confirmation-overlay');
+            const cardTypeImage = document.getElementById('card-type-image');
+
+            paymentMethodSelect.addEventListener('change', () => {
+                if (paymentMethodSelect.value === 'card') {
+                    cardForm.style.display = 'block';
+                    upiForm.style.display = 'none';
+                } else if (paymentMethodSelect.value === 'upi') {
+                    cardForm.style.display = 'none';
+                    upiForm.style.display = 'block';
+                }
+            });
+
+            savedCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    document.getElementById('card-number').value = card.dataset.cardNumber;
+                    document.getElementById('cvc').value = card.dataset.cvc;
+                    paymentMethodSelect.value = 'card';
+                    cardForm.style.display = 'block';
+                    upiForm.style.display = 'none';
+                });
+            });
+
+            const countdown = document.getElementById('timer');
+            const timeSpan = document.getElementById('timeSpan');
+            // const response = await fetch('/product/remaining-time',{
+            //     method:'GET'
+            // })
+            // const result = await response.json();
+            // console.log(parseInt((result.remainingTime)/1200))
+            const startTime = parseInt(countdown.getAttribute('data-startTime'))*1000;
+            const endTime = parseInt(countdown.getAttribute('data-endTime'))*1000;
+            console.log(startTime, endTime);
+            const currentTime = new Date().getTime();
+            let timeLeft = Math.max(0, Math.floor((endTime - currentTime) / 1000));
+
+            const timerInterval = setInterval(() => {
+                let minutes = Math.floor(timeLeft / 60);
+                let seconds = (timeLeft % 60);
+                countdown.textContent = `0${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+                timeLeft--;
+                if (timeLeft < 0) {
+                    clearInterval(timerInterval);
+                }
+            }, 1000);
+
+
+
+
+
+            const cardNumberInput = document.getElementById('card-number');
+            cardNumberInput.addEventListener('input', (event) => {
+                let value = event.target.value.replace(/\D/g, '');
+                if (value.length > 12) value = value.slice(0, 12);
+                value = value.replace(/(\d{4})(?=\d)/g, '$1-');
+                event.target.value = value;
+            });
+
+            // CVC input
+            const cvcInput = document.getElementById('cvc');
+            cvcInput.addEventListener('input', (event) => {
+                let value = event.target.value.replace(/\D/g, '');
+                if (value.length > 3) value = value.slice(0, 3);
+                event.target.value = value;
+            });
+
+            const expiryDate = document.getElementById('expiry-date');
+            expiryDate.addEventListener('input', (e) => {
+                let value = event.target.value.replace(/\D/g, '');
+                if (value.length >= 2) {
+                    value = value.slice(0, 2) + '/' + value.slice(2, 4); // Insert slash after the first two digits
+                }
+                event.target.value = value;
+            })
+
+            const cardholderName = document.getElementById('cardholder-name');
+
+            payNowButton.addEventListener('click', async (event) => {
+                event.preventDefault();
+                // console.log("Clicked")
+                if ((paymentMethodSelect=='card' ) && (cardNumberInput.value === '' || cvcInput.value === '' || expiryDate.value === '' || cardholderName.value === '')) {
+                    // displayToastify("Please fill all the details")
+                    // cardNumberInput.style.discardNumberInput.value === ''
+                    if (cardNumberInput.value === '') {
+                        cardNumberInput.style.borderColor = 'red';
+                    } else {
+                        cardNumberInput.style.borderColor = '#ddd';
+                    }
+                    if (cvcInput.value === '') {
+                        cvcInput.style.borderColor = 'red';
+                    } else {
+                        cvcInput.style.borderColor = '#ddd';
+                    }
+                    if (expiryDate.value === '') {
+                        expiryDate.style.borderColor = 'red';
+                    } else {
+                        expiryDate.style.borderColor = '#ddd';
+                    }
+                    if (userName.value === '') {
+                        cardholderName.style.borderColor = 'red';
+                    } else {
+                        cardholderName.style.borderColor = '#ddd';
+                    }
+                    displayToastify("Please fill all the details")
+                } else {
+                    
+                    try {
+                        if(paymentMethodSelect==='card'){
+                            const cardNumberValue = (cardNumberInput.value).replace(/-/, '');
+                        const cvcValue = cvcInput.value;
+                        const cardExpiryDate = expiryDate.value;
+                        const userCardName = cardholderName.value;
+                        }
+
+
+                        const productName = document.getElementById('productName').getAttribute('data-productName');
+                        const orderNumber = document.getElementById('orderNumber').getAttribute('data-orderNumber');
+                        const totalCost = document.getElementById('totalCost').getAttribute('data-totalCost');
+                        const paymentData = {
+                            productName: productName,
+                            orderNumber: orderNumber,
+                            totalCost: totalCost,
+                            paymentMethod: (paymentMethodSelect.value).toUpperCase(),
+                            cardDetails: paymentMethodSelect.value === 'card' ? {
+                                cardNumber: (cardNumberInput.value).replace(/-/g, ''),
+                                expiryDate: expiryDate.value,
+                                cvc: cvcInput.value,
+                                cardholderName: cardholderName.value
+                            } : {},
+                            upiDetails: paymentMethodSelect.value === 'upi' ? {
+                                upiId: document.getElementById('upi-id').value
+                            } : {}
+                        };
+                        console.log(paymentData);
+                        confirmationOverlay.style.display = 'block'
+                        const paymentResponse = await fetch('/payment/initiatePayment', {
+                            method: "POST",
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(paymentData)
+                        })
+
+                        const paymentResult = await paymentResponse.json();
+                        if (paymentResult.success) {
+                            // confirmationOverlay.style.display = 'block';
+                            confirmationModal.style.display = 'block';
+                        }
+
+                    } catch (error) {
+                        alert("Payment Failed")
+                    }
+
+                }
+
+                // confirmationOverlay.style.display = 'block';
+                // confirmationModal.style.display = 'block';
+
+                // setTimeout(() => {
+                //     // window.location.href = 'homepage.htm l';
+                // }, 3000);
+            });
+    
+
+
+        });
+
+    </script>
+</body>
+
+</html>
