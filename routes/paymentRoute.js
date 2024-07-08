@@ -1,9 +1,10 @@
 import express from 'express';
 import Payment from '../models/payment.js';
 import authService from '../services/authService.js';
-import Razorpay from 'razorpay';
 import jwt from 'jsonwebtoken';
 import { ObjectId } from 'mongodb';
+import Product from '../models/product.js';
+import Order from '../models/order.js';
 
 
 const router = express.Router();
@@ -46,7 +47,7 @@ router.get("/:token", async (req, res) => {
 
 router.post('/initiatePayment', async (req, res) => {
    try {
-      const { productName, orderNumber, paymentMethod, cardDetails, upiDetails } = req.body;
+      const { productName, orderNumber, paymentMethod, cardDetails, upiDetails,quantity } = req.body;
       const totalCost = parseInt(req.body.totalCost);
       const user = authService.getUser(req.cookies.uid);
       const userId = user[0]._id;
@@ -60,8 +61,29 @@ router.post('/initiatePayment', async (req, res) => {
             }
          }
       )
-
+      
       console.log("payment status"+ updatePaymentStatus)
+
+
+      console.log(req.body);
+      const productDetail = await Product.find({name:productName});
+      const productId = productDetail[0]._id;
+      await Order.create({
+         userId:userId,
+         productId:productId,
+         quantity:1,
+         orderId:orderNumber,
+         seller:'Exclusive',
+         paymentType:paymentMethod,
+         orderStatus:'Shipped',
+         totalAmount:totalCost,
+
+      })
+
+
+
+
+
       return res.json({ success: true, message: "Payment done" });
    } catch (error) {
       console.log(error);
@@ -85,12 +107,30 @@ router.post('/paymentStatus', async (req, res) => {
          console.log("Payment not done!!");
          return res.json({ isPaymentCompleted: false, message: "Payment not completed!"});
       }
-      const clientPaymentMethod = paymentResponse[0].paymentMethod;
+      const clientPaymentMethod = paymentResponse[0].paymentMethod; 
       return res.json({ isPaymentCompleted: true, message: "Payment completed" ,paymentMethod:clientPaymentMethod});
 
    } catch (error) {
       console.log(error);
    }
 })
+
+const initiateOrder = async (orderDetails)=>{
+      const user = findUser(req,res);
+
+   //       const productDetail = await Product.find({name:productName});
+}
+
+// router.post('/initiateOrder',async(req,res)=>{
+//    try{
+//       const user = findUser(req,res);
+//       const {totalAmount,paymentType,orderId,productName,quantity} = req.body;
+//       console.log(req.body)
+
+
+//    }catch(error){
+
+//    }
+// })
 
 export default router;

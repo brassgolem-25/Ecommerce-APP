@@ -43,7 +43,7 @@ router.get("/",async (req,res)=>{
         // console.log(whistListItem)
         const category = ["Women's Fashion","Men's Fashion","Electronics","Home & Lifestyle","Medicine"]
         // res.render("homepage",{products:products,productCategory:category,isUserLoggedIn:isUserLoggedIn, whistListItem:JSON.stringify(wishListItemMap)})
-        res.render("tempProductPage",{products:products,productCategory:category,isUserLoggedIn:isUserLoggedIn, whistListItem:JSON.stringify(wishListItemMap)})
+        res.render("homePage",{products:products,productCategory:category,isUserLoggedIn:isUserLoggedIn, whistListItem:JSON.stringify(wishListItemMap)})
     }catch(error){
         console.log(error)
     }

@@ -1,42 +1,91 @@
-<%- include('header'); -%>
-    <div class="order-container">
-        <div class="filters">
-            <h3>Filters</h3>
-            <hr>
-            <h6>Order Status</h6>
-            <div class="filter-row">
-                <input type="checkbox" id="filter1">
-                <label for="filter1">Filter 1</label>
+<%- include('newHeader'); -%>
+
+<div class="order-container">
+    <div class="order-sidebar">
+        <h2>Filters</h2>
+        <form class="filterForm" id="filterForm">
+            <div class="form-group">
+                <label for="status">Order Status</label>
+                <select id="status" class="form-control">
+                    <option value="all">All</option>
+                    <option value="pending">Pending</option>
+                    <option value="shipped">Shipped</option>
+                    <option value="delivered">Delivered</option>
+                    <option value="canceled">Canceled</option>
+                </select>
             </div>
-            <div class="filter-row">
-                <input type="checkbox" id="filter2">
-                <label for="filter2">Filter 2</label>
+            <div class="form-group">
+                <label for="date">Order Date</label>
+                <input type="date" id="date" class="form-control">
             </div>
-            <div class="filter-row">
-                <input type="checkbox" id="filter3">
-                <label for="filter3">Filter 3</label>
-            </div>
-            <div class="filter-row">
-                <input type="checkbox" id="filter4">
-                <label for="filter4">Filter 4</label>
-            </div>
-        </div>
-        <div class="orders">
-        <%const productArr = productDetails;productArr.forEach((product)=>{%>
-            <%const productName = (product.name); const status = product.orderStatus ;console.log(product); let orderDelivered=null; if(status==="Ordered"){orderClass=true;} %>
-            <div class="order-box">
-                <img src="<%=product.imageUrl%>" alt="Product Image">
-                <div class="order-details">
-                    <p><strong><%=product.name%></strong></p >
-                    <p>$ <%=product.price%></p>
-                    <p id="order-status">Status: <%=status%></p>
+            <button type="submit" class="apply-filters-btn">Apply Filters</button>
+        </form>
+    </div>
+    <div class="main-content" id="ordersContainer">
+        <div class="order" data-status="pending" data-date="2023-12-15">
+            <div class="order-details">
+                <div class="order-info">
+                    <p>Order #12345</p>
+                    <p>Product: Example Product 1</p>
+                    <p>Quantity: 2</p>
+                    <p>Total: $40.00</p>
+                </div>
+                <div class="order-status pending">
+                    <span>Pending</span>
                 </div>
             </div>
-        <%}) %>
         </div>
+        <div class="order" data-status="shipped" data-date="2023-12-14">
+            <div class="order-details">
+                <div class="order-info">
+                    <p>Order #12346</p>
+                    <p>Product: Example Product 2</p>
+                    <p>Quantity: 1</p>
+                    <p>Total: $20.00</p>
+                </div>
+                <div class="order-status shipped">
+                    <span>Shipped</span>
+                </div>
+            </div>
+        </div>
+        <div class="order" data-status="delivered" data-date="2023-12-13">
+            <div class="order-details">
+                <div class="order-info">
+                    <p>Order #12347</p>
+                    <p>Product: Example Product 3</p>
+                    <p>Quantity: 1</p>
+                    <p>Total: $30.00</p>
+                </div>
+                <div class="order-status delivered">
+                    <span>Delivered</span>
+                </div>
+            </div>
+        </div>
+        <!-- More orders can be added here -->
     </div>
+</div>
+
 <script>
-    const order = document.getElementById("order-status");
-    // if(order.)
+document.getElementById('filterForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const status = document.getElementById('status').value;
+    const date = document.getElementById('date').value;
+    const orders = document.querySelectorAll('.order');
+
+    orders.forEach(order => {
+        const orderStatus = order.getAttribute('data-status');
+        const orderDate = order.getAttribute('data-date');
+        let statusMatch = (status === 'all' || status === orderStatus);
+        let dateMatch = (!date || date === orderDate);
+
+        if (statusMatch && dateMatch) {
+            order.style.display = 'block';
+        } else {
+            order.style.display = 'none';
+        }
+    });
+});
 </script>
-<%- include('footer'); -%>
+
+<%- include('newFooter'); -%>

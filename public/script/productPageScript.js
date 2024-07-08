@@ -121,6 +121,9 @@ nextButtons.forEach(button => {
 
             const nextBtn = document.querySelector('.next-btn[data-next-step="paymentStep"]');
             const productName = document.getElementById("buyNowProduct").getAttribute('data-product-name');
+            const productQuantity = document.getElementById("productQuantity").value;
+            console.log(productQuantity);
+
             const cost = document.getElementById("buyNowProduct").getAttribute('data-product-cost')
             if (isUserLoggedIn) {
                 const response = await fetch('/product/processPayment', {
@@ -140,8 +143,8 @@ nextButtons.forEach(button => {
                     const redirectUrl = result.url;
                     const clientordNumber = result.clientordNumber;
                     //for redirecting to order Page
-                    const checkPaymentStatus = async () =>{
-                        try{
+                    const checkPaymentStatus = async () => {
+                        try {
                             const paymentStatus = await fetch('/payment/paymentStatus', {
                                 method: "POST",
                                 headers: {
@@ -151,33 +154,33 @@ nextButtons.forEach(button => {
                                     orderNumber: clientordNumber,
                                 })
                             });
-                    
+
                             const paymentStatusJson = await paymentStatus.json();
                             console.log("Payment Status:", JSON.stringify(paymentStatusJson));
-                    
+
                             if (paymentStatusJson.isPaymentCompleted) {
                                 completePayment.style.display = 'none';
                                 paymentCompleted.style.display = 'block';
-                                
-                                setTimeout(() => {
+                                const clientPaymentMethod = paymentStatusJson.paymentMethod;
+
+                                setTimeout(async () => {
                                     paymentCompleted.style.display = 'none';
                                     update();
                                     document.getElementById('trackingStep').style.display = 'block';
-                                    const clientPaymentMethod = paymentStatusJson.paymentMethod;
-                                    updateReviewStep(clientordNumber,clientPaymentMethod);
+                                    updateReviewStep(clientordNumber, clientPaymentMethod);
                                     document.getElementById('paymentStep').style.display = 'none';
                                 }, 4000);
-                    
+
                                 return; // Exit the function as payment is completed
                             }
-                    
+
                             // Payment not completed, continue polling
                             setTimeout(checkPaymentStatus, 5000);
-                        }catch(error){
+                        } catch (error) {
                             console.log(error);
                         }
                     }
-                    setTimeout(() => {
+                    setTimeout(async () => {
                         paymentLoader.style.display = 'none';
                         completePayment.style.display = 'block';
                         window.open(redirectUrl, '_blank');
@@ -296,10 +299,10 @@ function update() {
 }
 
 //update Review Page
-const updateReviewStep = (clientordNumber,clientPaymentMethod)=>{
+const updateReviewStep = (clientordNumber, clientPaymentMethod) => {
     document.getElementById('orderNumber').textContent = clientordNumber;
-    if(clientPaymentMethod=="UPI"){
-        document.getElementById('paymentTypeImg').src="../images/upi.jpg"   
+    if (clientPaymentMethod == "UPI") {
+        document.getElementById('paymentTypeImg').src = "../images/upi.jpg"
     }
     document.getElementById('paymentMethod').textContent = "Online " + clientPaymentMethod;
 }

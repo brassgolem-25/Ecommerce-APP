@@ -23,20 +23,17 @@ async function  findUser(req,res){
 }
 
 
-router.post('/profile',async(req,res) => {
-   try{
-      const user = await findUser(req,res);
-      const userId = user._id;
-      const { firstName,lastName,gender, email,mobile, address } = req.body;
-      const fullName = firstName+lastName;
-      // console.log(req.body);
-      await User.findOneAndUpdate({_id:new ObjectId(userId)},{$set:{"name":fullName,"email":email,"number":mobile,"gender":gender,"address":address}});
-      // res.render('account',{user:user});
-      res.redirect('/Account');
-   }catch(error){
-      console.log(error);
-   }
-})
+// router.post('/updateEmail',async(req,res) => {
+//    try{
+//       const user = await findUser(req,res);
+//       const userId = user._id;
+//       const { email,mobile } = req.body;
+//       await User.findOneAndUpdate({_id:new ObjectId(userId)},{$set:{"email":email,"number":mobile}});
+//       return res.json({success:true, message: "Email is updated successfully"});
+//    }catch(error){
+//       console.log(error);
+//    }
+// })
 
 router.get("/", async(req,res) => {
    try{
@@ -71,19 +68,6 @@ router.get("/", async(req,res) => {
       } 
    })
 
-router.get("/Addresses",async(req,res)=>{
-   try{
-      const user = await findUser(req,res);
-      //  console.log(user);
-      let isUserLoggedIn = true;
-      if (user === undefined) {
-          isUserLoggedIn = false;
-      }
-       res.render('userAddress',{user:user,isUserLoggedIn:isUserLoggedIn});
-   }catch(error){
-      console.log(error);
-   }
-})
 
 //for all other page
 router.get('/Page',async(req,res)=>{

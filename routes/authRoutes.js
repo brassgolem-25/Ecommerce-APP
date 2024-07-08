@@ -35,8 +35,8 @@ async function createUserSession(res, userEmail) {
 }
 
 //google oauth setup
-// const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET, "http://localhost:3000/auth/google/callback");
-const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET, "https://ecommerce-app-production-3f9f.up.railway.app/auth/google/callback");
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET, "http://localhost:3000/auth/google/callback");
+// const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET, "https://ecommerce-app-production-3f9f.up.railway.app/auth/google/callback");
 
 router.get('/google',validateState, (req, res) => {
 
@@ -164,7 +164,11 @@ const generateOTP = async (email) => {
             .setSubject("Your One-Time Passcode from Exclusive")
             .setText(otpMessage);
 
-        // await mailerSend.email.send(emailParams);
+        try{
+            await mailerSend.email.send(emailParams);
+        }catch(error){
+            console.log(error);
+        }
         //   console.log("Mail Sent")
 
         console.log("token " + token)

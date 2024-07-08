@@ -9,7 +9,7 @@
       <form id="loginForm">
         <div class="">
           <input type="email" class="custom-input" id="exampleInputEmail" aria-describedby="emailHelp" name="email"
-            placeholder="Email or phone number">
+            placeholder="Email">
         </div>
         <div class="password-container">
           <input type="password" class="custom-input" id="exampleInputPassword1" name="password" placeholder="Password" required>
@@ -37,7 +37,7 @@
           <input type="text" id="emailForOtp" name="email" hidden>
         </div>
         <button type="submit" class="btn-custom-login">Verify OTP</button>
-        <div class="resend-OTPCode">
+        <div class="resend-OTPCode" style="margin-top: 20px;">
           <!-- <button id="otpBtn" class="btn-resendCode" style="display: none;">Resend Code</button> -->
         </div>
       </form>
@@ -45,4 +45,6 @@
   </div>
   <script src="../script/loginScript.js"> </script>
   <script src="https://apis.google.com/js/platform.js" async defer></script>
-  <%- include('footer'); -%>
+</body>
+
+</html>

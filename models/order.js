@@ -22,7 +22,7 @@ const orderSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    paymentId : {
+    orderId : {
         type: String,
         required: true,
     },
@@ -39,10 +39,6 @@ const orderSchema = new mongoose.Schema({
     },
     totalAmount:{
         type: Number,
-        required:true
-    },
-    address:{
-        type:String,
         required:true
     }
 }, { timestamps: true });

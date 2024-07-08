@@ -2,6 +2,7 @@ import express from 'express';
 import authFunc from '../services/authService.js'
 import Order from '../models/order.js';
 import {ObjectId} from 'mongodb';
+import Product from '../models/product.js';
 
 const router = express.Router();
 router.use(express.json());
@@ -18,7 +19,7 @@ router.get("/", async(req,res) => {
    try{
     //render order page
     const user = findUser(req,res);
-    console.log("User" +user);
+   //  console.log("User" +user);
    //  const orders = await Order.aggregate([{$match :{userId : new ObjectId(user)}}]);
    let isUserLoggedIn = true;
    if(user === undefined){
@@ -30,7 +31,6 @@ router.get("/", async(req,res) => {
     console.log(error);
    }
 })
-
 
 
 export default router;

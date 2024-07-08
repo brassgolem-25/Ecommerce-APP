@@ -1,55 +1,237 @@
 <%- include('newHeader'); -%>
-<%const userName = user.name; const userEmail = user.email;console.log(user);const userAddress = user.address.locality+" , "+user.address.state+" ," +user.address.pincode; %>
-<div class="container mt-5 userCard">
-    <div class="row">
-        <div class="col-md-12 d-flex align-items-center">
-            <img src="../images/User.jpg" class="rounded-circle mr-3" alt="User Image">
-            <h4 class="mb-0">Hello, <%=userName%></h4>
-        </div>
-        <div class="col-md-12 mt-4">
-            <div class="card mb-4">
-                <div class="card-header">
-                    Contact Information
+    <% const userName=user.name; const userEmail=user.email; console.log(user); const userLocality=user.address.locality; const userState=user.address.state; const userPincode=user.address.pincode; %>
+        <div class="container mt-5 userCard">
+            <div class="row">
+                <div class="col-md-12 d-flex align-items-center">
+                    <img src="../images/User.jpg" class="rounded-circle mr-3" alt="User Image">
+                    <h4 class="mb-0">Hello, <%= userName %>
+                    </h4>
                 </div>
-                <div class="card-body">
-                    <form>
-                        <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="email" class="form-control" id="email" value="" placeholder="<%=userEmail%>" disabled>
+                <div>
+                    <a href="/Account/Order" class="round-black-btn">Orders</a>
+                    <a href="/wishlist" class="round-black-btn">Wishlist</a>
+                    <a href="/auth/logout" class="logout-btn">Logout</a>
+                </div>
+                <div class="col-md-12 mt-4">    
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            Address
                         </div>
-                        <div class="form-group">
-                            <label for="mobile">Mobile</label>
-                            <input type="text" class="form-control" id="mobile" value="" placeholder="" disabled>
+                        <div class="card-body">
+                            <form class="addressForm">
+                                <div class="form-group">
+                                    <label for="locality">Locality</label>
+                                    <input type="text" class="form-control" id="locality" value="<%= userLocality %>"
+                                        placeholder="" disabled>
+                                    <div class="invalid-feedback">Please enter locality.</div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="state">State</label>
+                                    <input type="text" class="form-control" id="state" value="<%= userState %>"
+                                        placeholder="" disabled>
+                                    <div class="invalid-feedback">Please enter state.</div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="pincode">Pincode</label>
+                                    <input type="text" class="form-control" id="pincode" value="<%= userPincode %>"
+                                        placeholder="" disabled>
+                                    <div class="invalid-feedback">Please enter a 6-digit pincode.</div>
+                                </div>
+                                <button class="addressForm editBtn round-black-btn">Edit</button>
+                                <button class="addressForm saveBtn round-black-btn" style="display: none">Save</button>
+                                <button class="addressForm cancelBtn round-Cart-btn"
+                                    style="display: none; margin-left: 8px;">Cancel</button>
+                            </form>
                         </div>
-                        <div class="form-group">
-                            <label for="address">Address</label>
-                            <input type="text" class="form-control" id="address" value="" placeholder="<%=userAddress%>" disabled>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            Payment Options
                         </div>
-                        <button type="submit" class="round-black-btn">Edit</button>
-                        <button type="submit" class="round-black-btn" style="display: none">Save</button>
-                        <button type="submit" class="round-black-btn" style="display: none">Cancel</button>
-                    </form>
+                        <div class="card-body">
+                            <form>
+                                <div class="form-group">
+                                    <label for="credit-card">Credit Card</label>
+                                    <input type="text" class="form-control" id="credit-card" value="**** **** **** 1234"
+                                        disabled>
+                                </div>
+                                <div class="form-group">
+                                    <label for="paypal">UPI</label>
+                                    <input type="email" class="form-control" id="paypal" value="user@paypal.com"
+                                        disabled>
+                                </div>
+                                <a href="#" class="round-black-btn">Add Payment Method</a>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="card">
-                <div class="card-header">
-                    Payment Options
-                </div>
-                <div class="card-body">
-                    <form>
-                        <div class="form-group">
-                            <label for="credit-card">Credit Card</label>
-                            <input type="text" class="form-control" id="credit-card" value="**** **** **** 1234" disabled> 
-                        </div>
-                        <div class="form-group">
-                            <label for="paypal">UPI</label>
-                            <input type="email" class="form-control" id="paypal" value="user@paypal.com" disabled>
-                        </div>
-                        <a href="#" class="round-black-btn">Add Payment Method</a>
-                    </form>
-                </div>
-            </div>
         </div>
-    </div>
-</div>
-<%- include('newFooter'); -%>
+        <script>
+            const displayToastify = (message) => {
+                Toastify({
+                    text: message,
+                    duration: 2000,
+                    close: true,
+                    gravity: "top", // `top` or `bottom`
+                    position: "center", // `left`, `center` or `right`
+                    stopOnFocus: true, // Prevents dismissing of toast on hover
+                    style: {
+                        background: "black",
+                    }
+                }).showToast();
+            }
+
+            const contactEditBtns = document.querySelectorAll('.editBtn');
+            const cancelBtns = document.querySelectorAll('.cancelBtn');
+            const saveBtns = document.querySelectorAll('.saveBtn');
+
+            contactEditBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    let parentClassName = e.target.className;
+                    if (parentClassName.includes('contact')) {
+                        parentClassName = 'contactForm';
+                    } else {
+                        parentClassName = 'addressForm';
+                    }
+                    const inputs = document.querySelectorAll(`.${parentClassName} .form-control`);
+                    inputs.forEach(input => {
+                        input.disabled = false;
+                        input.classList.remove('is-invalid');
+                    });
+                    const cancelBtn = document.querySelector(`.${parentClassName} .cancelBtn`);
+                    const saveBtn = document.querySelector(`.${parentClassName} .saveBtn`);
+                    btn.style.display = 'none';
+                    cancelBtn.style.display = 'inline';
+                    saveBtn.style.display = 'inline';
+                    saveBtn.blur();
+                });
+            });
+
+            cancelBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    let parentClassName = e.target.className;
+                    if (parentClassName.includes('contact')) {
+                        parentClassName = 'contactForm';
+                    } else {
+                        parentClassName = 'addressForm';
+                    }
+                    const inputs = document.querySelectorAll(`.${parentClassName} .form-control`);
+                    let isEmailInputEmpty = false;
+                    inputs.forEach(input => {
+                        if(input.id === 'email' && input.value.trim() === ''){
+                            input.classList.add('is-invalid');
+                                btn.classList.add('shake');
+                                setTimeout(() => {
+                                    btn.classList.remove('shake');
+                                }, 300);
+                                isEmailInputEmpty = true;
+
+                        }else {
+                            input.disabled = true;
+                            input.classList.remove('is-invalid');
+                        }
+
+                    });
+
+                    if(!isEmailInputEmpty){
+                        const editBtn = document.querySelector(`.${parentClassName} .editBtn`);
+                        const saveBtn = document.querySelector(`.${parentClassName} .saveBtn`);
+                        editBtn.style.display = 'inline';
+                        btn.style.display = 'none';
+                        saveBtn.style.display = 'none';
+                    }
+
+                });
+            });
+
+            saveBtns.forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    let parentClassName = e.target.className;
+                    if (parentClassName.includes('contact')) {
+                        parentClassName = 'contactForm';
+                    } else {
+                        parentClassName = 'addressForm';
+                    }
+                    const inputs = document.querySelectorAll(`.${parentClassName} .form-control`);
+                    let valid = true;
+                    inputs.forEach(input => {
+                        if (input.id!=='mobile' && input.id !== 'credit-card' && input.id !== 'paypal') {
+                            if (input.value.trim() === '' || (input.id === 'mobile' && !/^\d{10}$/.test(input.value)) || (input.id === 'pincode' && !/^\d{6}$/.test(input.value)) || (input.id === 'state' && input.value.trim() === '')) {
+                                input.classList.add('is-invalid');
+                                valid = false;
+                            } else {
+                                input.classList.remove('is-invalid');
+                            }
+                        }
+                    });
+                    if (valid) {
+                        if(parentClassName == 'addressForm'){
+                            const userAddressData = {
+                            locality: document.getElementById('locality').value,
+                            userPincode: document.getElementById('pincode').value,
+                            state: document.getElementById('state').value
+                        };
+                        // console.log(userAddressData)
+                        try {
+                            const response = await fetch('/Account/userAddress', {
+                                method: "POST",
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(
+                                    userAddressData
+                                )
+                            })
+                            const result = await response.json();
+                            console.log(result);
+                            displayToastify(result.message);
+
+                        } catch (error) {
+                            console.log(error);
+                        }
+                        }else {
+                            const clientEmail = document.getElementById('email').value;
+                            const response = await fetch('/Account/updateEmail', {
+                                method: "POST",
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    email:clientEmail
+                                })
+                            })
+                            const result = await response.json();
+                            console.log(result);
+                            displayToastify(result.message);
+                        }
+                        inputs.forEach(input => {
+                                input.disabled = true;
+                            });
+                        const editBtn = document.querySelector(`.${parentClassName} .editBtn`);
+                            const cancelBtn = document.querySelector(`.${parentClassName} .cancelBtn`);
+                            btn.style.display = 'none';
+                            cancelBtn.style.display = 'none';
+                            editBtn.style.display = 'inline';
+
+
+                    }
+                });
+            });
+
+            // function validateInput(e) {
+            //     const input = e.target;
+            //     const errorSpan = document.getElementById(`${input.id}-error`);
+            //     if (input.value.trim() === '' || (input.id === 'mobile' && !/^\d{10}$/.test(input.value)) || (input.id === 'pincode' && !/^\d{6}$/.test(input.value))) {
+            //         input.classList.add('is-invalid');
+            //         errorSpan.textContent = 'This field is required and must be valid.';
+            //     } else {
+            //         input.classList.remove('is-invalid');
+            //         errorSpan.textContent = '';
+            //     }
+            // }
+        </script>
+        <%- include('newFooter'); -%>

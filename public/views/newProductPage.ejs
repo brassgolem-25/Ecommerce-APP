@@ -14,7 +14,8 @@
 								<%=productName%>
 							</div>
 							<div class="product-price-discount"><span>$<%=price%></span><span class="line-through">$
-									<%=oldPrice%></span></div>
+									<%=oldPrice%>
+								</span></div>
 						</div>
 						<p>
 							<%=description%>.
@@ -42,13 +43,13 @@
 							<label for="size">Quantity</label>
 							<form class="display-flex">
 								<div class="qtyminus">-</div>
-								<input type="text" name="quantity" value="1" class="qty">
+								<input id="productQuantity" type="text" name="quantity" value="1" class="qty">
 								<div class="qtyplus">+</div>
 							</form>
 							<a href="" id="addToCart" data-product-name="<%=productName%>" class="round-Cart-btn">Add to
 								Cart</a>
-							<a id="buyNowProduct" data-product-name="<%=productName%>"
-								data-product-cost="<%=price%>" class="round-black-btn">Buy Now</a>
+							<a id="buyNowProduct" data-product-name="<%=productName%>" data-product-cost="<%=price%>"
+								class="round-black-btn">Buy Now</a>
 						</div>
 						<div class="delivery-check">
 							<label for="pincode">Deliver to <i class="fa-solid fa-location-dot"
@@ -168,21 +169,25 @@
 
 						<!-- Step 2: Shipping Address -->
 						<div class="step-content" id="addressStep">
-							<h5 class="modal-title">Shipping Address</h5>
+							<h5 class="modal-title">
+								Shipping Address
+								  <img src="../images/edit.png" class="addressContentImg editImg">
+								  <img src="../images/checked.png" class="addressContentImg saveImg">
+							</h5>
 							<div class="mb-3">
 								<label for="locality">Locality</label>
 								<input type="text" class="form-control" id="locality" placeholder="Enter your locality"
-									required>
+									disabled>
 							</div>
 							<div class="mb-3">
 								<label for="state">State</label>
 								<input type="text" class="form-control" id="state" placeholder="Enter your state"
-									required>
+									disabled>
 							</div>
 							<div class="mb-3">
 								<label for="pincode">Pincode</label>
 								<input type="text" class="form-control" id="userPincode"
-									placeholder="Enter your pincode" required>
+									placeholder="Enter your pincode" disabled>
 							</div>
 							<button class="btn btn-secondary prev-btn" data-prev-step="checkoutStep">Back</button>
 							<button class="btn btn-primary next-btn" data-next-step="paymentStep">Next</button>
@@ -213,7 +218,8 @@
 								<h2>Payment Failed</h2>
 								<i class="fa-solid fa-circle-exclamation" style="color: #f0430a;font-size: 3em; "></i>
 							</div>
-							<button class="btn btn-secondary prev-btn" data-prev-step="addressStep">Back</button>
+							<button class="btn btn-secondary prev-btn " data-prev-step="addressStep"
+								disabled>Back</button>
 						</div>
 
 						<!-- Step 4: Track Order -->
@@ -249,37 +255,345 @@
 									</div>
 								</div>
 							</div>
-							<!-- <button class="btn btn-secondary prev-btn" data-prev-step="paymentStep">Back</button> -->
 							<button class="btn btn-primary close-btn" data-bs-dismiss="modal">Close</button>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-
-
-		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-			integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-			crossorigin="anonymous"></script>
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-			integrity="	sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-			crossorigin="anonymous"></script>
-		<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-			integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2r0p0jmaOAdWEuhC5xNHcO9uLvEf7A7Dn"
-			crossorigin="anonymous"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-			integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-			crossorigin="anonymous"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-modal/2.2.6/js/bootstrap-modalmanager.min.js"
-			integrity="sha512-/HL24m2nmyI2+ccX+dSHphAHqLw60Oj5sK8jf59VWtFWZi9vx7jzoxbZmcBeeTeCUc7z1mTs3LfyXGuBU32t+w=="
-			crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 		<script src="../script/search.js"></script>
 		<script src="../script/tempScript.js"></script>
-		<script src="../script/productPageScript.js"></script>
+		<!-- <script src="../script/productPageScript.js"></script> -->
 		<script>
+			const validateUserPincode = document.getElementById('checkDelivery');
+			validateUserPincode.addEventListener('click', () => {
+				const userPincode = document.getElementById('pincode').value;
+				const deliveryResult = document.getElementById('deliveryResult');
+				// console.log(userPincode.length)
+				if (userPincode.length < 6) {
+					setTimeout(() => {
+						deliveryResult.innerHTML = 'Please type Correct Pincode';
+					}, 1000);
+				} else {
+					setTimeout(() => {
+						deliveryResult.innerHTML = 'The Product will ship within 2-3 days';
+					}, 1000);
+				}
+				deliveryResult.innerHTML = '';
 
+			})
+
+			const reviewTab = document.getElementById('review-tab');
+			const descriptionTab = document.getElementById('description-tab')
+			const reviewForm = document.getElementById('review')
+			const description = document.getElementById('description')
+
+			reviewTab.addEventListener('click', () => {
+				reviewForm.classList.add('show');
+				reviewForm.classList.add('active');
+
+				description.classList.remove('show');
+				description.classList.remove('active');
+
+			})
+
+			descriptionTab.addEventListener('click', () => {
+				reviewForm.classList.remove('show');
+				reviewForm.classList.remove('active');
+
+				description.classList.add('show');
+				description.classList.add('active');
+			})
+
+			//toastify
+			const displayToastify = (message) => {
+				Toastify({
+					text: message,
+					duration: 2000,
+					close: true,
+					gravity: "top",
+					position: "center",
+					stopOnFocus: true, 
+					style: {
+						background: "#FF4500",
+					}
+				}).showToast();
+			}
+
+			//user login?
+			const isUserLoggedIn = document.cookie.includes('uid') ? true : false;
+			//Payment Page Script
+			const nextButtons = document.querySelectorAll('.next-btn');
+			const prevButtons = document.querySelectorAll('.prev-btn');
+			const dots = document.querySelectorAll('.progress-dot');
+			const progress = document.getElementById('progress')
+			const wraps = document.querySelectorAll('.text-wrap')
+
+			let currentActive = 1
+
+			nextButtons.forEach(button => {
+				button.addEventListener('click', async function () {
+					const currentStep = button.closest('.step-content');
+					const nextStepId = button.getAttribute('data-next-step');
+					const nextStep = document.getElementById(nextStepId);
+
+					currentActive++;
+					if (currentActive > wraps.length) {
+						currentActive = wraps.length
+					}
+
+					//check if current Step is address then validate address
+					if (currentStep.id === 'addressStep') {
+						//fetch user address 
+					    const locality = document.getElementById('locality').value;
+					    const state = document.getElementById('state').value;
+					    const userPincode = document.getElementById('userPincode').value;
+						const editContent = document.querySelector('.editImg');
+						console.log(editContent);
+
+						editContent.addEventListener('click',()=>{
+							editContent.src = '../css/images/close-Icon.png'
+							document.getElementById('locality').disabled=false;
+						})
+
+					    if (!locality || !state || !userPincode) {
+					        //show toastify
+					        displayToastify("Please fill all the Details")
+					        return;
+					    }
+					    try {
+					        const response = fetch('/Account/userAddress', {
+					            method: "POST",
+					            headers: {
+					                'Content-Type': 'application/json'
+					            },
+					            body: JSON.stringify({
+					                locality: locality,
+					                state: state,
+					                userPincode: userPincode
+					            })
+					        })
+					        const result = await response;
+					        console.log(result);
+					        if (result.success) {
+					            currentStep.classList.remove('active');
+					            nextStep.classList.add('active');
+					            update();
+					        }
+					    } catch (error) {
+					        console.log(error);
+					    }
+
+					}
+
+					if (nextStepId === 'paymentStep') {
+						// const payNowButton = document.getElementById('pay-now-button');
+						const paymentLoader = document.querySelector('.payment-loader');
+						const completePayment = document.querySelector('.complete-payment');
+						const paymentCompleted = document.querySelector('.payment-completed');
+						const paymentFailed = document.querySelector('.paymentFailed');
+
+						const nextBtn = document.querySelector('.next-btn[data-next-step="paymentStep"]');
+						const productName = document.getElementById("buyNowProduct").getAttribute('data-product-name');
+						const productQuantity = document.getElementById("productQuantity").value;
+						console.log(productQuantity);
+
+						const cost = document.getElementById("buyNowProduct").getAttribute('data-product-cost')
+						if (isUserLoggedIn) {
+							const response = await fetch('/product/processPayment', {
+								method: "POST",
+								headers: {
+									'Content-Type': 'application/json'
+								},
+								body: JSON.stringify({
+									productName: productName,
+									cost: cost
+								})
+							})
+							const result = await response.json();
+							console.log(result);
+							if (result.success) {
+								displayToastify(result.message);
+								const redirectUrl = result.url;
+								const clientordNumber = result.clientordNumber;
+								//for redirecting to order Page
+								const checkPaymentStatus = async () => {
+									try {
+										const paymentStatus = await fetch('/payment/paymentStatus', {
+											method: "POST",
+											headers: {
+												'Content-Type': 'application/json'
+											},
+											body: JSON.stringify({
+												orderNumber: clientordNumber,
+											})
+										});
+
+										const paymentStatusJson = await paymentStatus.json();
+										console.log("Payment Status:", JSON.stringify(paymentStatusJson));
+
+										if (paymentStatusJson.isPaymentCompleted) {
+											completePayment.style.display = 'none';
+											paymentCompleted.style.display = 'block';
+											const clientPaymentMethod = paymentStatusJson.paymentMethod;
+
+											setTimeout(async () => {
+												paymentCompleted.style.display = 'none';
+												update();
+												document.getElementById('trackingStep').style.display = 'block';
+												updateReviewStep(clientordNumber, clientPaymentMethod);
+												document.getElementById('paymentStep').style.display = 'none';
+											}, 4000);
+
+											return; // Exit the function as payment is completed
+										}
+
+										// Payment not completed, continue polling
+										setTimeout(checkPaymentStatus, 5000);
+									} catch (error) {
+										console.log(error);
+									}
+								}
+								setTimeout(async () => {
+									paymentLoader.style.display = 'none';
+									completePayment.style.display = 'block';
+									window.open(redirectUrl, '_blank');
+									checkPaymentStatus();
+								}, 2000)
+
+							} else {
+								displayToastify(result.message)
+							}
+
+						}
+					}
+					update();
+					currentStep.classList.remove('active');
+					nextStep.classList.add('active');
+					
+				});
+			});
+
+
+			prevButtons.forEach(button => {
+				button.addEventListener('click', function () {
+					const currentStep = button.closest('.step-content');
+					const prevStepId = button.getAttribute('data-prev-step');
+					const prevStep = document.getElementById(prevStepId);
+
+					currentStep.classList.remove('active');
+					prevStep.classList.add('active');
+
+					currentActive--;
+					if (currentActive < 1) {
+						currentActive = 1;
+					}
+
+					update();
+				});
+			});
+
+			// Buy Now Function Start
+			const buyNowBtn = document.getElementById('buyNowProduct');
+			buyNowBtn.addEventListener('click', (event) => {
+				// check if user is loggedIn
+				if (!isUserLoggedIn) {
+					displayToastify('Please login to continue');
+				} else {
+					const paymentModal = new bootstrap.Modal(document.getElementById('paymentModal'));
+					event.preventDefault();
+					paymentModal.show();
+					// cardDetails.classList.remove('d-none');
+					// upiDetails.classList.add('d-none');
+					// // updateProgressBar();
+					// //close payment Page
+
+					// document.getElementById('closePaymentPage').addEventListener('click', () => {
+					//     paymentModal.hide();
+					// })
+				}
+			})
+
+			// const paymentMethodSelect = document.getElementById('paymentMethod');
+			// const cardDetails = document.getElementById('cardDetails');
+			// const upiDetails = document.getElementById('upiDetails');
+
+			// //validate payment method
+			// paymentMethodSelect.addEventListener('change', function () {
+			//     if (this.value === 'card') {
+			//         cardDetails.classList.remove('d-none');
+			//         upiDetails.classList.add('d-none');
+			//     } else if (this.value === 'upi') {
+			//         cardDetails.classList.add('d-none');
+			//         upiDetails.classList.remove('d-none');
+			//     }
+			// });
+
+
+			function update() {
+				wraps.forEach((wrap, index) => {
+					if (index < currentActive) {
+						wrap.classList.add('active')
+					} else {
+						wrap.classList.remove('active')
+					}
+				})
+
+				const actives = document.querySelectorAll('.active')
+				progress.style.width = (actives.length - 1) / (wraps.length - 1) * 80 + '%'
+
+				// if(currentActive === 1) {
+				//     back.disabled = true
+				// } else if(currentActive === wraps.length) {
+				//     next.disabled = true
+				// } else {
+				//     back.disabled = false
+				//     next.disabled = false
+				// }
+			}
+
+			//update Review Page
+			const updateReviewStep = (clientordNumber, clientPaymentMethod) => {
+				document.getElementById('orderNumber').textContent = clientordNumber;
+				if (clientPaymentMethod == "UPI") {
+					document.getElementById('paymentTypeImg').src = "../images/upi.jpg"
+				}
+				document.getElementById('paymentMethod').textContent = "Online " + clientPaymentMethod;
+			}
+
+			// add to cart functionality
+			const cartBtn = document.getElementById('addToCart');
+			cartBtn.addEventListener('click', async (event) => {
+				event.preventDefault();
+				const productName = cartBtn.getAttribute('data-product-name');
+				if (isUserLoggedIn) {
+					try {
+						const response = await fetch('/Cart/addToCart', {
+							method: "POST",
+							headers: {
+								'Content-Type': 'application/json'
+							},
+							body: JSON.stringify({
+								productName: productName
+							})
+						})
+						const result = await response.json();
+						if (result.success) {
+							displayToastify(result.message);
+							// increase count in frontend
+							const cartItemCountElement = parseInt(document.getElementById('cartItemCount').textContent);
+							document.getElementById('cartItemCount').textContent = cartItemCountElement + 1;
+						} else {
+							displayToastify(result.message);
+						}
+					}
+					catch (error) {
+						console.log(error);
+					}
+				} else {
+					//
+					displayToastify("Please login first!!")
+				}
+			})
 		</script>
-		</body>
-
-		</html>
+		<%- include('newFooter'); -%>

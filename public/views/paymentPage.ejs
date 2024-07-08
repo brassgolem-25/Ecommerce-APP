@@ -135,6 +135,7 @@
             const confirmationModal = document.getElementById('confirmation-modal');
             const confirmationOverlay = document.getElementById('confirmation-overlay');
             const cardTypeImage = document.getElementById('card-type-image');
+            const upiId = document.getElementById('upi-id');
 
             paymentMethodSelect.addEventListener('change', () => {
                 if (paymentMethodSelect.value === 'card') {
@@ -179,10 +180,6 @@
                 }
             }, 1000);
 
-
-
-
-
             const cardNumberInput = document.getElementById('card-number');
             cardNumberInput.addEventListener('input', (event) => {
                 let value = event.target.value.replace(/\D/g, '');
@@ -203,7 +200,7 @@
             expiryDate.addEventListener('input', (e) => {
                 let value = event.target.value.replace(/\D/g, '');
                 if (value.length >= 2) {
-                    value = value.slice(0, 2) + '/' + value.slice(2, 4); // Insert slash after the first two digits
+                    value = value.slice(0, 2) + '/' + value.slice(2, 4); 
                 }
                 event.target.value = value;
             })
@@ -212,8 +209,8 @@
 
             payNowButton.addEventListener('click', async (event) => {
                 event.preventDefault();
-                // console.log("Clicked")
-                if ((paymentMethodSelect=='card' ) && (cardNumberInput.value === '' || cvcInput.value === '' || expiryDate.value === '' || cardholderName.value === '')) {
+                console.log("Clicked")
+                if ((paymentMethodSelect.value=='card') && (cardNumberInput.value === '' || cvcInput.value === '' || expiryDate.value === '' || cardholderName.value === '')) {
                     // displayToastify("Please fill all the details")
                     // cardNumberInput.style.discardNumberInput.value === ''
                     if (cardNumberInput.value === '') {
@@ -231,17 +228,20 @@
                     } else {
                         expiryDate.style.borderColor = '#ddd';
                     }
-                    if (userName.value === '') {
+                    if (cardholderName.value === '') {
                         cardholderName.style.borderColor = 'red';
                     } else {
                         cardholderName.style.borderColor = '#ddd';
                     }
                     displayToastify("Please fill all the details")
-                } else {
+                } else if((paymentMethodSelect.value==='upi') && (upiId.value === '')){
+                    upiId.style.borderColor ='red';
+                    displayToastify("Please enter UPI ID");
+                }else  {
                     
                     try {
                         if(paymentMethodSelect==='card'){
-                            const cardNumberValue = (cardNumberInput.value).replace(/-/, '');
+                        const cardNumberValue = (cardNumberInput.value).replace(/-/, '');
                         const cvcValue = cvcInput.value;
                         const cardExpiryDate = expiryDate.value;
                         const userCardName = cardholderName.value;
@@ -288,12 +288,6 @@
 
                 }
 
-                // confirmationOverlay.style.display = 'block';
-                // confirmationModal.style.display = 'block';
-
-                // setTimeout(() => {
-                //     // window.location.href = 'homepage.htm l';
-                // }, 3000);
             });
     
 
