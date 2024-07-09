@@ -171,8 +171,8 @@
 						<div class="step-content" id="addressStep">
 							<h5 class="modal-title">
 								Shipping Address
-								  <img src="../images/edit.png" class="addressContentImg editImg">
-								  <img src="../images/checked.png" class="addressContentImg saveImg">
+								<img src="../images/edit.png" class="addressContentImg editImg">
+								<img src="../images/checked.png" class="addressContentImg saveImg">
 							</h5>
 							<div class="mb-3">
 								<label for="locality">Locality</label>
@@ -313,7 +313,7 @@
 					close: true,
 					gravity: "top",
 					position: "center",
-					stopOnFocus: true, 
+					stopOnFocus: true,
 					style: {
 						background: "#FF4500",
 					}
@@ -336,53 +336,93 @@
 					const currentStep = button.closest('.step-content');
 					const nextStepId = button.getAttribute('data-next-step');
 					const nextStep = document.getElementById(nextStepId);
-
+					console.log(currentStep);
 					currentActive++;
 					if (currentActive > wraps.length) {
 						currentActive = wraps.length
 					}
 
+					const editContent = document.querySelector('.editImg');
+					const saveContent = document.querySelector('.saveImg');
+					let toggleEditClick = false;
+					// console.log(editContent);
+					const locality = document.getElementById('locality').value;
+					const state = document.getElementById('state').value;
+					const userPincode = document.getElementById('userPincode').value;
+
+					editContent.addEventListener('click', () => {
+						if (!toggleEditClick) {
+							toggleEditClick = true
+							editContent.src = '../images/close-Icon.png'
+							saveContent.style.display = 'block';
+							document.getElementById('locality').disabled = false;
+							document.getElementById('state').disabled = false;
+							document.getElementById('userPincode').disabled = false;
+						} else {
+							toggleEditClick = false;
+							editContent.src = '../images/edit.png'
+							saveContent.style.display = 'none';
+							document.getElementById('locality').disabled = true;
+							document.getElementById('state').disabled = true;
+							document.getElementById('userPincode').disabled = true;
+						}
+
+					})
+
+					saveContent.addEventListener('click',()=>{
+						editContent.src = '../images/edit.png'
+						saveContent.style.display = 'none';
+						document.getElementById('locality').disabled = true;
+						document.getElementById('state').disabled = true;
+						document.getElementById('userPincode').disabled = true;
+						
+					})
+
+					if(nextStepId==='addressStep'){
+					//fetch user Address
+					const fetchClientAddress = await fetch('/Account/address');
+					const clientAddressJson = await fetchClientAddress.json();
+					// console.log(clientAddressJson)
+					if(clientAddressJson.success){
+						locality = clientAddressJson.userAddress.locality
+						state = clientAddressJson.userAddress.state
+						userPincode = clientAddressJson.userAddress.pincode;
+					}
+
+					}
+
 					//check if current Step is address then validate address
 					if (currentStep.id === 'addressStep') {
-						//fetch user address 
-					    const locality = document.getElementById('locality').value;
-					    const state = document.getElementById('state').value;
-					    const userPincode = document.getElementById('userPincode').value;
-						const editContent = document.querySelector('.editImg');
-						console.log(editContent);
 
-						editContent.addEventListener('click',()=>{
-							editContent.src = '../css/images/close-Icon.png'
-							document.getElementById('locality').disabled=false;
-						})
 
-					    if (!locality || !state || !userPincode) {
-					        //show toastify
-					        displayToastify("Please fill all the Details")
-					        return;
-					    }
-					    try {
-					        const response = fetch('/Account/userAddress', {
-					            method: "POST",
-					            headers: {
-					                'Content-Type': 'application/json'
-					            },
-					            body: JSON.stringify({
-					                locality: locality,
-					                state: state,
-					                userPincode: userPincode
-					            })
-					        })
-					        const result = await response;
-					        console.log(result);
-					        if (result.success) {
-					            currentStep.classList.remove('active');
-					            nextStep.classList.add('active');
-					            update();
-					        }
-					    } catch (error) {
-					        console.log(error);
-					    }
+
+						if (!locality || !state || !userPincode) {
+							//show toastify
+							displayToastify("Please fill all the Details")
+							return;
+						}
+						try {
+							const response = fetch('/Account/userAddress', {
+								method: "POST",
+								headers: {
+									'Content-Type': 'application/json'
+								},
+								body: JSON.stringify({
+									locality: locality,
+									state: state,
+									userPincode: userPincode
+								})
+							})
+							const result = await response;
+							console.log(result);
+							if (result.success) {
+								currentStep.classList.remove('active');
+								nextStep.classList.add('active');
+								update();
+							}
+						} catch (error) {
+							console.log(error);
+						}
 
 					}
 
@@ -470,7 +510,7 @@
 					update();
 					currentStep.classList.remove('active');
 					nextStep.classList.add('active');
-					
+
 				});
 			});
 

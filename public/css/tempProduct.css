@@ -1049,9 +1049,12 @@ ul .dropdown-menu {
 }
 
 .editImg{
-  margin-left: 47%;
+  margin-left: 48%;
 }
 
+.saveImg{
+  display: none;
+}
 
 .step-content.active {
   display: block;

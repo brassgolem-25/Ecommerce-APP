@@ -107,5 +107,20 @@ router.get('/order',async(req,res)=>{
    }
 })
 
+router.get('/address',async(req,res)=>{
+   try{
+      const user = await findUser(req,res);
+      // const userId = user._id;
+      const address = user.address;
+      return res.json({success:true, userAddress:address,message: "address fetched successfully"});
+
+   }catch(e){
+      console.log(e);
+      return res.json({success:false, message: "some error occured"});
+   }
+
+   
+})
+
 
 export default router;
