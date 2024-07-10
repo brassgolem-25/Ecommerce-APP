@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "webpack serve --open"
+    "start": "npm start"
   },
   "type": "module",
   "keywords": [],
