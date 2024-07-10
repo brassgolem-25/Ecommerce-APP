@@ -13,6 +13,25 @@
     }).showToast();
   }
 
+ 
+// show password 
+const currLocation = window.location.href;
+console.log(currLocation)
+if((currLocation.includes('login')) || (currLocation.includes('signup'))){
+const togglePassword = document.querySelector('#togglePassword');
+const password = document.querySelector('#exampleInputPassword1');
+togglePassword.addEventListener('click', function (e) {
+  // Toggle the type attribute using getAttribute() method
+  const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+  password.setAttribute('type', type);
+  
+  // Toggle the eye slash icon
+  this.classList.toggle('fa-eye');
+  this.classList.toggle('fa-eye-slash');
+});
+}
+ 
+
   document.getElementById('loginForm').onsubmit = async function (e) {
     e.preventDefault();
     const email = document.getElementById('exampleInputEmail').value;

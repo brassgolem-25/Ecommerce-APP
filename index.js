@@ -73,7 +73,14 @@ app.use('/wishList',authentication,wishListRoute);
 //route for orders
 app.use('/payment',authentication,paymentRoute)
 
+app.get('*',async(req,res)=>{
+    res.render('error404')
+})
+
 const PORT = process.env.PORT || 3000;
+
+
+
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });

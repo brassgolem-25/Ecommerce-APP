@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const cartItemCountElement = document.getElementById('cartItemCount');
     cartItemCountElement.textContent=0;
     const isUserLoggedIn = document.cookie.includes('uid') ? true:false;
-    console.log(isUserLoggedIn);
 
     if (isUserLoggedIn) {
         const itemCount = await fetchCartItemCount();

@@ -25,16 +25,18 @@ router.get("/:token", async (req, res) => {
       // const orderNumber = userId.substr(5) + Math.floor(Math.random() * 10);
       const orderNumber = response.orderNumber;
       const totalCost = response.totalCost;
+      const quantity = response.quantity;
       const startTime = response.iat;
       const endTime = response.exp;
 
-      const orderDetails = { productName: productName, totalCost: totalCost, orderNumber: orderNumber, startTime: startTime, endTime: endTime };
+
+      const orderDetails = { productName: productName, totalCost: totalCost, orderNumber: orderNumber,quantity:quantity, startTime: startTime, endTime: endTime };
       // console.log(orderDetails);
-      const paymentDetails = await Payment.find({userId : new ObjectId(userId),orderNumber: orderNumber});
+      const paymentDetails = await Payment.find({ userId: new ObjectId(userId), orderNumber: orderNumber });
       const userPaymentStatus = paymentDetails[0].paymentStatus;
-      if(userPaymentStatus!='Completed'){
+      if (userPaymentStatus != 'Completed') {
          res.render('paymentPage', { orderDetails: orderDetails });
-      }else {
+      } else {
          res.render('paymentPageExpired');
       }
 
@@ -47,42 +49,34 @@ router.get("/:token", async (req, res) => {
 
 router.post('/initiatePayment', async (req, res) => {
    try {
-      const { productName, orderNumber, paymentMethod, cardDetails, upiDetails,quantity } = req.body;
+      const { productName, orderNumber, paymentMethod, cardDetails, upiDetails, quantity } = req.body;
       const totalCost = parseInt(req.body.totalCost);
       const user = authService.getUser(req.cookies.uid);
       const userId = user[0]._id;
       const updatePaymentStatus = await Payment.findOneAndUpdate({ userId: new ObjectId(userId), orderNumber: orderNumber },
          {
             $set: {
-               paymentStatus:"Completed",
-               paymentMethod:paymentMethod,
+               paymentStatus: "Completed",
+               paymentMethod: paymentMethod,
                cardDetails: paymentMethod === 'Credit/Debit Card' ? cardDetails : {},
                upiDetails: paymentMethod === 'UPI' ? upiDetails : {}
             }
          }
       )
       
-      console.log("payment status"+ updatePaymentStatus)
-
-
-      console.log(req.body);
-      const productDetail = await Product.find({name:productName});
+      const productDetail = await Product.find({ name: productName });
       const productId = productDetail[0]._id;
       await Order.create({
-         userId:userId,
-         productId:productId,
-         quantity:1,
-         orderId:orderNumber,
-         seller:'Exclusive',
-         paymentType:paymentMethod,
-         orderStatus:'Shipped',
-         totalAmount:totalCost,
+         userId: userId,
+         productId: productId,
+         quantity: quantity,
+         orderId: orderNumber,
+         seller: 'Exclusive',
+         paymentType: paymentMethod,
+         orderStatus: 'Shipped',
+         totalAmount: totalCost,
 
       })
-
-
-
-
 
       return res.json({ success: true, message: "Payment done" });
    } catch (error) {
@@ -100,37 +94,19 @@ router.post('/paymentStatus', async (req, res) => {
       const { orderNumber } = req.body;
       // console.log("orderNumber"+ orderNumber);
       const paymentResponse = await Payment.find({ userId: new ObjectId(userId), orderNumber: orderNumber });
-      console.log("Payment Response " + paymentResponse[0]);
+      // console.log("Payment Response " + paymentResponse[0]);
       const clientPaymentStatus = paymentResponse[0].paymentStatus;
-      console.log("clientPaymentStatus"+clientPaymentStatus);
+      // console.log("clientPaymentStatus" + clientPaymentStatus);
       if (clientPaymentStatus === 'Pending') {
          console.log("Payment not done!!");
-         return res.json({ isPaymentCompleted: false, message: "Payment not completed!"});
+         return res.json({ isPaymentCompleted: false, message: "Payment not completed!" });
       }
-      const clientPaymentMethod = paymentResponse[0].paymentMethod; 
-      return res.json({ isPaymentCompleted: true, message: "Payment completed" ,paymentMethod:clientPaymentMethod});
+      const clientPaymentMethod = paymentResponse[0].paymentMethod;
+      return res.json({ isPaymentCompleted: true, message: "Payment completed", paymentMethod: clientPaymentMethod });
 
    } catch (error) {
       console.log(error);
    }
 })
-
-const initiateOrder = async (orderDetails)=>{
-      const user = findUser(req,res);
-
-   //       const productDetail = await Product.find({name:productName});
-}
-
-// router.post('/initiateOrder',async(req,res)=>{
-//    try{
-//       const user = findUser(req,res);
-//       const {totalAmount,paymentType,orderId,productName,quantity} = req.body;
-//       console.log(req.body)
-
-
-//    }catch(error){
-
-//    }
-// })
 
 export default router;

@@ -39,13 +39,14 @@ router.post("/processPayment", async (req, res) => {
       const user = authService.getUser(req.cookies.uid);
       const productName = req.body.productName;
       const totalCost = req.body.cost;
+      const quantity = req.body.quantity
       console.log(totalCost);
       if (user != undefined) {
          const userId = user[0]._id;
          const secret = process.env.JWTSecret;
          const currentYear = new Date().getFullYear().toString();
          const serverOrdNumber = currentYear + Math.floor(Math.random() * 10000).toString().padStart(4, '0')
-         const generateUserToken = jwt.sign({ userId: userId, productName: productName, quantity: '1', totalCost: totalCost, orderNumber: serverOrdNumber }, secret, { expiresIn: 60 * 2 });
+         const generateUserToken = jwt.sign({ userId: userId, productName: productName, quantity: quantity, totalCost: totalCost, orderNumber: serverOrdNumber }, secret, { expiresIn: 60 * 2 });
          const redirectUrl = "/payment/" + generateUserToken;
 
          const orderNumber = serverOrdNumber;
@@ -60,7 +61,7 @@ router.post("/processPayment", async (req, res) => {
          try {
             const paymentResponse = await payment.save();
 
-            console.log("Payment Response " + paymentResponse);
+            // console.log("Payment Response " + paymentResponse);
             // console.log(redirectUrl);
             return res.json({ success: true, message: "Redirecting to payment page", url: redirectUrl, clientordNumber: serverOrdNumber });
          } catch (error) {
@@ -75,11 +76,6 @@ router.post("/processPayment", async (req, res) => {
    }
 })
 
-// const targetEndTime = new Date().getTime() + 4 * 60 * 1000; 
-// router.get("/remaining-time",async(req,res)=>{
-//     const currentTime = new Date().getTime();
-//     const remainingTime = Math.max(0, targetEndTime - currentTime);
-//     return res.json({remainingTime});
-// })
+
 
 export default router;

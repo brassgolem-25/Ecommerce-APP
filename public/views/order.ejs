@@ -1,5 +1,4 @@
 <%- include('newHeader'); -%>
-
 <div class="order-container">
     <div class="order-sidebar">
         <h2>Filters</h2>
@@ -9,7 +8,7 @@
                 <select id="status" class="form-control">
                     <option value="all">All</option>
                     <option value="pending">Pending</option>
-                    <option value="shipped">Shipped</option>
+                    <option value="Shipped">Shipped</option>
                     <option value="delivered">Delivered</option>
                     <option value="canceled">Canceled</option>
                 </select>
@@ -22,20 +21,26 @@
         </form>
     </div>
     <div class="main-content" id="ordersContainer">
-        <div class="order" data-status="pending" data-date="2023-12-15">
-            <div class="order-details">
-                <div class="order-info">
-                    <p>Order #12345</p>
-                    <p>Product: Example Product 1</p>
-                    <p>Quantity: 2</p>
-                    <p>Total: $40.00</p>
-                </div>
-                <div class="order-status pending">
-                    <span>Pending</span>
+        <%productDetails.forEach(products =>{%>
+            <%const status = products.orderStatus;const name = products.name;const price = (products.price).toFixed(2);const ordN = products.orderNumber;%>
+            <%const quantity = products.quantity ; const orderDate = products.orderDate %>
+            <div class="order" data-status="<%=status%>" data-date="<%=orderDate%>">
+                <div class="order-details">
+                    <div class="order-info">
+                        <p>Order #<%=ordN%></p>
+                        <p>Product: <%=name%></p>
+                        <p>Quantity: <%=quantity%></p>
+                        <p>Total: $<%=price%></p>
+                        <p>Order Date: <%=orderDate%></p>
+                    </div>
+                    <div class="order-status pending">
+                        <span><%=status%></span>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="order" data-status="shipped" data-date="2023-12-14">
+        <%})%>
+
+        <!-- <div class="order" data-status="shipped" data-date="2023-12-14">
             <div class="order-details">
                 <div class="order-info">
                     <p>Order #12346</p>
@@ -60,7 +65,7 @@
                     <span>Delivered</span>
                 </div>
             </div>
-        </div>
+        </div> -->
         <!-- More orders can be added here -->
     </div>
 </div>
@@ -75,7 +80,7 @@ document.getElementById('filterForm').addEventListener('submit', function(e) {
 
     orders.forEach(order => {
         const orderStatus = order.getAttribute('data-status');
-        const orderDate = order.getAttribute('data-date');
+        const orderDate = order.getAttribute('data-date').split("-").reverse().join("-");
         let statusMatch = (status === 'all' || status === orderStatus);
         let dateMatch = (!date || date === orderDate);
 

@@ -1,5 +1,6 @@
 <%- include('newHeader'); -%>
-	<%const productName=product.name ; const description=product.description;const price=product.price;const oldPrice=price + 20; const imageUrl=product.imageUrl; %>
+	<%const productName=product.name ; const description=product.description;const price=product.price;const
+		oldPrice=price + 20; const imageUrl=product.imageUrl; %>
 		<div class="container product-container">
 			<div class="row">
 				<div class="col-md-6">
@@ -261,10 +262,41 @@
 				</div>
 			</div>
 		</div>
-		<script src="../script/search.js"></script>
-		<script src="../script/tempScript.js"></script>
 		<!-- <script src="../script/productPageScript.js"></script> -->
 		<script>
+			//
+			const qtyInputs = document.querySelectorAll('.qty');
+			let productQuantity = 1;
+			qtyInputs.forEach(qtyInput => {
+				const totalAmountInput = document.getElementById('totalAmount').value;
+				const totalAmount = parseFloat(totalAmountInput.substr(1));
+				let newAmount = totalAmount;
+				const qtyMinus = qtyInput.parentElement.querySelector('.qtyminus');
+				const qtyPlus = qtyInput.parentElement.querySelector('.qtyplus');
+
+				qtyMinus.addEventListener('click', function () {
+					let qty = parseInt(qtyInput.value);
+					if (qty > 1) {
+						qtyInput.value = qty - 1;
+						productQuantity=qtyInput.value;
+					}
+					newAmount = totalAmount * (qtyInput.value);
+					document.getElementById('totalAmount').value = `$${newAmount.toFixed(2)}`
+				});
+
+				qtyPlus.addEventListener('click', function () {
+					let qty = parseInt(qtyInput.value);
+					qtyInput.value = qty + 1;
+					productQuantity=qtyInput.value;
+					newAmount = totalAmount * (qtyInput.value);
+					document.getElementById('totalAmount').value = `$${newAmount.toFixed(2)}`
+				});
+
+			});
+
+
+
+
 			const validateUserPincode = document.getElementById('checkDelivery');
 			validateUserPincode.addEventListener('click', () => {
 				const userPincode = document.getElementById('pincode').value;
@@ -345,10 +377,6 @@
 					const editContent = document.querySelector('.editImg');
 					const saveContent = document.querySelector('.saveImg');
 					let toggleEditClick = false;
-					// console.log(editContent);
-					const locality = document.getElementById('locality').value;
-					const state = document.getElementById('state').value;
-					const userPincode = document.getElementById('userPincode').value;
 
 					editContent.addEventListener('click', () => {
 						if (!toggleEditClick) {
@@ -369,31 +397,59 @@
 
 					})
 
-					saveContent.addEventListener('click',()=>{
-						editContent.src = '../images/edit.png'
-						saveContent.style.display = 'none';
-						document.getElementById('locality').disabled = true;
-						document.getElementById('state').disabled = true;
-						document.getElementById('userPincode').disabled = true;
-						
-					})
+					const fetchUserAddress = async () => {
+						const fetchClientAddress = await fetch('/Account/address',{
+							method:"POST",
+							body : JSON.stringify(
 
-					if(nextStepId==='addressStep'){
-					//fetch user Address
-					const fetchClientAddress = await fetch('/Account/address');
-					const clientAddressJson = await fetchClientAddress.json();
-					// console.log(clientAddressJson)
-					if(clientAddressJson.success){
-						locality = clientAddressJson.userAddress.locality
-						state = clientAddressJson.userAddress.state
-						userPincode = clientAddressJson.userAddress.pincode;
+							)
+						});
+						const clientAddressJson = await fetchClientAddress.json();
+						// console.log(clientAddressJson)
+						if (clientAddressJson.success) {
+							document.getElementById('locality').value = clientAddressJson.userAddress.locality
+							document.getElementById('state').value = clientAddressJson.userAddress.state
+							document.getElementById('userPincode').value = clientAddressJson.userAddress.pincode;
+						}
 					}
 
+
+					saveContent.addEventListener('click', () => {
+
+						const addressInputs = document.querySelectorAll('#addressStep input')
+						let valid = true;
+						addressInputs.forEach((input) => {
+							if ((input.id === 'userPincode' && !/^\d{6}$/.test(input.value)) || (input.id === 'state' && input.value.trim() === '')) {
+								input.classList.add('is-invalid');
+								valid = false;
+							} else {
+								console.log("inside here")
+								input.classList.remove('is-invalid');
+							}
+						})
+
+						if (valid) {
+							document.getElementById('locality').disabled = true;
+							document.getElementById('state').disabled = true;
+							document.getElementById('userPincode').disabled = true;
+							editContent.src = '../images/edit.png'
+							saveContent.style.display = 'none';
+						}
+
+
+
+					})
+					if (nextStepId === 'addressStep') {
+						fetchUserAddress();
 					}
 
 					//check if current Step is address then validate address
 					if (currentStep.id === 'addressStep') {
 
+						// console.log(editContent);
+						const locality = document.getElementById('locality').value;
+						const state = document.getElementById('state').value;
+						const userPincode = document.getElementById('userPincode').value;
 
 
 						if (!locality || !state || !userPincode) {
@@ -447,7 +503,8 @@
 								},
 								body: JSON.stringify({
 									productName: productName,
-									cost: cost
+									cost: cost,
+									quantity:productQuantity
 								})
 							})
 							const result = await response.json();

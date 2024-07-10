@@ -12,7 +12,7 @@
 
 <body>
     <div class="container">
-        <%const productName=orderDetails.productName;const totalCost=orderDetails.totalCost;const orderNumber=orderDetails.orderNumber;const sTime=orderDetails.startTime;const eTime=orderDetails.endTime %>
+        <%const productName=orderDetails.productName;const quantity =orderDetails.quantity;const totalCost=((orderDetails.totalCost)*quantity).toFixed(2);const orderNumber=orderDetails.orderNumber ;const sTime=orderDetails.startTime;const eTime=orderDetails.endTime %>
             <div class="payment-form">
                 <div class="form-header">
                     <h2>Payment Information</h2>
@@ -92,7 +92,7 @@
                     <li><span>Estimated Delivery:</span> 3-5 business days</li>
                 </ul>
                 <div class="total">
-                    <span id="totalCost" data-totalCost="<%=totalCost%>">Total:</span>
+                    <span id="totalCost" data-totalCost="<%=totalCost%>" data-quantity="<%=quantity%>">Total:</span>
                     <strong>$<%=totalCost%></strong>
                 </div>
                 <div class="secured">
@@ -251,10 +251,13 @@
                         const productName = document.getElementById('productName').getAttribute('data-productName');
                         const orderNumber = document.getElementById('orderNumber').getAttribute('data-orderNumber');
                         const totalCost = document.getElementById('totalCost').getAttribute('data-totalCost');
+                        const quantity = document.getElementById('totalCost').getAttribute('data-quantity');
+                        console.log(quantity)
                         const paymentData = {
                             productName: productName,
                             orderNumber: orderNumber,
                             totalCost: totalCost,
+                            quantity : quantity,
                             paymentMethod: (paymentMethodSelect.value).toUpperCase(),
                             cardDetails: paymentMethodSelect.value === 'card' ? {
                                 cardNumber: (cardNumberInput.value).replace(/-/g, ''),

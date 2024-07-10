@@ -1048,11 +1048,11 @@ ul .dropdown-menu {
   margin-left: 2%;
 }
 
-.editImg{
+.editImg {
   margin-left: 48%;
 }
 
-.saveImg{
+.saveImg {
   display: none;
 }
 
@@ -1488,7 +1488,47 @@ footer-ul {
   background-color: #ffffff;
 }
 
+/* 404 page */
+.page_404 {
+  padding: 40px 0;
+  background: #fff;
+  font-family: 'Arvo', serif;
+}
 
+.page_404 img {
+  width: 100%;
+}
+
+.four_zero_four_bg {
+
+  background-image: url(https://cdn.dribbble.com/users/285475/screenshots/2083086/dribbble_1.gif);
+  height: 400px;
+  background-position: center;
+}
+
+
+.four_zero_four_bg h1 {
+  font-size: 80px;
+}
+
+.four_zero_four_bg h3 {
+  font-size: 80px;
+}
+
+.link_404 {
+  color: #fff !important;
+  padding: 10px 20px;
+  background: #ff6347;
+  margin: 20px 0;
+  display: inline-block;
+  text-decoration: none;
+}
+
+.contant_box_404 {
+  margin-top: -50px;
+}
+
+/* 404 page ends */
 
 @keyframes spin {
   to {
@@ -1592,8 +1632,9 @@ footer-ul {
   .cart-item-count {
     display: none;
   }
-  .progress-container{
-    margin-left:0px ;
+
+  .progress-container {
+    margin-left: 0px;
   }
 }
 
@@ -1606,7 +1647,8 @@ footer-ul {
     width: 5%;
     margin-left: 2%;
   }
-  .editImg{
+
+  .editImg {
     margin-left: 39%;
   }
 }
@@ -1616,7 +1658,8 @@ footer-ul {
   .addressContentImg {
     width: 6%;
   }
-  .editImg{
+
+  .editImg {
     margin-left: 29%;
   }
 }
