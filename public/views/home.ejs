@@ -1,0 +1,107 @@
+<%- include('newHeader'); -%>
+    <div id="ecommerceCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#ecommerceCarousel" data-bs-slide-to="0" class="active"
+                aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#ecommerceCarousel" data-bs-slide-to="1"
+                aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#ecommerceCarousel" data-bs-slide-to="2"
+                aria-label="Slide 3"></button>
+        </div>
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="https://images.unsplash.com/photo-1531297484001-80022131f5a1?q=80&w=2020&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    class="d-block w-100" alt="Product Image 1">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Macbook Air Pro</h5>
+                    <p>On Sale for limited Time</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="https://images.unsplash.com/photo-1560243563-062bfc001d68?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    class="d-block w-100" alt="Product Image 2">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Levis</h5>
+                    <p>On Sale for limited Time</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="https://images.unsplash.com/photo-1595341888016-a392ef81b7de?q=80&w=1779&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    class="d-block w-100" alt="Product Image 3">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Shoes</h5>
+                    <p>On Sale for limited Time</p>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#ecommerceCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#ecommerceCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+    <!-- Product Page Start's Here -->
+    <div class="row">
+        <% products.forEach(data=> { %>
+            <%const cateG=data.category.replace(/ /g,'-'); const pName=data.name;const imageUrl=data.imageUrl;const pRating=data.rating.rate; const pReview=data.rating.count;%>
+            <%const productUrl = "/product/"+ pName %>
+                <div
+                    class="col-lg-3 col-sm-6 d-flex flex-column align-items-center justify-content-center product-item my-3">
+                    <div class="product">
+                        <a href="<%=productUrl%>" target="_blank"><img src="<%=imageUrl%>" alt=""></a>
+                        <ul class="d-flex align-items-center justify-content-center list-unstyled icons">
+                            <li class="icon expand-icon" data-image-url="<%=imageUrl%>"><span class="fas fa-expand-arrows-alt"></span></li>
+                            <li class="wishlist-icon icon mx-3" data-product-name="<%=pName%>"><span class="far fa-heart"></span></li>
+                            <li class="cart-icon icon" data-product-name="<%=pName%>"><span class="fas fa-shopping-bag"></span></li>
+                        </ul>
+                    </div>
+                    <div class="tag bg-red">sale</div>
+                    <div class="title pt-4 pb-1">
+                        <%=pName%>
+                    </div>
+                    <div class="d-flex align-content-center justify-content-center">
+                        <span class="fas fa-star"></span>
+                        <span class="fas fa-star"></span>
+                        <span class="fas fa-star"></span>
+                        <span class="fas fa-star"></span>
+                        <span class="fas fa-star"></span>
+                    </div>
+                    <div class="price">$ <%= data.price %>
+                    </div>
+                </div>
+                <% }); %>
+    </div>
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <img id="expandedImage" src="" class="img-fluid" alt="Expanded Product Image">
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="../script/homeScript.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+        const expandIcons = document.querySelectorAll('.expand-icon');
+
+        expandIcons.forEach(icon => {
+            icon.addEventListener('click', () => {
+                const imageUrl = icon.getAttribute('data-image-url');
+                const expandedImage = document.getElementById('expandedImage');
+                expandedImage.setAttribute('src', imageUrl);
+                const imageModal = new bootstrap.Modal(document.getElementById('imageModal'));
+                imageModal.show();
+            });
+        });
+    });
+    </script>
+
+<%- include('newFooter'); -%>
