@@ -1365,6 +1365,24 @@ ul .dropdown-menu {
   align-items: center;
 }
 
+.order-actions {
+  margin-top: 10px;
+}
+.view-details-btn {
+  display: inline-block;
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+}
+.view-details-btn:hover {
+  background-color: #0056b3;
+}
+.order-details-container {
+  padding: 20px;
+}
+
 .order-details {
   display: flex;
   justify-content: space-between;

@@ -107,6 +107,16 @@ router.get('/order', async (req, res) => {
    }
 })
 
+router.get('/order-details/:orderNumber',async (req, res) => {
+   const orderNumber = req.params.orderNumber;
+   const order = await Order.find({orderId:orderNumber});
+   if (order) {
+       res.render('order', { order });
+   } else {
+       res.status(404).send('Order not found');
+   }
+});
+
 router.post('/address', async (req, res) => {
    try {
 

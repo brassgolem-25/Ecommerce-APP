@@ -35,9 +35,9 @@ async function createUserSession(res, userEmail) {
 }
 
 //google oauth setup
-// const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET, "http://localhost:3000/auth/google/callback");
-const clientURL = process.env.CLIENTURL;
-const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET, `${clientURL}/auth/google/callback`);
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET, "http://localhost:3000/auth/google/callback");
+// const clientURL = process.env.CLIENTURL;
+// const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET, `${clientURL}/auth/google/callback`);
 
 router.get('/google',validateState, (req, res) => {
 
