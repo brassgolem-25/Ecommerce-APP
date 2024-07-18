@@ -1690,6 +1690,16 @@ footer-ul {
     display: none;
   }
 
+  .account-options{
+    display: grid;
+    align-content: center;
+    justify-content: space-between;
+  }
+
+  .logout-btn{
+    margin-left: 0px !important;
+  }
+
 }
 
 
@@ -1703,6 +1713,16 @@ footer-ul {
   }
   .cart-item-count {
     display: none;
+  }
+
+  .account-options{
+    display: grid;
+    align-content: center;
+    justify-content: space-between;
+  }
+
+  .logout-btn{
+    margin-left: 0px !important;
   }
 
 }
