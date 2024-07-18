@@ -12,15 +12,19 @@ router.use(express.json());
 router.post('/remove',async (req,res)=>{
     try{
         const user = authService.getUser(req.cookies.uid);
-        const pId = req.body.productId;
-        const productFound = await WhisList.findOneAndDelete({
+        const {productName} = req.body;
+        // console.log("req.body"+JSON.stringify(req.body));
+        const product = await Product.find({ name: productName })
+        // console.log(productName);
+        const pId = product[0]._id;
+        await WhisList.findOneAndDelete({
             productId: pId,
             userId: new ObjectId(user[0]._id)
         });
-        console.log(productFound)
-        res.send("removed");
+        return res.json({success:true,message:"Product is deleted from wishlist"});
     }catch(error){
         console.log(error)
+        return res.json({success:false,message:"Please try again later!!"});
     }
 })
 
@@ -49,31 +53,6 @@ router.post('/add', async (req, res) => {
     } catch (error) {
         console.log(error);
         return res.json({success:false,message:"Please try again later!!"});
-    }
-})
-//get item from whislist
-router.get("/",async (req,res)=>{
-    try {
-        // do better naming conventio
-        const user = authService.getUser(req.cookies.uid);
-        const userId = user[0]._id;
-
-        const wishlistProduct = await WhisList.aggregate([
-            { $match: { userId: new ObjectId(userId) } },
-            {
-                $lookup: {
-                    from: 'Product',
-                    localField: 'productId',
-                    foreignField: '_id',
-                    as: 'item'
-                }
-            }
-        ])
-        res.render('wishList',{wishlistProducts:wishlistProduct})
-
-             
-    }catch(error){
-        console.log(error);
     }
 })
 

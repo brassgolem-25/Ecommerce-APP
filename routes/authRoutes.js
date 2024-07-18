@@ -23,7 +23,7 @@ router.use(express.json());
 async function createUserSession(res, userEmail) {
     try {
         const sessionId = uuidv4();
-        const user = await User.find({email:userEmail})
+        const user = await User.find({ email: userEmail })
         authFunc.setUser(sessionId, user);
         res.cookie('uid', sessionId)
         //pass req in paramter if want to check user is saved or not
@@ -35,11 +35,11 @@ async function createUserSession(res, userEmail) {
 }
 
 //google oauth setup
-const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET, "http://localhost:3000/auth/google/callback");
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET, "https://ecommerce-app-production.up.railway.app/auth/google/callback");
 // const clientURL = process.env.CLIENTURL;
 // const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET, `${clientURL}/auth/google/callback`);
 
-router.get('/google',validateState, (req, res) => {
+router.get('/google', validateState, (req, res) => {
 
     const { state } = req.query;
     const url = client.generateAuthUrl({
@@ -82,12 +82,12 @@ router.get('/google/callback', async (req, res) => {
                 return res.redirect("/auth/login?error=user_already_exists")
             }
         }
-        if(state=="login"){
-            if(!user){
+        if (state == "login") {
+            if (!user) {
                 return res.redirect('/auth/signup?error=user_not_found');
             }
         }
-        await createUserSession(res,email);
+        await createUserSession(res, email);
         return res.redirect('/');
 
     } catch (error) {
@@ -99,21 +99,21 @@ router.get('/google/callback', async (req, res) => {
 async function handleUserSignup(req, res) {
     try {
         const { name, email, password } = req.body;
-        console.log(req.body['password']);
-        const salt = await bcrypt.genSalt(10);
-        console.log(salt)
-        const hashedPassword = await bcrypt.hash(password, salt);
-        console.log(hashedPassword)
         const emailAlreadyExist = await User.find({ email: email });
-        // console.log(emailAlreadyExist);
+
         if (emailAlreadyExist.length === 0) {
+            const salt = await bcrypt.genSalt(10);
+
+            const hashedPassword = await bcrypt.hash(password, salt);
+
             await User.create({
                 name,
                 email,
                 password: hashedPassword,
             });
+
             // res.send("User Created Successfully");
-            createUserSession(res, email);
+            await createUserSession(res, email);
             res.redirect('/');
         } else {
             res.json({ success: false, message: "The mail already exist.Please login" });
@@ -165,9 +165,9 @@ const generateOTP = async (email) => {
             .setSubject("Your One-Time Passcode from Exclusive")
             .setText(otpMessage);
 
-        try{
+        try {
             await mailerSend.email.send(emailParams);
-        }catch(error){
+        } catch (error) {
             console.log(error);
         }
         //   console.log("Mail Sent")
@@ -183,7 +183,7 @@ const generateOTP = async (email) => {
 async function handleUserLogin(req, res) {
     try {
         const { email, password } = req.body;
-        console.log(email, password);
+        // console.log(email, password);
 
         const value = await User.find({ email: email });
 
@@ -251,7 +251,7 @@ router.post("/otpVerify", async (req, res) => {
             // localStorage.setItem('tokenExpiration', '12h')
             // console.log(token);
 
-            return res.json({ success: true, message: "OTP is validated"})
+            return res.json({ success: true, message: "OTP is validated" })
         } else {
             return res.json({ success: false, message: 'Invalid OTP' });
         }

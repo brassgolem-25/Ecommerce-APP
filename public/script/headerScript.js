@@ -3,13 +3,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     const cartItemCountElement = document.getElementById('cartItemCount');
     cartItemCountElement.textContent=0;
     const isUserLoggedIn = document.cookie.includes('uid') ? true:false;
-
+    let carItem = null;
     if (isUserLoggedIn) {
-        const itemCount = await fetchCartItemCount();
+        if(carItem==null){
+            carItem = await fetchCartItemCount();
+        }
         // if(item)
-        cartItemCountElement.textContent = itemCount;
+        cartItemCountElement.textContent = carItem;
     }
 });
+
+
 
 async function fetchCartItemCount(){
     try{

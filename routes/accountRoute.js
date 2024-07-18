@@ -3,9 +3,9 @@ import moment from 'moment/moment.js';
 import User from '../models/user.js';
 import Order from '../models/order.js';
 import Product from '../models/product.js';
+import WhisList from '../models/whistList.js';
 import authFunc from '../services/authService.js'
 import { ObjectId } from 'mongodb';
-import Address from '../models/Address.js';
 
 
 const router = express.Router();
@@ -46,11 +46,11 @@ router.get("/", async (req, res) => {
 })
 
 //user address
-router.post("/userAddress", async (req, res) => {
+router.post("/userAddress", async (req, res) => { 
    try {
       const user = await findUser(req, res);
       const userId = user._id;
-      console.log(req.body);
+      // console.log(req.body);
       const { locality, state, userPincode } = req.body;
       // console.log(req.body);
       const update = {
@@ -107,15 +107,35 @@ router.get('/order', async (req, res) => {
    }
 })
 
-router.get('/order-details/:orderNumber',async (req, res) => {
-   const orderNumber = req.params.orderNumber;
-   const order = await Order.find({orderId:orderNumber});
-   if (order) {
-       res.render('order', { order });
-   } else {
-       res.status(404).send('Order not found');
+router.get("/wishlist",async (req,res)=>{
+   try {
+       // do better naming conventio
+       const user = await findUser(req, res);
+
+
+       const wishlistedItem = await WhisList.aggregate([
+           { $match: { userId: new ObjectId(user) } },
+       ])
+
+       let wishlistProducts=[];
+       for (const item of wishlistedItem) {
+         const product = await Product.find({ _id: new ObjectId(item.productId) });
+         let productJSON = {};
+         productJSON.name = product[0].name;
+         productJSON.imageUrl = product[0].imageUrl;
+         productJSON.price = product[0].price;
+         productJSON.quantity = item.quantity;
+         wishlistProducts.push(productJSON);
+      }
+
+       res.render('wishList',{wishlistProducts:wishlistProducts})
+
+            
+   }catch(error){
+       console.log(error);
    }
-});
+})
+
 
 router.post('/address', async (req, res) => {
    try {

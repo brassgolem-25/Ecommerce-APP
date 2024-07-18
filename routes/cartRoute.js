@@ -1,8 +1,6 @@
 import express from 'express';
 import Cart from '../models/cart.js';
-import Order from '../models/order.js'
 import authService from '../services/authService.js';
-import { isValidObjectId } from 'mongoose';
 import { ObjectId } from 'mongodb';
 import Razorpay from 'razorpay';
 import Product from '../models/product.js'
@@ -21,8 +19,8 @@ router.post("/deleteFromCart", async (req, res) => {
 
         // console.log(product);
         const productId = product[0]._id;
-        await Cart.deleteOne({productId:productId,userId:userId});
-        return res.json({success:true,message:"The Item is removed from the cart!"});
+        await Cart.deleteOne({ productId: productId, userId: userId });
+        return res.json({ success: true, message: "The Item is removed from the cart!" });
 
     } catch (error) {
         console.log(error);
@@ -35,7 +33,7 @@ router.post('/updateCart', async (req, res) => {
         const pId = req.body.product_Id;
         const quantity = req.body.product_Quantity;
         const user_Id = authService.getUser(req.cookies.uid);
-        console.log("Product Data " + quantity)
+        // console.log("Product Data " + quantity)
         if (quantity === '0') {
             console.log(await Cart.findOneAndDelete({ productId: new ObjectId(pId), userId: user_Id }));
         } else {
@@ -55,13 +53,13 @@ router.get('/itemCount', async (req, res) => {
         const userCartCount = await Cart.aggregate([
             { $match: { "userId": new ObjectId(userId) } },
             { $group: { _id: "$userId", "cartItemCount": { $count: {} } } }]);
-        
-        console.log(userCartCount);
+
+        // console.log(userCartCount);
         let itemCount = 0;
-        if(userCartCount.length>0){
+        if (userCartCount.length > 0) {
             itemCount = userCartCount[0].cartItemCount;
         }
-        return res.json({success:true,message:itemCount});
+        return res.json({ success: true, message: itemCount });
 
     } catch (error) {
         console.log(error);
@@ -83,7 +81,8 @@ router.post('/addToCart', async (req, res) => {
             userId: new ObjectId(user[0]._id)
         });
         if (productFound.length > 0) {
-            console.log("Yes found");
+            return res.json({ success: true, message: "The Product is already in cart!!!" });
+            // console.log("Yes found");
             // console.log(productFound);
             // const cartId = productFound[0]._id;
             // const newQuantity = productFound[0].quantity + 1;

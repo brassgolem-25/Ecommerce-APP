@@ -1,59 +1,62 @@
 <%- include('newHeader'); -%>
 
-    <div class="container my-5">
-        <div class="row">
-            <% if (products.length === 0) { %>
-                <div class="col-12 text-center">
-                    <img src="../images/empty.avif" alt="Empty Cart" class="img-fluid emptyCart">
-                    <h3>Your cart is empty</h3>
-                    <p>Browse our categories and discover our best deals!</p>
-                    <a href ='/' class="round-Cart-btn">Keep Shopping</a>
-                </div>
-            <% } else { %>
-            <%let showSummaryOneTime=true;%>
-            <%products.forEach(data => { %>
-                <%const pName = data.name ; const price = data.price; const qty = data.quantity;const description = data.description; const imgUrl = data.imageUrl;%>
-            <div class="col-md-7">
-                <div class="cart-item">
-                    <img src="<%=imgUrl%>" class="cart-product-image img-fluid" alt="Product Image">
-                    <div class="cart-item-details">
-                        <h5><%=pName%></h5>
-                        <p><%=description%></p>
-                        <p><strong>$<%=price%></strong></p>
-                        <div class="product-count">
-                        <form class="display-flex">
-                            <div class="qtyminus">-</div>
-                            <input type="text" name="quantity" value="1" class="qty" placeholder="1">
-                            <div class="qtyplus">+</div>
-                        <button id="removeCartItem"  data-product-name="<%=pName%>" class="remove-item"><i class="fa-solid fa-trash"></i></button>
-                        </form>
-
-                    </div>
-                    </div>
-                </div>
+<div class="container my-5">
+    <div class="row">
+        <% if (products.length === 0) { %>
+            <div class="col-12 text-center">
+                <img src="../images/empty.avif" alt="Empty Cart" class="img-fluid emptyCart">
+                <h3>Your cart is empty</h3>
+                <p>Browse our categories and discover our best deals!</p>
+                <a href='/' class="round-Cart-btn">Keep Shopping</a>
             </div>
-            <%const shipping = subTotal/10; const totalValue = shipping + subTotal %>
-            <%if(showSummaryOneTime){%>
+        <% } else { %>
+            <div class="col-md-8">
+                <% products.forEach(data => { %>
+                    <% const pName = data.name; const price = data.price; const qty = data.quantity; const description = data.description; const imgUrl = data.imageUrl; %>
+                    <div class="cart-item mb-3 p-3 border rounded">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <img src="<%= imgUrl %>" class="cart-product-image img-fluid" alt="Product Image">
+                            </div>
+                            <div class="col-md-8">
+                                <div class="cart-item-details">
+                                    <h5><%= pName %></h5>
+                                    <p><%= description %></p>
+                                    <p><strong>$<%= price %></strong></p>
+                                    <div class="product-count">
+                                        <form class="display-flex">
+                                            <div class="qtyminus">-</div>
+                                            <input type="text" name="quantity" value="<%= qty %>" class="qty" placeholder="1">
+                                            <div class="qtyplus">+</div>
+                                            <button id="removeCartItem" data-product-name="<%= pName %>" class="remove-item"><i class="fa-solid fa-trash"></i></button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
             <div class="col-md-4">
-                <div class="cart-summary">
-                    <h5>Summary</h5>
-                    <p>Total: <strong>$<%=subTotal%></strong></p>
-                    <p>Shipping: <strong>$<%=shipping%></strong></p>
-                    <form>
-                        <input type="text" class="form-control" placeholder="Coupon Code">
-                        <button type="submit" class="round-black-btn">Apply</button>
-                    </form>
-                    <hr>
-                    <p><strong>Grand Total: $<%=totalValue%></strong></p>
-                    <button class="round-black-btn">Proceed to Checkout</button>
+                <% const shipping = subTotal / 10; const totalValue = shipping + subTotal %>
+                <div class="sticky-top" style="top: 100px;">
+                    <div class="cart-summary p-3 border rounded">
+                        <h5>Summary</h5>
+                        <p>Total: <strong>$<%= subTotal %></strong></p>
+                        <p>Shipping: <strong>$<%= 0 %></strong></p>
+                        <form>
+                            <input type="text" class="form-control mb-2" placeholder="Coupon Code">
+                            <button type="submit" class="round-black-btn w-100">Apply</button>
+                        </form>
+                        <hr>
+                        <p><strong>Grand Total: $<%= subTotal %></strong></p>
+                        <button class="round-black-btn w-100">Proceed to Checkout</button>
+                    </div>
                 </div>
             </div>
-            <%showSummaryOneTime=false;%>
-            <%}});%>
-            <% } %>
-        </div>
+        <% } %>
     </div>
-    <script src="../script/cartScript.js"></script>
-</body>
+</div>
 
-</html>
+<script src="../script/cartScript.js"></script>
+<%- include('newFooter'); -%>
